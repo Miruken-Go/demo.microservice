@@ -1,6 +1,6 @@
 package commands
 
-import "github.com/miruken-go/demo-microservice/client/teamapi/data"
+import "github.com/miruken-go/demo.microservice/teamapi/data"
 
 type (
 	CreatePerson struct {

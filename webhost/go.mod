@@ -1,11 +1,11 @@
-module github.com/miruken-go/demo-microservice/webhost
+module github.com/miruken-go/demo.microservice/webhost
 
 go 1.19
 
 require (
 	github.com/go-logr/zerologr v1.2.2
 	github.com/knadh/koanf v1.4.5
-	github.com/miruken-go/miruken v0.15.0
+	github.com/miruken-go/miruken v0.16.0
 	github.com/rs/zerolog v1.28.0
 )
 

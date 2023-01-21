@@ -1,8 +1,8 @@
 package handles
 
 import (
-	"github.com/miruken-go/demo-microservice/client/api/commands"
-	"github.com/miruken-go/demo-microservice/client/api/data"
+	"github.com/miruken-go/demo.microservice/teamapi/commands"
+	"github.com/miruken-go/demo.microservice/teamapi/data"
 	"github.com/miruken-go/miruken"
 	"sync/atomic"
 )
@@ -12,7 +12,7 @@ type PersonHandler struct {
 }
 
 func (h *PersonHandler) Create(
-	_*struct{
+	_*struct {
 		miruken.Handles
 	  }, create *commands.CreatePerson,
 ) (data.Person, error) {
