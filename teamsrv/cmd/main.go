@@ -9,7 +9,7 @@ import (
 	"github.com/miruken-go/demo.microservice/teamapi"
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
-	"github.com/miruken-go/miruken/api/json"
+	"github.com/miruken-go/miruken/api/json/jsonstd"
 	"github.com/miruken-go/miruken/config"
 	koanfp "github.com/miruken-go/miruken/config/koanf"
 	"github.com/miruken-go/miruken/log"
@@ -37,15 +37,17 @@ func main() {
 	ctx, err := miruken.Setup(
 		teamapi.Feature,
 		httpsrv.Feature(),
+		jsonstd.Feature(),
 		govalidator.Feature(),
 		config.Feature(koanfp.P(k)),
 		log.Feature(logger)).
-		Options(json.StdOptions{
-			Transformers: []transform.Transformer{
-				transform.OnlyForDirection(
-					transform.Marshal,
-					transform.CamelCaseKeys(false)),
-			},
+		Options(
+			jsonstd.Options{
+				Transformers: []transform.Transformer{
+					transform.OnlyForDirection(
+						transform.Marshal,
+						transform.CamelCaseKeys(false)),
+				},
 		}).Context()
 
 	if err != nil {
