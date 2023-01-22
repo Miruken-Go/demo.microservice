@@ -5,9 +5,9 @@ go 1.19
 require (
 	github.com/Rican7/conjson v0.1.0
 	github.com/go-logr/zerologr v1.2.2
-	github.com/knadh/koanf v1.4.5
-	github.com/miruken-go/demo.microservice/teamapi v0.0.0-20230121030636-18e08b7d150b
-	github.com/miruken-go/miruken v0.17.0
+	github.com/knadh/koanf v1.5.0
+	github.com/miruken-go/demo.microservice/teamapi v0.0.0-20230122153155-b64fe515ccf8
+	github.com/miruken-go/miruken v0.18.0
 	github.com/rs/zerolog v1.28.0
 )
 

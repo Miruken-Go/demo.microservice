@@ -153,8 +153,8 @@ github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7V
 github.com/julienschmidt/httprouter v1.3.0/go.mod h1:JR6WtHb+2LUe8TCKY3cZOxFyyO8IZAc4RVcycCCAKdM=
 github.com/kisielk/errcheck v1.5.0/go.mod h1:pFxgyoBC7bSaBwPgfKdkLd5X25qrDl4LWUI2bnpBCr8=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
-github.com/knadh/koanf v1.4.5 h1:yKWFswTrqFc0u7jBAoERUz30+N1b1yPXU01gAPr8IrY=
-github.com/knadh/koanf v1.4.5/go.mod h1:Hgyjp4y8v44hpZtPzs7JZfRAW5AhN7KfZcwv1RYggDs=
+github.com/knadh/koanf v1.5.0 h1:q2TSd/3Pyc/5yP9ldIrSdIz26MCcyNQzW0pEAugLPNs=
+github.com/knadh/koanf v1.5.0/go.mod h1:Hgyjp4y8v44hpZtPzs7JZfRAW5AhN7KfZcwv1RYggDs=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/konsorten/go-windows-terminal-sequences v1.0.3/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515/go.mod h1:+0opPa2QZZtGFBFZlji/RkVcI2GknAs/DXo4wKdlNEc=
@@ -180,10 +180,10 @@ github.com/mattn/go-isatty v0.0.17/go.mod h1:kYGgaQfpe5nmfYZH+SKPsOc2e4SrIfOl2e/
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
 github.com/miekg/dns v1.1.26/go.mod h1:bPDLeHnStXmXAq1m/Ch/hvfNHr14JKNPMBo3VZKjuso=
 github.com/miekg/dns v1.1.41/go.mod h1:p6aan82bvRIyn+zDIv9xYNUpwa73JcSh9BKwknJysuI=
-github.com/miruken-go/demo.microservice/teamapi v0.0.0-20230121030636-18e08b7d150b h1:LZyVmCBKm9jT+Gqm2bHJdFnN3PipoZfzJcoB1oA7ECU=
-github.com/miruken-go/demo.microservice/teamapi v0.0.0-20230121030636-18e08b7d150b/go.mod h1:OAZJar9EMf/MqHYA0eqeM1iCaF9gz0/RJojjp4uo/4I=
-github.com/miruken-go/miruken v0.17.0 h1:uthRxYYbCAyU1KpdNlWutw37Qw2ru8GR2CplkX+WHwk=
-github.com/miruken-go/miruken v0.17.0/go.mod h1:xS6/wPon8Ln1QllozFg501VE3P+zUL/0ZH6mtEBcthM=
+github.com/miruken-go/demo.microservice/teamapi v0.0.0-20230122153155-b64fe515ccf8 h1:bBbTL4agEiGNStu4gIVlUCBi5TvOmHmJkdA/nSAG0pA=
+github.com/miruken-go/demo.microservice/teamapi v0.0.0-20230122153155-b64fe515ccf8/go.mod h1:MAc5RHozwvCUsO+2HUXhbunZppunRZ96ZmeFuwc0MZg=
+github.com/miruken-go/miruken v0.18.0 h1:S3tONTolUtKVo63CyesNfVdf51qbO76e/bXsMVksJMM=
+github.com/miruken-go/miruken v0.18.0/go.mod h1:xS6/wPon8Ln1QllozFg501VE3P+zUL/0ZH6mtEBcthM=
 github.com/mitchellh/cli v1.0.0/go.mod h1:hNIlj7HEI86fIcpObd7a0FcrxTWetlwJDGcceTlRvqc=
 github.com/mitchellh/cli v1.1.0/go.mod h1:xcISNoH86gajksDmfB23e/pu+B+GeFRMYmoHXxx3xhI=
 github.com/mitchellh/copystructure v1.0.0/go.mod h1:SNtv71yrdKgLRyLFxmLdkAbkKEFWgYaq1OVrnRcwhnw=
