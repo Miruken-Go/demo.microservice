@@ -1,16 +1,17 @@
-module github.com/miruken-go/demo.microservice/webhost
+module github.com/miruken-go/demo.microservice/teamsrv
 
 go 1.19
 
 require (
+	github.com/Rican7/conjson v0.1.0
 	github.com/go-logr/zerologr v1.2.2
 	github.com/knadh/koanf v1.4.5
-	github.com/miruken-go/miruken v0.16.0
+	github.com/miruken-go/demo.microservice/teamapi v0.0.0-20230121030636-18e08b7d150b
+	github.com/miruken-go/miruken v0.17.0
 	github.com/rs/zerolog v1.28.0
 )
 
 require (
-	github.com/Rican7/conjson v0.1.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect

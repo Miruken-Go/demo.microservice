@@ -34,30 +34,32 @@ func main() {
 	}
 
 	// initialize miruken
-	ctx, err := miruken.SetupContext(
+	ctx, err := miruken.Setup(
 		teamapi.Feature,
 		httpsrv.Feature(),
 		govalidator.Feature(),
 		config.Feature(koanfp.P(k)),
-		log.Feature(logger),
-		miruken.Builders(
-			json.StdTransform(transform.OnlyForDirection(
-				transform.Marshal,
-				transform.CamelCaseKeys(false))),
-		))
+		log.Feature(logger)).
+		Options(json.StdOptions{
+			Transformers: []transform.Transformer{
+				transform.OnlyForDirection(
+					transform.Marshal,
+					transform.CamelCaseKeys(false)),
+			},
+		}).Context()
 
 	if err != nil {
 		logger.Error(err, "setup failed")
 		os.Exit(1)
 	}
 
-	// start http server
+	// start http teamsrv
 	err = http.ListenAndServe(":8080", httpsrv.NewController(ctx))
 
 	if errors.Is(err, http.ErrServerClosed) {
-		logger.Info("server closed")
+		logger.Info("teamsrv closed")
 	} else if err != nil {
-		logger.Error(err, "error starting server")
+		logger.Error(err, "error starting teamsrv")
 		os.Exit(1)
 	}
 }

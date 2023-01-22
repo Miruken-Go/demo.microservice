@@ -5,7 +5,7 @@ package handles
 import "github.com/miruken-go/miruken"
 
 var Feature miruken.Feature = miruken.FeatureFunc(func(setup *miruken.SetupBuilder) error {
-	setup.RegisterHandlers(
+	setup.Specs(
 		&PersonHandler{},
 	)
 	return nil

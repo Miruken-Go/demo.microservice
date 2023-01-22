@@ -180,12 +180,10 @@ github.com/mattn/go-isatty v0.0.17/go.mod h1:kYGgaQfpe5nmfYZH+SKPsOc2e4SrIfOl2e/
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
 github.com/miekg/dns v1.1.26/go.mod h1:bPDLeHnStXmXAq1m/Ch/hvfNHr14JKNPMBo3VZKjuso=
 github.com/miekg/dns v1.1.41/go.mod h1:p6aan82bvRIyn+zDIv9xYNUpwa73JcSh9BKwknJysuI=
-github.com/miruken-go/demo.microservice v0.2.0 h1:GwtDp00jpFNs7pLDuA7q+vKaozwHJlMUMKbquM/MGiI=
-github.com/miruken-go/demo.microservice v0.2.0/go.mod h1:l+2E/9n6dJjp2RaR00hAV28vA0oqbREhiMjOCcHd2FU=
-github.com/miruken-go/miruken v0.15.0 h1:JiKmOA9O3gPWoA+7AODTIRLT6BbeHO6NiKNaSjd0OYk=
-github.com/miruken-go/miruken v0.15.0/go.mod h1:xS6/wPon8Ln1QllozFg501VE3P+zUL/0ZH6mtEBcthM=
-github.com/miruken-go/miruken v0.16.0 h1:kkDDhgfIUlA4y/KDcJYAwlIcZH1FuJqIcT85ogl+5Us=
-github.com/miruken-go/miruken v0.16.0/go.mod h1:xS6/wPon8Ln1QllozFg501VE3P+zUL/0ZH6mtEBcthM=
+github.com/miruken-go/demo.microservice/teamapi v0.0.0-20230121030636-18e08b7d150b h1:LZyVmCBKm9jT+Gqm2bHJdFnN3PipoZfzJcoB1oA7ECU=
+github.com/miruken-go/demo.microservice/teamapi v0.0.0-20230121030636-18e08b7d150b/go.mod h1:OAZJar9EMf/MqHYA0eqeM1iCaF9gz0/RJojjp4uo/4I=
+github.com/miruken-go/miruken v0.17.0 h1:uthRxYYbCAyU1KpdNlWutw37Qw2ru8GR2CplkX+WHwk=
+github.com/miruken-go/miruken v0.17.0/go.mod h1:xS6/wPon8Ln1QllozFg501VE3P+zUL/0ZH6mtEBcthM=
 github.com/mitchellh/cli v1.0.0/go.mod h1:hNIlj7HEI86fIcpObd7a0FcrxTWetlwJDGcceTlRvqc=
 github.com/mitchellh/cli v1.1.0/go.mod h1:xcISNoH86gajksDmfB23e/pu+B+GeFRMYmoHXxx3xhI=
 github.com/mitchellh/copystructure v1.0.0/go.mod h1:SNtv71yrdKgLRyLFxmLdkAbkKEFWgYaq1OVrnRcwhnw=
