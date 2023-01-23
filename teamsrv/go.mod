@@ -6,7 +6,7 @@ require (
 	github.com/Rican7/conjson v0.1.0
 	github.com/go-logr/zerologr v1.2.2
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/demo.microservice/teamapi v0.0.0-20230122153155-b64fe515ccf8
+	github.com/miruken-go/demo.microservice/teamapi v0.3.0
 	github.com/miruken-go/miruken v0.20.0
 	github.com/rs/zerolog v1.28.0
 )
