@@ -9,7 +9,4 @@ import (
 
 //go:generate $GOPATH/bin/miruken -tests
 
-var Feature = miruken.GroupFeatures(
-	commands.Feature,
-	queries.Feature,
-	handles.Feature)
+var Feature = miruken.GroupFeatures(commands.Feature, queries.Feature, handles.Feature)
