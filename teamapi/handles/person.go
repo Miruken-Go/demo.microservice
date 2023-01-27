@@ -7,9 +7,11 @@ import (
 	"sync/atomic"
 )
 
-type PersonHandler struct {
-	nextId int32
-}
+type (
+	PersonHandler struct {
+		nextId int32
+	}
+)
 
 func (h *PersonHandler) Create(
 	_*struct {
@@ -17,7 +19,11 @@ func (h *PersonHandler) Create(
 	  }, create *commands.CreatePerson,
 ) (data.Person, error) {
 	atomic.AddInt32(&h.nextId, 1)
-	person := create.Person
-	person.Id = h.nextId
+	person := data.Person{
+		Id:        h.nextId,
+		FirstName: create.FirstName,
+		LastName:  create.LastName,
+		BirthDate: create.BirthDate,
+	}
 	return person, nil
 }

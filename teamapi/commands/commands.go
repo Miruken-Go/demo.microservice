@@ -1,14 +1,22 @@
 package commands
 
-import "github.com/miruken-go/demo.microservice/teamapi/data"
+import (
+	"github.com/miruken-go/demo.microservice/teamapi/data"
+	"time"
+)
 
 type (
 	CreatePerson struct {
-		Person data.Person
+		FirstName string
+		LastName  string
+		BirthDate time.Time
 	}
 
 	UpdatePerson struct {
-		Person data.Person
+		Id        int32
+		FirstName string
+		LastName  string
+		BirthDate time.Time
 	}
 
 	DeletePeople struct {
@@ -16,10 +24,19 @@ type (
 	}
 
 	CreateTeam struct {
-		Team data.Team
+		Name    string
+		Color   data.Color
+		Coach   data.Coach
+		Manager data.Manager
+		Players []data.Player
 	}
 
 	UpdateTeam struct {
-		Team data.Team
+		Id      int32
+		Name    string
+		Color   data.Color
+		Coach   *data.Coach
+		Manager *data.Manager
+		Players []data.Player
 	}
 )

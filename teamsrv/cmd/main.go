@@ -13,7 +13,7 @@ import (
 	"github.com/miruken-go/miruken/config"
 	koanfp "github.com/miruken-go/miruken/config/koanf"
 	"github.com/miruken-go/miruken/log"
-	"github.com/miruken-go/miruken/validate/go"
+	playvalidator "github.com/miruken-go/miruken/validate/play"
 	"github.com/rs/zerolog"
 	"net/http"
 	"os"
@@ -38,7 +38,7 @@ func main() {
 		teamapi.Feature,
 		httpsrv.Feature(),
 		jsonstd.Feature(),
-		govalidator.Feature(),
+		playvalidator.Feature(),
 		config.Feature(koanfp.P(k)),
 		log.Feature(logger)).
 		Options(
@@ -48,7 +48,7 @@ func main() {
 						transform.Marshal,
 						transform.CamelCaseKeys(false)),
 				},
-		}).Context()
+			}).Context()
 
 	if err != nil {
 		logger.Error(err, "setup failed")

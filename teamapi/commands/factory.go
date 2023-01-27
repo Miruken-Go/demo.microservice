@@ -2,6 +2,8 @@ package commands
 
 import "github.com/miruken-go/miruken"
 
+//go:generate $GOPATH/bin/miruken -tests
+
 // Factory creates commands from a type id.
 type Factory struct{}
 
