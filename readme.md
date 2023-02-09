@@ -12,7 +12,22 @@
     http://localhost:8080/process
 
 
+
+
+cd teamsrv
+
 docker build -t teamsrv:latest .
 docker run -it -p 8080:8080 teamsrv:latest
 
+## Local Dev
+    docker run -it -p 80:80 -v $(pwd):/go/src golang:1.19-alpine3.17
 
+## Build and Deploy
+
+cd teamsrv
+docker build -t teamsrv:latest .
+
+az login
+az acr login -n mirukengo   
+docker tag teamsrv:latest mirukengo.azurecr.io/teamsrv:20230207
+docker push mirukengo.azurecr.io/teamsrv:20230207
