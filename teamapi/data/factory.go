@@ -1,4 +1,4 @@
-package queries
+package data
 
 import (
 	"github.com/miruken-go/miruken/creates"
@@ -11,15 +11,12 @@ type Factory struct{}
 
 func (F *Factory) New(
 	_*struct {
-		fp creates.It `key:"queries.FindPeople"`
-		ft creates.It `key:"queries.FindTeams"`
+		p creates.It `key:"data.Person"`
 	  }, create *creates.It,
 ) any {
 	switch create.Key() {
-	case "queries.FindPeople":
-		return new(FindPeople)
-	case "queries.FindTeams":
-		return new(FindTeams)
+	case "data.Person":
+		return new(Person)
 	}
 	return nil
 }

@@ -1,4 +1,4 @@
-package handles
+package commands
 
 import (
 	"github.com/miruken-go/demo.microservice/teamapi/commands"
@@ -7,6 +7,8 @@ import (
 	"sync/atomic"
 )
 
+//go:generate $GOPATH/bin/miruken -tests
+
 type (
 	PersonHandler struct {
 		nextId int32
@@ -14,9 +16,9 @@ type (
 )
 
 func (h *PersonHandler) Create(
-	_*struct {
+	_ *struct {
 		miruken.Handles
-	  }, create *commands.CreatePerson,
+	}, create *commands.CreatePerson,
 ) (data.Person, error) {
 	atomic.AddInt32(&h.nextId, 1)
 	person := data.Person{

@@ -1,24 +1,22 @@
-package handles
+package commands
 
 import (
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	"github.com/miruken-go/demo.microservice/teamapi/commands"
 	"github.com/miruken-go/miruken"
-	"github.com/miruken-go/miruken/validate"
-	play "github.com/miruken-go/miruken/validate/play"
+	"github.com/miruken-go/miruken/validates"
+	play "github.com/miruken-go/miruken/validates/play"
 	"time"
 )
 
-//go:generate $GOPATH/bin/miruken -tests
-
 type (
 	CreatePersonIntegrity struct {
-		play.Base
+		play.Validator
 	}
 )
 
-func (v *CreatePersonIntegrity) Constructor(
+func (i *CreatePersonIntegrity) Constructor(
 	_ *struct{ miruken.Optional }, translator ut.Translator,
 ) error {
 	val := validator.New()
@@ -26,7 +24,7 @@ func (v *CreatePersonIntegrity) Constructor(
 		return err
 	}
 
-	v.ConstructWithRules(
+	i.ConstructWithRules(
 		play.Rules{
 			{commands.CreatePerson{}, map[string]string{
 				"FirstName": "required",
@@ -38,10 +36,10 @@ func (v *CreatePersonIntegrity) Constructor(
 	return nil
 }
 
-func (v *CreatePersonIntegrity) Validate(
-	validates *validate.Validates, create *commands.CreatePerson,
+func (i *CreatePersonIntegrity) Validate(
+	v *validates.It, create *commands.CreatePerson,
 ) miruken.HandleResult {
-	return v.Base.ValidateAndStop(create, validates.Outcome())
+	return i.ValidateAndStop(create, v.Outcome())
 }
 
 func notfuture(fl validator.FieldLevel) bool {

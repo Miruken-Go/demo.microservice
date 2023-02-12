@@ -1,6 +1,8 @@
 package commands
 
-import "github.com/miruken-go/miruken"
+import (
+	"github.com/miruken-go/miruken/creates"
+)
 
 //go:generate $GOPATH/bin/miruken -tests
 
@@ -9,11 +11,11 @@ type Factory struct{}
 
 func (F *Factory) New(
 	_*struct {
-		cp miruken.Creates `key:"commands.CreatePerson"`
-		up miruken.Creates `key:"commands.UpdatePerson"`
-		ct miruken.Creates `key:"commands.CreateTeam"`
-		ut miruken.Creates `key:"commands.UpdateTeam"`
-	  }, create *miruken.Creates,
+		cp creates.It `key:"commands.CreatePerson"`
+		up creates.It `key:"commands.UpdatePerson"`
+		ct creates.It `key:"commands.CreateTeam"`
+		ut creates.It `key:"commands.UpdateTeam"`
+	  }, create *creates.It,
 ) any {
 	switch create.Key() {
 	case "commands.CreatePerson":
