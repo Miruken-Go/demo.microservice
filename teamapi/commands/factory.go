@@ -13,6 +13,7 @@ func (F *Factory) New(
 	_*struct {
 		cp creates.It `key:"commands.CreatePerson"`
 		up creates.It `key:"commands.UpdatePerson"`
+	    dp creates.It `key:"commands.DeletePeople"`
 		ct creates.It `key:"commands.CreateTeam"`
 		ut creates.It `key:"commands.UpdateTeam"`
 	  }, create *creates.It,
@@ -22,6 +23,8 @@ func (F *Factory) New(
 		return new(CreatePerson)
 	case "commands.UpdatePerson":
 		return new(UpdatePerson)
+	case "commands.DeletePeople":
+		return new(DeletePeople)
 	case "commands.CreateTeam":
 		return new(CreateTeam)
 	case "commands.UpdateTeam":

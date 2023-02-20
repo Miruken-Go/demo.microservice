@@ -2,10 +2,11 @@ package teamsrv
 
 import (
 	"github.com/miruken-go/demo.microservice/teamapi"
-	"github.com/miruken-go/demo.microservice/teamsrv/commands"
+	"github.com/miruken-go/demo.microservice/teamsrv/commands/person"
+	"github.com/miruken-go/demo.microservice/teamsrv/commands/team"
 	"github.com/miruken-go/miruken"
 )
 
 //go:generate $GOPATH/bin/miruken -tests
 
-var Feature = miruken.GroupFeatures(teamapi.Feature, commands.Feature)
+var Feature = miruken.GroupFeatures(teamapi.Feature, person.Feature, team.Feature)

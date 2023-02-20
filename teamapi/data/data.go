@@ -13,25 +13,25 @@ type (
 	}
 
 	Player struct {
-		Person Person
+		Person *Person
 		Number int
 	}
 
 	Coach struct {
-		Person  Person
+		Person  *Person
 		License string
 	}
 
 	Manager struct {
-		Person Person
+		Person *Person
 	}
 
 	Team struct {
 		Id      int32
 		Name    string
 		Color   Color
-		Coach   Coach
-		Manager Manager
+		Coach   *Coach
+		Manager *Manager
 		Players []Player
 	}
 )
