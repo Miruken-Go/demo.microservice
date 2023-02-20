@@ -68,7 +68,7 @@ func main() {
 		OpenAPI: "3.0.0",
 		Info: &openapi3.Info{
 			Title:       "Team Api",
-			Description: "REST Api used for managing Teams",
+			Description: "REST Api for managing Teams",
 			Version:     "0.0.0",
 			License: &openapi3.License{
 				Name: "MIT",
