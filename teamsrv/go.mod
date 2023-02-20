@@ -8,7 +8,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.11.2
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/demo.microservice/teamapi v0.3.0
+	github.com/miruken-go/demo.microservice/teamapi v0.5.0
 	github.com/miruken-go/miruken v0.23.0
 	github.com/rs/zerolog v1.28.0
 )
