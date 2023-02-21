@@ -45,7 +45,7 @@ func main() {
 		teamsrv.Feature, jsonstd.Feature(),
 		play.Feature(), config.Feature(koanfp.P(k)),
 		log.Feature(logger), openapiGen).
-		Specs(&api.GoPolymorphismMapper{}).
+		Specs(&api.GoPolymorphism{}).
 		Options(jsonstd.CamelCase).
 		Handler()
 
@@ -64,7 +64,7 @@ func main() {
 	mux.Handle("/publish/", ctl)
 
 	// swagger ui
-	api := openapi3.T{
+	doc := openapi3.T{
 		OpenAPI: "3.0.0",
 		Info: &openapi3.Info{
 			Title:       "Team Api",
@@ -79,9 +79,9 @@ func main() {
 			},
 		},
 	}
-	openapiGen.Merge(&api)
-	mux.Handle("/swagger", openapi.Handler(&api, true))
-	mux.Handle("/swagger_ui/", ui.Handler("/swagger_ui/", &api))
+	openapiGen.Merge(&doc)
+	mux.Handle("/swagger", openapi.Handler(&doc, true))
+	mux.Handle("/swagger_ui/", ui.Handler("/swagger_ui/", &doc))
 
 	// start http server
 	err = http.ListenAndServe(":8080", &mux)

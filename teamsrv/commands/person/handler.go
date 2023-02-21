@@ -3,7 +3,7 @@ package person
 import (
 	"github.com/miruken-go/demo.microservice/teamapi/commands"
 	"github.com/miruken-go/demo.microservice/teamapi/data"
-	"github.com/miruken-go/miruken"
+	"github.com/miruken-go/miruken/handles"
 	"sync/atomic"
 )
 
@@ -16,9 +16,7 @@ type (
 )
 
 func (h *Handler) Create(
-	_ *struct {
-		miruken.Handles
-	}, create *commands.CreatePerson,
+	_ *handles.It, create *commands.CreatePerson,
 ) (data.Person, error) {
 	return data.Person{
 		Id:        atomic.AddInt32(&h.nextId, 1),
@@ -29,9 +27,7 @@ func (h *Handler) Create(
 }
 
 func (h *Handler) Update(
-	_ *struct {
-		miruken.Handles
-	}, update *commands.UpdatePerson,
+	_ *handles.It, update *commands.UpdatePerson,
 ) (data.Person, error) {
 	return data.Person{
 		Id:        update.Id,
@@ -42,9 +38,7 @@ func (h *Handler) Update(
 }
 
 func (h *Handler) Delete(
-	_ *struct {
-	miruken.Handles
-}, delete *commands.DeletePeople,
+	_ *handles.It, delete *commands.DeletePeople,
 ) error {
 	return nil
 }

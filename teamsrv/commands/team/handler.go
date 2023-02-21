@@ -5,6 +5,7 @@ import (
 	"github.com/miruken-go/demo.microservice/teamapi/data"
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/api"
+	"github.com/miruken-go/miruken/handles"
 	"github.com/miruken-go/miruken/promise"
 	"sync/atomic"
 )
@@ -18,9 +19,7 @@ type (
 )
 
 func (h *Handler) Create(
-	_ *struct {
-		miruken.Handles
-	  }, create *commands.CreateTeam,
+	_ *handles.It, create *commands.CreateTeam,
 	ctx miruken.HandleContext,
 ) *promise.Promise[data.Team] {
 	composer := ctx.Composer()
@@ -53,9 +52,7 @@ func (h *Handler) Create(
 }
 
 func (h *Handler) Update(
-	_ *struct {
-		miruken.Handles
-	  }, update *commands.UpdateTeam,
+	_ *handles.It, update *commands.UpdateTeam,
 	ctx miruken.HandleContext,
 ) *promise.Promise[data.Team] {
 	composer := ctx.Composer()
