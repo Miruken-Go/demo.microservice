@@ -80,8 +80,8 @@ func main() {
 		},
 	}
 	openapiGen.Merge(&doc)
-	mux.Handle("/swagger", openapi.Handler(&doc, true))
-	mux.Handle("/swagger_ui/", ui.Handler("/swagger_ui/", &doc))
+	mux.Handle("/openapi", openapi.Handler(&doc, true))
+	mux.Handle("/docs/", ui.Handler("/docs/", &doc))
 
 	// start http server
 	err = http.ListenAndServe(":8080", &mux)

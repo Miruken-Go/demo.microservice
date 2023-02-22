@@ -5,19 +5,18 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/miruken-go/demo.microservice/teamapi/commands"
 	"github.com/miruken-go/demo.microservice/teamapi/data"
-	"github.com/miruken-go/miruken"
-	"github.com/miruken-go/miruken/validates"
+	"github.com/miruken-go/miruken/args"
 	play "github.com/miruken-go/miruken/validates/play"
 	"time"
 )
 
 type (
 	CreateTeamIntegrity struct {
-		play.Validator
+		play.ValidatorT[*commands.CreateTeam]
 	}
 
 	UpdateTeamIntegrity struct {
-		play.Validator
+		play.ValidatorT[*commands.UpdateTeam]
 	}
 )
 
@@ -25,14 +24,9 @@ type (
 // CreateTeamIntegrity
 
 func (i *CreateTeamIntegrity) Constructor(
-	_ *struct{ miruken.Optional }, translator ut.Translator,
+	_ *struct{ args.Optional }, translator ut.Translator,
 ) error {
-	val := validator.New()
-	if err := val.RegisterValidation("notfuture", notfuture); err != nil {
-		return err
-	}
-
-	i.ConstructWithRules(
+	return i.ConstructWithRules(
 		play.Rules{
 			{commands.CreateTeam{}, map[string]string{
 				"Name": "required",
@@ -50,29 +44,18 @@ func (i *CreateTeamIntegrity) Constructor(
 				"LastName":  "required",
 				"BirthDate": "notfuture",
 			}},
-		}, val, translator)
-
-	return nil
-}
-
-func (i *CreateTeamIntegrity) Validate(
-	v *validates.It, create *commands.CreateTeam,
-) miruken.HandleResult {
-	return i.ValidateAndStop(create, v.Outcome())
+		}, func(v *validator.Validate) error {
+			return v.RegisterValidation("notfuture", notfuture)
+		}, translator)
 }
 
 
 // UpdateTeamIntegrity
 
 func (i *UpdateTeamIntegrity) Constructor(
-	_ *struct{ miruken.Optional }, translator ut.Translator,
+	_ *struct{ args.Optional }, translator ut.Translator,
 ) error {
-	val := validator.New()
-	if err := val.RegisterValidation("notfuture", notfuture); err != nil {
-		return err
-	}
-
-	i.ConstructWithRules(
+	return i.ConstructWithRules(
 		play.Rules{
 			{commands.UpdateTeam{}, map[string]string{
 				"Id": "required,gt=0",
@@ -87,15 +70,9 @@ func (i *UpdateTeamIntegrity) Constructor(
 				"LastName":  "omitempty,min=1",
 				"BirthDate": "notfuture",
 			}},
-		}, val, translator)
-
-	return nil
-}
-
-func (i *UpdateTeamIntegrity) Validate(
-	v *validates.It, update *commands.UpdateTeam,
-) miruken.HandleResult {
-	return i.ValidateAndStop(update, v.Outcome())
+		}, func(v *validator.Validate) error {
+			return v.RegisterValidation("notfuture", notfuture)
+		}, translator)
 }
 
 
