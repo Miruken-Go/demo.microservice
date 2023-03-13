@@ -1,6 +1,6 @@
 module github.com/miruken-go/demo.microservice/teamsrv
 
-go 1.19
+go 1.20
 
 require (
 	github.com/getkin/kin-openapi v0.114.0

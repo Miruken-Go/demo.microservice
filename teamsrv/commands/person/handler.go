@@ -3,8 +3,12 @@ package person
 import (
 	"github.com/miruken-go/demo.microservice/teamapi/commands"
 	"github.com/miruken-go/demo.microservice/teamapi/data"
+	"github.com/miruken-go/demo.microservice/teamapi/queries"
+	"github.com/miruken-go/miruken/api"
+	"github.com/miruken-go/miruken/args"
 	"github.com/miruken-go/miruken/handles"
 	"sync/atomic"
+	"time"
 )
 
 //go:generate $GOPATH/bin/miruken -tests
@@ -15,8 +19,18 @@ type (
 	}
 )
 
+
+func (h *Handler) Find(
+	_ *handles.It, find queries.FindPeople,
+) ([]data.Person, error) {
+	return []data.Person{
+		{1, "John", "Smith", time.Now()},
+	}, nil
+}
+
 func (h *Handler) Create(
 	_ *handles.It, create *commands.CreatePerson,
+	_*struct{args.Optional}, parts api.PartContainer,
 ) (data.Person, error) {
 	return data.Person{
 		Id:        atomic.AddInt32(&h.nextId, 1),

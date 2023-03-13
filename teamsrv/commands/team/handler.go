@@ -3,6 +3,7 @@ package team
 import (
 	"github.com/miruken-go/demo.microservice/teamapi/commands"
 	"github.com/miruken-go/demo.microservice/teamapi/data"
+	"github.com/miruken-go/demo.microservice/teamapi/queries"
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/handles"
@@ -17,6 +18,14 @@ type (
 		nextId int32
 	}
 )
+
+func (h *Handler) Find(
+	_ *handles.It, find queries.FindTeams,
+) ([]data.Team, error) {
+	return []data.Team{
+		{1, "Breakaway", data. ColorOrange,nil, nil, nil},
+	}, nil
+}
 
 func (h *Handler) Create(
 	_ *handles.It, create *commands.CreateTeam,
