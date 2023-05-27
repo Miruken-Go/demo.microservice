@@ -31,13 +31,26 @@ func (h *Handler) Find(
 func (h *Handler) Create(
 	_ *handles.It, create *commands.CreatePerson,
 	_*struct{args.Optional}, parts api.PartContainer,
-) (data.Person, error) {
-	return data.Person{
+) (any, error) {
+	person := data.Person{
 		Id:        atomic.AddInt32(&h.nextId, 1),
 		FirstName: create.FirstName,
 		LastName:  create.LastName,
 		BirthDate: create.BirthDate,
-	}, nil
+	}
+	if parts == nil {
+		return person, nil
+	}
+	var pb api.WritePartsBuilder
+	pb.MainPart(pb.NewPart().
+		 MediaType("application/json").
+		 Metadata(map[string]any {
+		 	"role": []string{"coach", "manager"},
+	     }).
+		 Body(person).
+		 Build()).
+	   AddParts(parts.Parts())
+	return pb.Build(), nil
 }
 
 func (h *Handler) Update(

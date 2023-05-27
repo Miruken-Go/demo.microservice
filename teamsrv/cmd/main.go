@@ -15,7 +15,6 @@ import (
 	"github.com/miruken-go/miruken/api/json/jsonstd"
 	"github.com/miruken-go/miruken/config"
 	koanfp "github.com/miruken-go/miruken/config/koanf"
-	"github.com/miruken-go/miruken/context"
 	"github.com/miruken-go/miruken/log"
 	play "github.com/miruken-go/miruken/validates/play"
 	"github.com/rs/zerolog"
@@ -54,14 +53,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	ctl := httpsrv.Api(context.New(handler))
+	h := httpsrv.Handler(handler)
 
 	// configure routes
 	var mux http.ServeMux
-	mux.Handle("/process", ctl)
-	mux.Handle("/process/", ctl)
-	mux.Handle("/publish", ctl)
-	mux.Handle("/publish/", ctl)
+	mux.Handle("/process", h)
+	mux.Handle("/process/", h)
+	mux.Handle("/publish", h)
+	mux.Handle("/publish/", h)
 
 	// swagger ui
 	doc := openapi3.T{
