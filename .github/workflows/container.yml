@@ -1,0 +1,10 @@
+name: Run in a container
+
+on: workflow_dispatch
+
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Display Operating System Info
+      run: cat /etc/os-release
