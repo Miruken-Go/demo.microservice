@@ -11,7 +11,10 @@ jobs:
         ENV: dev
     steps:
     - name: Display Operating System Info
-      run:  |
-        cat /etc/os-release
+      run:  cat /etc/os-release
         pwd
         ls
+    - name: Print Working Directory
+      run:  pwd
+    - name: List directory
+      run:  ls -la
