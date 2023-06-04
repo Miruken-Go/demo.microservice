@@ -3,8 +3,13 @@ name: Run in a container
 on: workflow_dispatch
 
 jobs:
-  greet:
+  containerized_job:
     runs-on: ubuntu-latest
+    container:
+      image: alpine:latest
+      env:
+        ENV: dev
     steps:
     - name: Display Operating System Info
-      run: cat /etc/os-release
+      run: cat /etc/os-release |
+        pwd
