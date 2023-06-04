@@ -2,6 +2,7 @@
 
 ## Docker
 
+    # Naming 
     docker pull golang:1.19-alpine3.17
     docker run -itd -p 80:80 -v $(pwd):/app --name go_server golang:1.19-alpine3.17
     docker exec -it go_server sh
@@ -24,10 +25,10 @@ docker run -it -p 8080:8080 teamsrv:latest
 
 ## Build and Deploy
 
-cd teamsrv
-docker build -t teamsrv:latest .
+    cd teamsrv
+    docker build -t teamsrv:latest .
 
-az login
-az acr login -n mirukengo   
-docker tag teamsrv:latest mirukengo.azurecr.io/teamsrv:20230207
-docker push mirukengo.azurecr.io/teamsrv:20230207
+    az login
+    az acr login -n mirukengo   
+    docker tag teamsrv:latest mirukengo.azurecr.io/teamsrv:20230207
+    docker push mirukengo.azurecr.io/teamsrv:20230207
