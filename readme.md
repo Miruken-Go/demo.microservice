@@ -24,6 +24,7 @@
 ### Run the teamsrv web app
 
     /go/bin/teamsrv
+    http://localhost:8080/docs
     http://localhost:8080/openapi
 
 ## Build and run the container localy
