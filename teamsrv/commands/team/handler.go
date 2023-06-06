@@ -23,7 +23,7 @@ func (h *Handler) Find(
 	_ *handles.It, find queries.FindTeams,
 ) ([]data.Team, error) {
 	return []data.Team{
-		{1, "Breakaway", data. ColorOrange,nil, nil, nil},
+		{Id: 1, Name: "Breakaway", Color: data. ColorOrange},
 	}, nil
 }
 

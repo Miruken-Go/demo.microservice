@@ -62,7 +62,7 @@ func main() {
 	mux.Handle("/publish", h)
 	mux.Handle("/publish/", h)
 
-	// swagger ui
+	// openapi description
 	doc := openapi3.T{
 		OpenAPI: "3.0.0",
 		Info: &openapi3.Info{
