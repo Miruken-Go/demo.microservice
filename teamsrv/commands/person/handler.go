@@ -24,7 +24,7 @@ func (h *Handler) Find(
 	_ *handles.It, find queries.FindPeople,
 ) ([]data.Person, error) {
 	return []data.Person{
-		{1, "John", "Smith", time.Now()},
+		{Id: 1, FirstName: "John", LastName: "Smith", BirthDate: time.Now()},
 	}, nil
 }
 
