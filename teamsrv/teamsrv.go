@@ -2,8 +2,8 @@ package teamsrv
 
 import (
 	"github.com/miruken-go/demo.microservice/teamapi"
-	"github.com/miruken-go/demo.microservice/teamsrv/commands/person"
-	"github.com/miruken-go/demo.microservice/teamsrv/commands/team"
+	"github.com/miruken-go/demo.microservice/teamsrv/person"
+	"github.com/miruken-go/demo.microservice/teamsrv/team"
 	"github.com/miruken-go/miruken"
 )
 

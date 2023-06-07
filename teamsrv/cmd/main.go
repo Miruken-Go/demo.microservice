@@ -12,7 +12,7 @@ import (
 	"github.com/miruken-go/miruken/api/http/httpsrv"
 	"github.com/miruken-go/miruken/api/http/httpsrv/openapi"
 	"github.com/miruken-go/miruken/api/http/httpsrv/openapi/ui"
-	"github.com/miruken-go/miruken/api/json/jsonstd"
+	"github.com/miruken-go/miruken/api/json/stdjson"
 	"github.com/miruken-go/miruken/config"
 	koanfp "github.com/miruken-go/miruken/config/koanf"
 	"github.com/miruken-go/miruken/log"
@@ -41,11 +41,11 @@ func main() {
 
 	// initialize miruken
 	handler, err := miruken.Setup(
-		teamsrv.Feature, jsonstd.Feature(),
+		teamsrv.Feature, stdjson.Feature(),
 		play.Feature(), config.Feature(koanfp.P(k)),
 		log.Feature(logger), openapiGen).
 		Specs(&api.GoPolymorphism{}).
-		Options(jsonstd.CamelCase).
+		Options(stdjson.CamelCase).
 		Handler()
 
 	if err != nil {
