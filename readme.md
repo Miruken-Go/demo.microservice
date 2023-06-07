@@ -32,18 +32,21 @@
 ### Build Docker Image
 
     cd teamsrv
-    docker build -t teamsrv:local .
+    docker build -t -e APPLICATION_VERSION=local teamsrv:local .
     
 ### Run Docker container locally
 
     docker run -it -p 8080:8080 teamsrv:local
 
-## Push Docker Image to Azure Container Repo
+## Build and Push Docker Image to Azure Container Repo
 
+    cd teamsrv
+    TAG=$(date +%s); echo $TAG
+    IMAGE_NAME="teamsrvdevmichael.azurecr.io/teamsrv:$TAG"; echo $IMAGE_NAME
+    docker build --build-arg application_version=$TAG -t $IMAGE_NAME .
     az login
-    az acr login -n mirukengo   
-    docker tag teamsrv:local mirukengo.azurecr.io/teamsrv:20230207
-    docker push mirukengo.azurecr.io/teamsrv:20230207
+    az acr login -n teamsrvdevmichael   
+    docker push $IMAGE_NAME
 
 ---
 
