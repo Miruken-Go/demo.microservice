@@ -2,7 +2,7 @@ module github.com/miruken-go/demo.microservice/teamapi
 
 go 1.20
 
-require github.com/miruken-go/miruken v0.27.0
+require github.com/miruken-go/miruken v0.28.0
 
 require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect

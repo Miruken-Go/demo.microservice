@@ -37,7 +37,19 @@ func main() {
 	}
 
 	// openapi generator
-	openapiGen := openapi.Feature()
+	openapiGen := openapi.Feature(openapi3.T{
+		Info: &openapi3.Info{
+			Title:       "Team Api",
+			Description: "REST Api for managing Teams",
+			License: &openapi3.License{
+				Name: "MIT",
+				URL:  "https://opensource.org/licenses/MIT",
+			},
+			Contact: &openapi3.Contact{
+				URL: "https://github.com/Miruken-Go/demo.microservice",
+			},
+		},
+	})
 
 	// initialize miruken
 	handler, err := miruken.Setup(
@@ -53,6 +65,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	docs := openapiGen.Docs()
+
 	h := httpsrv.Handler(handler)
 
 	// configure routes
@@ -61,26 +75,8 @@ func main() {
 	mux.Handle("/process/", h)
 	mux.Handle("/publish", h)
 	mux.Handle("/publish/", h)
-
-	// openapi description
-	doc := openapi3.T{
-		OpenAPI: "3.0.0",
-		Info: &openapi3.Info{
-			Title:       "Team Api",
-			Description: "REST Api for managing Teams",
-			Version:     "0.0.0",
-			License: &openapi3.License{
-				Name: "MIT",
-				URL:  "https://opensource.org/licenses/MIT",
-			},
-			Contact: &openapi3.Contact{
-				URL: "https://github.com/craig/team-microservice",
-			},
-		},
-	}
-	openapiGen.Merge(&doc)
-	mux.Handle("/openapi", openapi.Handler(&doc, true))
-	mux.Handle("/docs/", ui.Handler("/docs/", &doc))
+	mux.Handle("/openapi", openapi.Handler(docs, true))
+	mux.Handle("/docs/", ui.Handler("/docs/", docs))
 
 	// start http server
 	err = http.ListenAndServe(":8080", &mux)
