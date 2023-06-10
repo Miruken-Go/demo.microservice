@@ -76,7 +76,7 @@ func main() {
 	mux.Handle("/publish", h)
 	mux.Handle("/publish/", h)
 	mux.Handle("/openapi", openapi.Handler(docs, true))
-	mux.Handle("/docs/", ui.Handler("/docs/", docs))
+	mux.Handle("/", ui.Handler("", docs))
 
 	// start http server
 	err = http.ListenAndServe(":8080", &mux)
