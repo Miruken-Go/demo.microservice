@@ -5,11 +5,9 @@ go 1.20
 require (
 	github.com/getkin/kin-openapi v0.118.0
 	github.com/go-logr/zerologr v1.2.3
-	github.com/go-playground/universal-translator v0.18.1
-	github.com/go-playground/validator/v10 v10.14.1
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/demo.microservice/teamapi v0.8.0
-	github.com/miruken-go/miruken v0.28.0
+	github.com/miruken-go/demo.microservice/team v0.2.0
+	github.com/miruken-go/miruken v0.30.0
 	github.com/rs/zerolog v1.29.1
 )
 
@@ -20,6 +18,8 @@ require (
 	github.com/go-openapi/jsonpointer v0.19.6 // indirect
 	github.com/go-openapi/swag v0.22.3 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
+	github.com/go-playground/universal-translator v0.18.1 // indirect
+	github.com/go-playground/validator/v10 v10.14.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/imdario/mergo v0.3.16 // indirect
@@ -29,6 +29,7 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
+	github.com/miruken-go/demo.microservice/teamapi v0.10.0 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect

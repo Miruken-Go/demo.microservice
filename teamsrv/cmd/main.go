@@ -6,7 +6,7 @@ import (
 	"github.com/go-logr/zerologr"
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/providers/env"
-	"github.com/miruken-go/demo.microservice/teamsrv"
+	"github.com/miruken-go/demo.microservice/team"
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
@@ -53,7 +53,7 @@ func main() {
 
 	// initialize miruken
 	handler, err := miruken.Setup(
-		teamsrv.Feature, stdjson.Feature(),
+		team.Feature, stdjson.Feature(),
 		play.Feature(), config.Feature(koanfp.P(k)),
 		log.Feature(logger), openapiGen).
 		Specs(&api.GoPolymorphism{}).
