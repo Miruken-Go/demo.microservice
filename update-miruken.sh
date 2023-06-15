@@ -1,4 +1,4 @@
-docker run -v $(pwd):/go/src --workdir=/go/src/teamapi golang:1.20 go test ./...
+docker run -v $(pwd):/go/src --workdir=/go/src/teamapi golang:1.20 go get -u
 if [[ $? -gt 0 ]]; then 
   echo "Failed to build and test"; 
   exit 1; 
@@ -12,5 +12,5 @@ if [[ $(git tag -l "$TAG") ]];
     else
         echo "Tagging the release"
         git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" tag -a $TAG -m "Tagged by build pipeline"
-        git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" push origin $TAG
+        #git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" push origin $TAG
 fi;

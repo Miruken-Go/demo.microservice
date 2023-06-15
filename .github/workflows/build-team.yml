@@ -1,0 +1,26 @@
+name: build pipeline
+
+on:
+  push:
+    branches: [ "main", "develop"]
+    paths:
+    - 'team/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+    - 'team/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with: 
+        fetch-depth: 0
+
+    - name: Run build
+      run: ./build-team.sh

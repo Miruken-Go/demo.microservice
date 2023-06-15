@@ -1,0 +1,24 @@
+name: build pipeline
+
+on:
+  push:
+    branches: [ "main", "develop"]
+    paths:
+    - 'teamsrv/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+    - 'teamsrv/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Run build
+      run: ./build-teamsrv.sh

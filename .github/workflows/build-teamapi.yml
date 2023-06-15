@@ -3,8 +3,12 @@ name: build pipeline
 on:
   push:
     branches: [ "main", "develop"]
+    paths:
+    - 'teamapi/**'
   pull_request:
     branches: [ "main" ]
+    paths:
+    - 'teamapi/**'
 
 permissions:
   contents: write
@@ -19,4 +23,4 @@ jobs:
         fetch-depth: 0
 
     - name: Run build
-      run: ./build.sh
+      run: ./build-teamapi.sh
