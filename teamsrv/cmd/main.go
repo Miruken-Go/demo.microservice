@@ -30,7 +30,7 @@ func main() {
 
 	// configuration
 	var k = koanf.New(".")
-	err := k.Load(env.Provider("", ".", nil), nil)
+	err := k.Load(env.Provider("", "_", nil), nil)
 	if err != nil {
 		logger.Error(err, "error loading configuration")
 		os.Exit(1)
@@ -40,7 +40,7 @@ func main() {
 	openapiGen := openapi.Feature(openapi3.T{
 		Info: &openapi3.Info{
 			Title:       "Team Api",
-			Description: "REST Api for managing Teams",
+			Description: "REST Api for managing Teams " + k.String("App.Version"),
 			License: &openapi3.License{
 				Name: "MIT",
 				URL:  "https://opensource.org/licenses/MIT",
