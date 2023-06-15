@@ -14,3 +14,20 @@ if [[ $(git tag -l "$TAG") ]];
         git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" tag -a $TAG -m "Tagged by build pipeline"
         #git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" push origin $TAG
 fi;
+
+
+
+
+# go get -u all 
+
+# teamapi
+# go get github.com/miruken-go/miruken@v0.30.4
+
+# teamapi
+# go get github.com/miruken-go/miruken@v0.30.4
+# go get github.com/miruken-go/demo.microservice/teamapi@v0.10.1
+
+# teamsrv
+# go get github.com/miruken-go/miruken@v0.30.4
+# go get github.com/miruken-go/demo.microservice/teamapi@v0.10.1
+# go get github.com/miruken-go/demo.microservice/team@v0.2.1
