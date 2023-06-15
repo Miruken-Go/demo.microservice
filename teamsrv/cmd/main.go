@@ -15,7 +15,7 @@ import (
 	"github.com/miruken-go/miruken/api/json/stdjson"
 	"github.com/miruken-go/miruken/config"
 	koanfp "github.com/miruken-go/miruken/config/koanf"
-	"github.com/miruken-go/miruken/log"
+	"github.com/miruken-go/miruken/logs"
 	play "github.com/miruken-go/miruken/validates/play"
 	"github.com/rs/zerolog"
 	"net/http"
@@ -55,7 +55,7 @@ func main() {
 	handler, err := miruken.Setup(
 		team.Feature, stdjson.Feature(),
 		play.Feature(), config.Feature(koanfp.P(k)),
-		log.Feature(logger), openapiGen).
+		logs.Feature(logger), openapiGen).
 		Specs(&api.GoPolymorphism{}).
 		Options(stdjson.CamelCase).
 		Handler()
