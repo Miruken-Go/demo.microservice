@@ -5,7 +5,7 @@ IMAGE_NAME="${NAME}shared.azurecr.io/${NAME}:$VERSION"; echo $IMAGE_NAME
 echo "VERSION: $VERSION"
 echo "IMAGE_NAME: $IMAGE_NAME"
 
-docker build --build-arg application_version=$VERSION -t $IMAGE_NAME $NAME
+docker build --build-arg app_version=$VERSION -t $IMAGE_NAME $NAME
 if [[ $? -gt 0 ]]; then 
   echo "Failed to build docker image"; 
   exit 1; 
