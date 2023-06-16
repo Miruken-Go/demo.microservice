@@ -16,6 +16,12 @@ permissions:
 jobs:
   build-pipeline:
     runs-on: ubuntu-latest
+    env:
+      TENANT_ID:                         ${{ vars.TENANT_ID }}
+      DEPLOYMENT_PIPELINE_CLIENT_ID:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
+      DEPLOYMENT_PIPELINE_CLIENT_SECRET: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
+      GH_TOKEN:                          ${{ secrets.WORKFLOW_GH_TOKEN }}
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3

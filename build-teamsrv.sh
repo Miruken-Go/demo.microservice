@@ -29,3 +29,9 @@ if [[ $(git tag -l "$TAG") ]];
         git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" tag -a $TAG -m "Tagged by build pipeline"
         git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" push origin $TAG
 fi;
+
+gh workflow run deploy-teamsrv.yml                                  \
+  --repo https://github.com/Miruken-Go/demo.microservice.deployment \
+  -f env=dev                                                        \
+  -f instance=ci                                                    \
+  -f tag=$VERSION                                                   \
