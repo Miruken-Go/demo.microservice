@@ -17,6 +17,8 @@ import (
 	"github.com/miruken-go/miruken/config"
 	koanfp "github.com/miruken-go/miruken/config/koanf"
 	"github.com/miruken-go/miruken/logs"
+	"github.com/miruken-go/miruken/security/jwt"
+	"github.com/miruken-go/miruken/security/jwt/jwks"
 	play "github.com/miruken-go/miruken/validates/play"
 	"github.com/rs/zerolog"
 	"net/http"
@@ -51,13 +53,39 @@ func main() {
 				URL: "https://github.com/Miruken-Go/demo.microservice",
 			},
 		},
+		Components: &openapi3.Components{
+			SecuritySchemes: openapi3.SecuritySchemes{
+				"team_auth": &openapi3.SecuritySchemeRef{
+					Value: &openapi3.SecurityScheme{
+						Type: "oauth2",
+						Flows: &openapi3.OAuthFlows{
+							Implicit: &openapi3.OAuthFlow{
+								AuthorizationURL: "https://teamsrvdevcraig.b2clogin.com/teamsrvdevcraig.onmicrosoft.com/b2c_1_signIn/oauth2/v2.0/authorize",
+								TokenURL:         "https://teamsrvdevcraig.b2clogin.com/teamsrvdevcraig.onmicrosoft.com/b2c_1_signIn/oauth2/v2.0/token",
+								Scopes: map[string]string{
+									"https://teamsrvdevcraig.onmicrosoft.com/60f123ab-de4d-4d2f-bb93-b54fddc38ee1/Person.Create": "create a person",
+									"https://teamsrvdevcraig.onmicrosoft.com/60f123ab-de4d-4d2f-bb93-b54fddc38ee1/Team.Create":   "create a team",
+								},
+							},
+						},
+						OpenIdConnectUrl: "https://login.microsoftonline.com/048cf208-778f-496b-b892-9d03d15652cd/v2.0/.well-known/openid-configuration",
+					},
+				},
+			},
+		},
+		Security: openapi3.SecurityRequirements{
+			{"team_auth": []string{
+				"https://teamsrvdevcraig.onmicrosoft.com/60f123ab-de4d-4d2f-bb93-b54fddc38ee1/Person.Create",
+				"https://teamsrvdevcraig.onmicrosoft.com/60f123ab-de4d-4d2f-bb93-b54fddc38ee1/Team.Create",
+			}},
+		},
 	})
 
 	// initialize miruken
 	handler, err := miruken.Setup(
-		team.Feature, stdjson.Feature(),
+		team.Feature, jwt.Feature(), jwks.Feature(),
 		play.Feature(), config.Feature(koanfp.P(k)),
-		logs.Feature(logger), openapiGen).
+		stdjson.Feature(), logs.Feature(logger), openapiGen).
 		Specs(&api.GoPolymorphism{}).
 		Options(stdjson.CamelCase).
 		Handler()
