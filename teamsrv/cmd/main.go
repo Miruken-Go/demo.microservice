@@ -10,6 +10,7 @@ import (
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
+	"github.com/miruken-go/miruken/api/http/httpsrv/middleware"
 	"github.com/miruken-go/miruken/api/http/httpsrv/openapi"
 	"github.com/miruken-go/miruken/api/http/httpsrv/openapi/ui"
 	"github.com/miruken-go/miruken/api/json/stdjson"
@@ -30,7 +31,8 @@ func main() {
 
 	// configuration
 	var k = koanf.New(".")
-	err := k.Load(env.Provider("", "_", nil), nil)
+	err := k.Load(env.Provider("", "__", nil), nil,
+		koanf.WithMergeFunc(koanfp.Merge))
 	if err != nil {
 		logger.Error(err, "error loading configuration")
 		os.Exit(1)
@@ -67,7 +69,7 @@ func main() {
 
 	docs := openapiGen.Docs()
 
-	h := httpsrv.Handler(handler)
+	h := httpsrv.Pipeline(handler, &middleware.Login{Flow: "login.oauth"})
 
 	// configure routes
 	var mux http.ServeMux

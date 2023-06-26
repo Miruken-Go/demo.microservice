@@ -7,6 +7,7 @@ import (
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/args"
 	"github.com/miruken-go/miruken/handles"
+	"github.com/miruken-go/miruken/security/authorizes"
 	"sync/atomic"
 	"time"
 )
@@ -19,7 +20,6 @@ type (
 	}
 )
 
-
 func (h *Handler) Find(
 	_ *handles.It, find queries.FindPeople,
 ) ([]data.Person, error) {
@@ -29,8 +29,11 @@ func (h *Handler) Find(
 }
 
 func (h *Handler) Create(
-	_ *handles.It, create *commands.CreatePerson,
-	_*struct{args.Optional}, parts api.PartContainer,
+	_ *struct {
+		handles.It
+		authorizes.Access
+	}, create *commands.CreatePerson,
+	_ *struct{ args.Optional }, parts api.PartContainer,
 ) (any, error) {
 	person := data.Person{
 		Id:        atomic.AddInt32(&h.nextId, 1),
@@ -43,13 +46,13 @@ func (h *Handler) Create(
 	}
 	var pb api.WritePartsBuilder
 	pb.MainPart(pb.NewPart().
-		 MediaType("application/json").
-		 Metadata(map[string]any {
-		 	"role": []string{"coach", "manager"},
-	     }).
-		 Body(person).
-		 Build()).
-	   AddParts(parts.Parts())
+		MediaType("application/json").
+		Metadata(map[string]any{
+			"role": []string{"coach", "manager"},
+		}).
+		Body(person).
+		Build()).
+		AddParts(parts.Parts())
 	return pb.Build(), nil
 }
 

@@ -1,0 +1,5 @@
+login:
+  oauth:
+    - module: jwt
+      options:
+        jwksurl: https://teamsrvdevcraig.b2clogin.com/teamsrvdevcraig.onmicrosoft.com/b2c_1_signin/discovery/v2.0/keys
