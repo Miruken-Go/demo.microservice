@@ -29,11 +29,11 @@ func (h *Handler) Find(
 }
 
 func (h *Handler) Create(
-	_ *struct {
+	_*struct {
 		handles.It
-		authorizes.Access
-	}, create *commands.CreatePerson,
-	_ *struct{ args.Optional }, parts api.PartContainer,
+		authorizes.Required
+	  }, create *commands.CreatePerson,
+	_*struct{ args.Optional }, parts api.PartContainer,
 ) (any, error) {
 	person := data.Person{
 		Id:        atomic.AddInt32(&h.nextId, 1),

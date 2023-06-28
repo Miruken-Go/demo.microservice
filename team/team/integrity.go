@@ -24,7 +24,7 @@ type (
 // CreateTeamIntegrity
 
 func (i *CreateTeamIntegrity) Constructor(
-	_ *struct{args.Optional}, translator ut.Translator,
+	_*struct{args.Optional}, translator ut.Translator,
 ) error {
 	return i.ConstructWithRules(
 		play.Rules{
@@ -53,7 +53,7 @@ func (i *CreateTeamIntegrity) Constructor(
 // UpdateTeamIntegrity
 
 func (i *UpdateTeamIntegrity) Constructor(
-	_ *struct{args.Optional}, translator ut.Translator,
+	_*struct{args.Optional}, translator ut.Translator,
 ) error {
 	return i.ConstructWithRules(
 		play.Rules{

@@ -23,7 +23,7 @@ type (
 // CreatePersonIntegrity
 
 func (i *CreatePersonIntegrity) Constructor(
-	_ *struct{args.Optional}, translator ut.Translator,
+	_*struct{args.Optional}, translator ut.Translator,
 ) error {
 	return i.ConstructWithRules(
 		play.Rules{
@@ -41,7 +41,7 @@ func (i *CreatePersonIntegrity) Constructor(
 // UpdatePersonIntegrity
 
 func (i *UpdatePersonIntegrity) Constructor(
-	_ *struct{args.Optional}, translator ut.Translator,
+	_*struct{args.Optional}, translator ut.Translator,
 ) error {
 	return i.ConstructWithRules(
 		play.Rules{

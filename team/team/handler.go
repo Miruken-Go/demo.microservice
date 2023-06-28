@@ -8,6 +8,8 @@ import (
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/handles"
 	"github.com/miruken-go/miruken/promise"
+	"github.com/miruken-go/miruken/security/authorizes"
+	"github.com/miruken-go/miruken/security/jwt"
 	"sync/atomic"
 )
 
@@ -28,7 +30,11 @@ func (h *Handler) Find(
 }
 
 func (h *Handler) Create(
-	_ *handles.It, create *commands.CreateTeam,
+	_*struct {
+		handles.It
+		authorizes.Required
+		jwt.Scope `name:"Team.Create"`
+	  }, create *commands.CreateTeam,
 	ctx miruken.HandleContext,
 ) *promise.Promise[data.Team] {
 	composer := ctx.Composer()
