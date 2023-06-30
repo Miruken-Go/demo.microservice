@@ -33,7 +33,7 @@ func main() {
 
 	// configuration
 	var k = koanf.New(".")
-	err := k.Load(env.Provider("", "__", nil), nil,
+	err := k.Load(env.Provider("TeamSrv", "__", nil), nil,
 		koanf.WithMergeFunc(koanfp.Merge))
 	if err != nil {
 		logger.Error(err, "error loading configuration")
@@ -98,7 +98,7 @@ func main() {
 	docs := openapiGen.Docs()
 
 	h := httpsrv.Pipeline(handler,
-		authenticate.WithFlowRef("login.oauth").Bearer())
+		authenticate.WithFlowRef("Login.OAuth").Bearer())
 
 	// configure routes
 	var mux http.ServeMux
