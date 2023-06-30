@@ -97,7 +97,7 @@ func main() {
 
 	docs := openapiGen.Docs()
 
-	h := httpsrv.Pipeline(handler, &middleware.Login{Flow: "login.oauth"})
+	h := httpsrv.Pipeline(handler, &middleware.Login{Flows: []string{"login.oauth"}})
 
 	// configure routes
 	var mux http.ServeMux
