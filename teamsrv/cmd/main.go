@@ -10,7 +10,7 @@ import (
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
-	"github.com/miruken-go/miruken/api/http/httpsrv/middleware"
+	"github.com/miruken-go/miruken/api/http/httpsrv/authenticate"
 	"github.com/miruken-go/miruken/api/http/httpsrv/openapi"
 	"github.com/miruken-go/miruken/api/http/httpsrv/openapi/ui"
 	"github.com/miruken-go/miruken/api/json/stdjson"
@@ -97,7 +97,8 @@ func main() {
 
 	docs := openapiGen.Docs()
 
-	h := httpsrv.Pipeline(handler, &middleware.Login{Flows: []string{"login.oauth"}})
+	h := httpsrv.Pipeline(handler,
+		authenticate.WithFlowRef("login.oauth").Bearer())
 
 	// configure routes
 	var mux http.ServeMux
