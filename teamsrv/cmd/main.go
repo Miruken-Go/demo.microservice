@@ -33,7 +33,8 @@ func main() {
 
 	// configuration
 	var k = koanf.New(".")
-	err := k.Load(env.Provider("TeamSrv", "__", nil), nil,
+	err := k.Load(env.Provider("TeamSrv", "__",
+		func(s string) string { return s[9:] }), nil,
 		koanf.WithMergeFunc(koanfp.Merge))
 	if err != nil {
 		logger.Error(err, "error loading configuration")
