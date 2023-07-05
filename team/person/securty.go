@@ -8,9 +8,7 @@ import (
 	"github.com/miruken-go/miruken/security/principal"
 )
 
-type (
-	AccessPolicy struct {}
-)
+type AccessPolicy struct {}
 
 
 func (p *AccessPolicy) AuthorizeCreate(

@@ -33,8 +33,7 @@ func main() {
 
 	// configuration
 	var k = koanf.New(".")
-	err := k.Load(env.Provider("TeamSrv", "__",
-		func(s string) string { return s[9:] }), nil,
+	err := k.Load(env.Provider("", "__", nil), nil,
 		koanf.WithMergeFunc(koanfp.Merge))
 	if err != nil {
 		logger.Error(err, "error loading configuration")
@@ -111,7 +110,11 @@ func main() {
 	mux.Handle("/", ui.Handler("", docs))
 
 	// start http server
-	err = http.ListenAndServe(":8080", &mux)
+	port := k.String("App.Port")
+	if port == "" {
+		port = "8080"
+	}
+	err = http.ListenAndServe(":"+port, &mux)
 
 	if errors.Is(err, http.ErrServerClosed) {
 		logger.Info("server closed")
