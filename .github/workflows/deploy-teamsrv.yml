@@ -1,0 +1,42 @@
+name: Deploy teamsrv
+
+on: 
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Docker image tag of the teamsrv'
+        required: true
+        type: string
+      env:
+        type: choice
+        description: Environment
+        options: 
+        - dev 
+        - qa
+        - staging
+        - demo
+        - prod
+      instance:
+        description: 'Optional unique instance in an environment'
+        default: ''
+        required: false
+        type: string
+
+jobs:
+  deploy-teamsrv:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/miruken-go/demo.microservice.deployment:1686419359
+      env:
+        tenantId:                       ${{ vars.TENANT_ID }}
+        subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
+        deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
+        deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
+        env:                            ${{ inputs.env }}
+        instance:                       ${{ inputs.instance }}
+        tag:                            ${{ inputs.tag }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: deploy-teamsrv
+      run:  node ./deploy/src/deployTeamsrv.js

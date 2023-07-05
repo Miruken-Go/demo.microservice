@@ -1,0 +1,20 @@
+name: Deploy Shared Environment 
+
+on: workflow_dispatch
+
+jobs:
+  containerized_job:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/miruken-go/demo.microservice.deployment:1686419359
+      env:
+        tenantId:                       ${{ vars.TENANT_ID }}
+        subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
+        deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
+        deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
+        env:                            shared
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: deploySharedEnvironment
+      run:  node ./deployment/src/deploySharedEnvironment.js 

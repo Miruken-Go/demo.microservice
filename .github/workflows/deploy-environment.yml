@@ -1,0 +1,37 @@
+name: Deploy Environment 
+
+on: 
+  workflow_dispatch:
+    inputs:
+      env:
+        type: choice
+        description: Environment
+        options: 
+        - dev 
+        - qa
+        - staging
+        - demo
+        - prod
+      instance:
+        description: 'Optional unique instance in an environment'
+        default: ''
+        required: false
+        type: string
+
+jobs:
+  containerized_job:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/miruken-go/demo.microservice.deployment:1686419359
+      env:
+        tenantId:                       ${{ vars.TENANT_ID }}
+        subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
+        deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
+        deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
+        env:                            ${{ inputs.env }}
+        instance:                       ${{ inputs.instance }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: deployEnvironment
+      run:  node ./deployment/src/deployEnvironment.js 
