@@ -38,13 +38,5 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: debug4
-      run:  node --version
-    - name: debug3
-      run:  az --version
-    - name: debug2
-      run:  cat /etc/os-release
-    - name: debug1
-      run:  az containerapp --help    
     - name: deploy-teamsrv
       run:  node ./deployment/src/deployTeamsrv.js
