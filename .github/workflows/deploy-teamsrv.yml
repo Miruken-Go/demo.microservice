@@ -39,4 +39,4 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: deploy-teamsrv
-      run:  node ./deploy/src/deployTeamsrv.js
+      run:  node ./deployment/src/deployTeamsrv.js
