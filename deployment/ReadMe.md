@@ -54,11 +54,11 @@ other pipeline files with the latest tag.
 
 Build the Docker Container
 
-    docker build -t demo.microservice.deployment:local .
+    docker build -t demo.microservice.build:local .
 
 Run the Docker Container interactively
 
-    docker run -it -v $(pwd):/build demo.microservice.deployment:local
+    docker run -it -v $(pwd):/build demo.microservice.build:local
 
 Execute the build
 
