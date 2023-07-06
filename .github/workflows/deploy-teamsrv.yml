@@ -45,6 +45,6 @@ jobs:
     - name: debug2
       run:  cat /etc/os-release
     - name: debug1
-      run:  HOME=/root az containerapp --help    
+      run:  az containerapp --help    
     - name: deploy-teamsrv
-      run:  HOME=/root node ./deployment/src/deployTeamsrv.js
+      run:  node ./deployment/src/deployTeamsrv.js
