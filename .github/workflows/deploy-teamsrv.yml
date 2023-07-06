@@ -26,7 +26,7 @@ jobs:
   deploy-teamsrv:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/miruken-go/demo.microservice.build:1688582583
+      image: ghcr.io/miruken-go/demo.microservice.build:1688660274
       env:
         tenantId:                       ${{ vars.TENANT_ID }}
         subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
