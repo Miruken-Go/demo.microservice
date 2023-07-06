@@ -31,7 +31,6 @@ if [[ $(git tag -l "$TAG") ]];
 fi;
 
 gh workflow run deploy-teamsrv.yml                                  \
-  --repo https://github.com/Miruken-Go/demo.microservice.deployment \
   -f env=dev                                                        \
   -f instance=ci                                                    \
   -f tag=$VERSION                                                   \
