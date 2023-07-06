@@ -8,7 +8,10 @@ RUN apt-get update
 # Check and see if later versions can run without it
 RUN apt-get -y install python3-pip 
 
-RUN az extension add --name containerapp --upgrade
+# Need to install extensions in a system folder
+# By default they do into the $HOME folder which is /root
+# Irritatingly Github Actions overrides $HOME when running the container
+RUN az extension add --name containerapp --system
 
 CMD ["/bin/bash"]
 
