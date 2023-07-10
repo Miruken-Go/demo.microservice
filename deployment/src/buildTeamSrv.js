@@ -26,7 +26,7 @@ async function main() {
                 --build-arg app_source_url=${appSourceUrl} \
                 --build-arg app_version=${version}         \
                 -t ${imageName}                            \
-                /build/demo.microservice/teamsrv           \
+                teamsrv                                    \
         `)
         await bash.execute(`
             az acr login -n ${config.containerRepositoryName}
