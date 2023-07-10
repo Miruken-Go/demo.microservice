@@ -22,7 +22,7 @@ jobs:
   containerized_job:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/miruken-go/demo.microservice.build:1688663645
+      image: ghcr.io/miruken-go/demo.microservice.build:1689031691
       env:
         tenantId:                       ${{ vars.TENANT_ID }}
         subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}

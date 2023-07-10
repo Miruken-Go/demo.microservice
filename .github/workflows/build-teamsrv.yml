@@ -16,11 +16,15 @@ permissions:
 jobs:
   build-pipeline:
     runs-on: ubuntu-latest
-    env:
-      TENANT_ID:                         ${{ vars.TENANT_ID }}
-      DEPLOYMENT_PIPELINE_CLIENT_ID:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
-      DEPLOYMENT_PIPELINE_CLIENT_SECRET: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
-      GH_TOKEN:                          ${{ secrets.WORKFLOW_GH_TOKEN }}
+    container:
+      image: ghcr.io/miruken-go/demo.microservice.build:1689031691
+      env:
+        tenantId:                       ${{ vars.TENANT_ID }}
+        subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
+        deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
+        deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
+        env:                            ${{ inputs.env }}
+        ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
 
     steps:
     - name: Checkout repository
@@ -28,3 +32,4 @@ jobs:
 
     - name: Run build
       run: ./build-teamsrv.sh
+      run:  node ./deployment/src/buildTeamSrv.js 
