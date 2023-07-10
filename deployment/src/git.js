@@ -2,7 +2,7 @@ const bash    = require('./bash')
 const config  = require('./config');
 
 async function tagAndPush(tag) { 
-    config.requiredSecrets(['GH_TOKEN'])
+    config.requiredSecrets(['ghToken'])
 
     const existingTag = await bash.execute(`
         git tag -l ${tag}
@@ -12,9 +12,9 @@ async function tagAndPush(tag) {
     } else {
         console.log("Tagging the release")
         await bash.execute(`
-            git config --global url."https://api:$GH_TOKEN@github.com/".insteadOf "https://github.com/"
-            git config --global url."https://ssh:$GH_TOKEN@github.com/".insteadOf "ssh://git@github.com/"
-            git config --global url."https://git:$GH_TOKEN@github.com/".insteadOf "git@github.com:"
+            git config --global url."https://api:$ghToken@github.com/".insteadOf "https://github.com/"
+            git config --global url."https://ssh:$ghToken@github.com/".insteadOf "ssh://git@github.com/"
+            git config --global url."https://git:$ghToken@github.com/".insteadOf "git@github.com:"
             git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" tag -a ${tag} -m "Tagged by build pipeline"
             git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" push origin ${tag}
         `)

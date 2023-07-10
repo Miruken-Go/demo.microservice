@@ -7,7 +7,7 @@ const git     = require('./git');
 async function main() {
     try {
         console.log("Building teamsrv")
-        config.requiredSecrets(['GH_TOKEN'])
+        config.requiredSecrets(['ghToken'])
         logging.printConfiguration(config)
         await az.login()
 
