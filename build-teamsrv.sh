@@ -1,6 +1,7 @@
 NAME=teamsrv
 VERSION="v$(date +%s)"
 IMAGE_NAME="${NAME}shared.azurecr.io/${NAME}:$VERSION"; echo $IMAGE_NAME
+TAG="$NAME/$VERSION"
 
 echo "VERSION: $VERSION"
 echo "IMAGE_NAME: $IMAGE_NAME"
@@ -19,7 +20,6 @@ if [[ $? -gt 0 ]]; then
   exit 1; 
 fi
 
-TAG="$NAME/$VERSION"
 echo "TAG: $TAG"
 if [[ $(git tag -l "$TAG") ]];
     then
@@ -30,7 +30,7 @@ if [[ $(git tag -l "$TAG") ]];
         git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" push origin $TAG
 fi;
 
-gh workflow run deploy-teamsrv.yml                                  \
-  -f env=dev                                                        \
-  -f instance=ci                                                    \
-  -f tag=$VERSION                                                   \
+gh workflow run deploy-teamsrv.yml \
+  -f env=dev                       \
+  -f instance=ci                   \
+  -f tag=$VERSION                  \

@@ -1,7 +1,10 @@
 const env = process.env.env
 if (!env) throw "Environment variable required: [env]"
 
-const appName  = 'teamsrv'.toLowerCase()
+const appName         = 'teamsrv'.toLowerCase() //must be lowercase
+const repository      = 'https://github.com/Miruken-Go/demo.microservice'
+const defaultLocation = 'CentralUs'
+
 const instance = process.env.instance
 const prefix   = (instance) 
     ? `${appName}-${env}-${instance}`
@@ -30,8 +33,9 @@ const config = {
     sharedResourceGroup: `${appName}-shared-rg`,
     containerRepositoryName,
     imageName,
-    location:      process.env.location || 'CentralUs',
-    secrets:       {},
+    location: process.env.location || defaultLocation,
+    repository,
+    secrets: {},
 
     requiredSecrets: function (names) {
         names.forEach(function(name) {
