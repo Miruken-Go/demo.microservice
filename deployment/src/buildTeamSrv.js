@@ -2,41 +2,31 @@ const az      = require('./az');
 const bash    = require('./bash')
 const logging = require('./logging');
 const config  = require('./config');
+const git     = require('./git');
 
 async function main() {
     try {
         console.log("Building teamsrv")
-        config.requiredNonSecrets([
-        ])
+        config.requiredSecrets(['GH_TOKEN'])
         logging.printConfiguration(config)
         await az.login()
 
-        // if [[ $(git tag -l "$TAG") ]];
-        //     then
-        //         echo "Tag already created"
-        //     else
-        //         echo "Tagging the release"
-        //         git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" tag -a $TAG -m "Tagged by build pipeline"
-        //         git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" push origin $TAG
-        // fi;
+        const version      = `v${Math.floor(Date.now()/1000)}`.trim()
+        const imageName    = `${config.imageName}:${version}`
+        const tag          = `${config.appName}/${version}`
+        const appSourceUrl = `${config.repository}/releases/tag/${tag}`
 
-        // gh workflow run deploy-teamsrv.yml \
-        // -f env=dev                       \
-        // -f instance=ci                   \
-        // -f tag=$VERSION                  \
-
-        //Create the new revision
-        const name      = config.appName
-        const version   = `v${Math.floor(Date.now()/1000)}`
-        const imageName = `${config.imageName}:${version}`
-        const tag       = `${config.appName}/${version}`
-
-        console.log(`version:   ${version}`);
-        console.log(`imageName: ${imageName}`);
-        console.log(`tag:       ${tag}`);
+        console.log(`version:      [${version}]`)
+        console.log(`imageName:    [${imageName}]`)
+        console.log(`tag:          [${tag}]`)
+        console.log(`appSourceUrl: [${appSourceUrl}]`)
 
         await bash.execute(`
-            docker build --build-arg app_version=${version} -t ${imageName} /build/demo.microservice/teamsrv
+            docker build                                   \
+                --build-arg app_source_url=${appSourceUrl} \
+                --build-arg app_version=${version}         \
+                -t ${imageName}                            \
+                /build/demo.microservice/teamsrv           \
         `)
         await bash.execute(`
             az acr login -n ${config.containerRepositoryName}
@@ -45,29 +35,14 @@ async function main() {
             docker push ${imageName}
         `)
 
-        await bash.execute(`
-            pwd; ls -la
-        `)
+        await git.tagAndPush(tag)
 
-        const existingTag = await bash.execute(`
-            git tag -l ${tag}
+        await bash.execute(`
+            gh workflow run deploy-teamsrv.yml \
+                -f env=dev                     \
+                -f instance=ci                 \
+                -f tag=${version}              \
         `)
-        if (existingTag === tag) {
-            console.log("Tag already created")
-        } else {
-            console.log("Tagging the release")
-            await bash.execute(`
-                git config --global url."https://api:$GH_TOKEN@github.com/".insteadOf "https://github.com/"
-                git config --global url."https://ssh:$GH_TOKEN@github.com/".insteadOf "ssh://git@github.com/"
-                git config --global url."https://git:$GH_TOKEN@github.com/".insteadOf "git@github.com:"
-            `)
-            await bash.execute(`
-                git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" tag -a ${tag} -m "Tagged by build pipeline"
-            `)
-            await bash.execute(`
-                git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" push origin ${tag}
-            `)
-        }
 
         console.log("Built teamsrv")
     } catch (error) {
