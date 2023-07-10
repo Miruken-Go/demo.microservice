@@ -44,7 +44,7 @@ func main() {
 	openapiGen := openapi.Feature(openapi3.T{
 		Info: &openapi3.Info{
 			Title:       "Team Api",
-			Description: "REST Api for managing Teams " + k.String("App.Version"),
+			Description: "REST Api for managing Teams ",
 			License: &openapi3.License{
 				Name: "MIT",
 				URL:  "https://opensource.org/licenses/MIT",
@@ -52,6 +52,10 @@ func main() {
 			Contact: &openapi3.Contact{
 				URL: "https://github.com/Miruken-Go/demo.microservice",
 			},
+		},
+		ExternalDocs: &openapi3.ExternalDocs {
+			Description: "teamsrv/" + k.String("App.Version"),
+			URL: k.String("App.Source.Url"),
 		},
 		Components: &openapi3.Components{
 			SecuritySchemes: openapi3.SecuritySchemes{
