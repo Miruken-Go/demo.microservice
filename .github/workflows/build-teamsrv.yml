@@ -26,6 +26,7 @@ jobs:
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
         env:                            notused
         ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
+        GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
 
     steps:
     - name: Checkout repository
