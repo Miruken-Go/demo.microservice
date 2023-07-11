@@ -5,6 +5,7 @@ async function tagAndPush(tag) {
     config.requiredSecrets(['ghToken'])
 
     const existingTag = await bash.execute(`
+        git config --global --add safe.directory $(pwd)
         git tag -l ${tag}
     `)
     if (existingTag === tag) {
@@ -15,7 +16,6 @@ async function tagAndPush(tag) {
             git config --global url."https://api:$ghToken@github.com/".insteadOf "https://github.com/"
             git config --global url."https://ssh:$ghToken@github.com/".insteadOf "ssh://git@github.com/"
             git config --global url."https://git:$ghToken@github.com/".insteadOf "git@github.com:"
-            git config --global --add safe.directory $(pwd)
             git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" tag -a ${tag} -m "Tagged by build pipeline"
             git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" push origin ${tag}
         `)
