@@ -9,7 +9,7 @@ async function execute(cmd, suppressLog) {
             console.log('bash stderr:', stderr);
         }
     }
-    return stdout;
+    return stdout.trim();
 }
 
 async function json(cmd, suppressLog) { 

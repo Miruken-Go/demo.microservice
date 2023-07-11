@@ -1,13 +1,20 @@
 const bash    = require('./bash')
 const config  = require('./config');
+const logging = require('./logging');
 
 async function tagAndPush(tag) { 
+    logging.header("Tagging the commit")
+
     config.requiredSecrets(['ghToken'])
 
     const existingTag = await bash.execute(`
         git config --global --add safe.directory $(pwd)
         git tag -l ${tag}
     `)
+
+    console.log(`existingTag: [${existingTag}]`)
+    console.log(`tag: [${tag}]`)
+
     if (existingTag === tag) {
         console.log("Tag already created")
     } else {

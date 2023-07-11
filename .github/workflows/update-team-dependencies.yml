@@ -1,0 +1,36 @@
+name: build teamsrv
+
+on:
+  workflow_dispatch:
+    inputs:
+      mirukenVersion:
+        description: 'version of miruken'
+        required: true
+        type: string
+      teamapiVersion:
+        description: 'version of teamapi'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-pipeline:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/miruken-go/demo.microservice.build:1689031691
+      env:
+        tenantId:                       ${{ vars.TENANT_ID }}
+        subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
+        deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
+        deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
+        env:                            notused
+        ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
+        GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Run build
+      run:  echo 'Figure out what needs to be done'
