@@ -14,8 +14,6 @@ async function main() {
         logging.header("Updating teamapi dependencies")
 
         await bash.execute(`
-            pwd
-            ls -la
             docker run --rm -v $(pwd):/go/src --workdir=/go/src/teamapi golang:1.20 ls -la
         `)
         
