@@ -4,7 +4,7 @@ const logging = require('./logging');
 
 console.log("Configuring git")
 config.requiredSecrets(['ghToken'])
-await bash.execute(`
+bash.execute(`
     git config --global --add safe.directory $(pwd)
     git config --global url."https://api:$ghToken@github.com/".insteadOf "https://github.com/"
     git config --global url."https://ssh:$ghToken@github.com/".insteadOf "ssh://git@github.com/"
