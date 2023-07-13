@@ -22,7 +22,7 @@ async function main() {
 
         await bash.execute(`
             gh workflow run update-team-dependencies.yml \
-                -f mirukenVersion=${mirukenVersion}      \
+                -f mirukenVersion=${config.mirukenVersion}      \
                 -f teamapiVersion=${version}             \
         `)
 
