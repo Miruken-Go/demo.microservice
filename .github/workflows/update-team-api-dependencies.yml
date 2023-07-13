@@ -1,4 +1,4 @@
-name: update team api dependencies
+name: update teamapi dependencies
 
 on:
   workflow_dispatch:
