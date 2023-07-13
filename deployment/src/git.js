@@ -40,7 +40,7 @@ async function tagAndPush(tag) {
     }
 }
 
-async function commit(message) { 
+async function commitAll(message) { 
     logging.header("Commiting Changes")
 
     await bash.execute(`
@@ -51,14 +51,14 @@ async function commit(message) {
 
 async function push() { 
     logging.header("Pushing branch")
-
+    await configureForPush()
     await bash.execute(`
-        git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" git push origin
+        git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" push origin
     `)
 }
 
 module.exports = {
-    commit,
+    commitAll,
     push,
     tagAndPush
 }

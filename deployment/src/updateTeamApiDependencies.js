@@ -17,7 +17,7 @@ async function main() {
             docker run --rm -v $(pwd):/go/src --workdir=/go/src/teamapi golang:1.20 go get github.com/miruken-go/miruken@${config.mirukenVersion}
         `)
 
-        await git.commit(`Updated miruken to ${config.mirukenVersion}`)
+        await git.commitAll(`Updated miruken to ${config.mirukenVersion}`)
         await git.push();
 
         // await bash.execute(`
