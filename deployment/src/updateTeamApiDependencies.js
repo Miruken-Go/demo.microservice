@@ -20,11 +20,11 @@ async function main() {
         await git.commitAll(`Updated miruken to ${config.mirukenVersion}`)
         await git.push();
 
-        await bash.execute(`
-            gh workflow run update-team-dependencies.yml \
-                -f mirukenVersion=${config.mirukenVersion}      \
-                -f teamapiVersion=${version}             \
-        `)
+        // await bash.execute(`
+        //     gh workflow run update-team-dependencies.yml \
+        //         -f mirukenVersion=${config.mirukenVersion}      \
+        //         -f teamapiVersion=${version}             \
+        // `)
 
         console.log("Updated teamapi dependencies")
     } catch (error) {
