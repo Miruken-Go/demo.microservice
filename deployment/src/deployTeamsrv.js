@@ -67,7 +67,7 @@ async function main() {
     } catch (error) {
         process.exitCode = 1
         console.log(error)
-        console.log("Deployment Failed")
+        console.log("Script Failed")
     }
 }
 

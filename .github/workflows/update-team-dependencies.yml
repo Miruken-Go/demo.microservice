@@ -28,9 +28,11 @@ jobs:
         env:                            notused
         ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
         GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
+        mirukenVersion:                 ${{ inputs.mirukenVersion }}
+        teamapiVersion:                 ${{ inputs.teamapiVersion }}
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Run build
-      run:  echo 'Figure out what needs to be done'
+      run:  node ./deployment/src/updateTeamDependencies.js 

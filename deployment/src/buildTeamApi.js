@@ -12,7 +12,8 @@ async function main() {
         logging.header("Building teamapi")
 
         await bash.execute(`
-            docker run --rm -v $(pwd):/go/src --workdir=/go/src/teamapi golang:1.20 go test ./...
+            cd teamapi
+            go test ./...
         `)
 
         const rawVersion = await bash.execute(`
@@ -28,11 +29,8 @@ async function main() {
         await git.tagAndPush(tag)
 
         const mirukenVersion = await bash.execute(`
-            docker run                                                                 \
-                -v $(pwd):/go/src                                                      \
-                --workdir=/go/src/teamapi                                              \
-                golang:1.20                                                            \
-                go list -m all | grep github.com/miruken-go/miruken | awk '{print $2}' \
+            cd teamapi
+            go list -m all | grep github.com/miruken-go/miruken | awk '{print $2}' \
         `)
         console.log(`mirukenVersion: [${mirukenVersion}]`)
       
@@ -46,7 +44,7 @@ async function main() {
     } catch (error) {
         process.exitCode = 1
         console.log(error)
-        console.log("Deployment Failed")
+        console.log("Script Failed")
     }
 }
 

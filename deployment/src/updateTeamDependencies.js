@@ -5,26 +5,26 @@ const git     = require('./git');
 
 async function main() {
     try {
-        config.requiredNonSecrets(['mirukenVersion'])
+        config.requiredNonSecrets(['mirukenVersion', 'teamapiVersion'])
         config.requiredSecrets(['ghToken'])
 
         logging.printConfiguration(config)
 
-        logging.header("Updating teamapi dependencies")
+        logging.header("Updating team dependencies")
 
         await bash.execute(`
             cd teamapi
-            go get github.com/miruken-go/miruken@${config.mirukenVersion}
+            go get github.com/miruken-go/miruken@${config.mirukenVersion} github.com/miruken-go/demo.microservice/teamapi@${config.teamapiVersion}
         `)
 
-        await git.commitAll(`Updated miruken to ${config.mirukenVersion}`)
+        await git.commitAll(`Updated miruken to ${config.mirukenVersion} and teamapi to ${config.teamapiVersion}`)
         await git.push();
 
         await bash.execute(`
-            gh workflow run build-teamapi.yml
+            gh workflow run build-team.yml
         `)
 
-        console.log("Updated teamapi dependencies")
+        console.log("Updated team dependencies")
     } catch (error) {
         process.exitCode = 1
         console.log(error)
