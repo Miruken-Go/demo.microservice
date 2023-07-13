@@ -6,8 +6,8 @@ let configured = false;
 async function configureForPush(tag) { 
     if (!configured) {
         console.log("Configuring git")
+        config.requiredSecrets(['ghToken'])
         await bash.execute(`
-            config.requiredSecrets(['ghToken'])
             git config --global url."https://api:$ghToken@github.com/".insteadOf "https://github.com/"
             git config --global url."https://ssh:$ghToken@github.com/".insteadOf "ssh://git@github.com/"
             git config --global url."https://git:$ghToken@github.com/".insteadOf "git@github.com:"
