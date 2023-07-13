@@ -14,10 +14,9 @@ async function main() {
         logging.header("Updating teamapi dependencies")
 
         await bash.execute(`
-            docker run --rm -v $(pwd):/go/src --workdir=/go/src/teamapi golang:1.20 pwd
+           docker run --rm -v $(pwd):/go/src --workdir=/go/src/teamapi golang:1.20 go get github.com/miruken-go/miruken@${config.mirukenVersion}
         `)
         
-        //    docker run --rm -v $(pwd):/go/src --workdir=/go/src/teamapi golang:1.20 go get github.com/miruken-go/miruken@${config.mirukenVersion}
 
         //await git.commitAll(`Updated miruken to ${config.mirukenVersion}`)
         //await git.push();

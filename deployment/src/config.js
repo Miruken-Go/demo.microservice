@@ -39,7 +39,7 @@ const config = {
 
     requiredSecrets: function (names) {
         names.forEach(function(name) {
-            const variable = process.env[name]
+            const variable = process.env[name].trim()
             if (!variable){
                 throw `Environment variable secret required: ${name}`
             }
@@ -48,7 +48,7 @@ const config = {
     },
     requiredNonSecrets: function (names) {
         names.forEach(function(name) {
-            const variable = process.env[name]
+            const variable = process.env[name].trim()
             if (!variable){
                 throw `Environment variable required: ${name}`
             }
