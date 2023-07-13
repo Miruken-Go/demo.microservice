@@ -1,4 +1,4 @@
-name: build teamsrv
+name: update team dependencies
 
 on:
   workflow_dispatch:
