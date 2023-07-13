@@ -2,25 +2,17 @@ const bash    = require('./bash')
 const config  = require('./config');
 const logging = require('./logging');
 
-let configured = false;
-async function configureForPush(tag) { 
-    if (!configured) {
-        console.log("Configuring git")
-        config.requiredSecrets(['ghToken'])
-        await bash.execute(`
-            git config --global --add safe.directory $(pwd)
-            git config --global url."https://api:$ghToken@github.com/".insteadOf "https://github.com/"
-            git config --global url."https://ssh:$ghToken@github.com/".insteadOf "ssh://git@github.com/"
-            git config --global url."https://git:$ghToken@github.com/".insteadOf "git@github.com:"
-        `)
-        configured = true
-    }
-}
+console.log("Configuring git")
+config.requiredSecrets(['ghToken'])
+await bash.execute(`
+    git config --global --add safe.directory $(pwd)
+    git config --global url."https://api:$ghToken@github.com/".insteadOf "https://github.com/"
+    git config --global url."https://ssh:$ghToken@github.com/".insteadOf "ssh://git@github.com/"
+    git config --global url."https://git:$ghToken@github.com/".insteadOf "git@github.com:"
+`)
 
 async function tagAndPush(tag) { 
     logging.header("Tagging the commit")
-
-    await configureForPush()
 
     const existingTag = await bash.execute(`
         git tag -l ${tag}
@@ -51,7 +43,6 @@ async function commitAll(message) {
 
 async function push() { 
     logging.header("Pushing branch")
-    await configureForPush()
     await bash.execute(`
         git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" push origin
     `)
