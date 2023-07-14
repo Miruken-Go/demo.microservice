@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/miruken-go/demo.microservice.build:1689281138
-      options: --privileged
 
     steps:
     - name: Checkout repository
@@ -28,6 +27,6 @@ jobs:
       run:  ls -la 
 
     - name: docker ls -la
-      run:  docker run --rm -v "/home/runner/work/demo.microservice/demo.microservice":/foo -v "/var/run/docker.sock":"/var/run/docker.sock" --workdir /foo --privileged alpine:latest ls -la /foo
+      run:  docker run --rm -v "/home/runner/work/demo.microservice/demo.microservice":/foo -v "/var/run/docker.sock":"/var/run/docker.sock" alpine:latest ls -la /foo
 
 
