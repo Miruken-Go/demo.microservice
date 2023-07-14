@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/miruken-go/demo.microservice.build:1689281138
-      volumes:
-        - $(pwd):$(pwd)
       env:
         tenantId:                       ${{ vars.TENANT_ID }}
         subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
