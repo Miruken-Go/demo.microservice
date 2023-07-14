@@ -32,4 +32,7 @@ jobs:
     - name: docker ls -la without docker.sock
       run:  docker run --rm -v "/home/runner/work/demo.microservice/demo.microservice":/foo  alpine:latest ls -la /foo
 
+    - name: env
+      run:  docker run --rm -v "/home/runner/work/demo.microservice/demo.microservice":/foo  alpine:latest env
+
 
