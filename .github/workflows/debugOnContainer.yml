@@ -14,7 +14,7 @@ jobs:
     container:
       image: ghcr.io/miruken-go/demo.microservice.build:1689281138
       env:
-        REPO: ${{ github.workspace }}
+        REPO_PATH: ${{ github.workspace }}
 
     steps:
     - name: Checkout repository
@@ -28,16 +28,17 @@ jobs:
     - name: ls
       run:  ls -la 
 
-    - name: echo workspace
-      run:  echo $REPO
+    - name: env
+      run:  env
+
+    - name: echo $REPO_PATH
+      run:  echo $REPO_PATH
 
     - name: docker ls -la
-      run:  docker run --rm -v $GITHUB_WORKSPACE:/foo -v "/var/run/docker.sock":"/var/run/docker.sock" alpine:latest ls -la /foo
+      run:  docker run --rm -v $REPO_PATH:/foo -v "/var/run/docker.sock":"/var/run/docker.sock" alpine:latest ls -la /foo
 
     - name: docker ls -la without docker.sock
-      run:  docker run --rm -v $GITHUB_WORKSPACE:/foo  alpine:latest ls -la /foo
+      run:  docker run --rm -v $REPO_PATH:/foo  alpine:latest ls -la /foo
 
-    - name: env
-      run:  docker run --rm -v $GITHUB_WORKSPACE:/foo  alpine:latest env
 
 
