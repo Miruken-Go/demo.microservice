@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/miruken-go/demo.microservice.build:1689281138
+      env:
+        GITHUB_WORKSPACE: ${{ vars.GITHUB_WORKSPACE }}
 
     steps:
     - name: Checkout repository
@@ -27,12 +29,12 @@ jobs:
       run:  ls -la 
 
     - name: docker ls -la
-      run:  docker run --rm -v "/home/runner/work/demo.microservice/demo.microservice":/foo -v "/var/run/docker.sock":"/var/run/docker.sock" alpine:latest ls -la /foo
+      run:  docker run --rm -v $GITHUB_WORKSPACE:/foo -v "/var/run/docker.sock":"/var/run/docker.sock" alpine:latest ls -la /foo
 
     - name: docker ls -la without docker.sock
-      run:  docker run --rm -v "/home/runner/work/demo.microservice/demo.microservice":/foo  alpine:latest ls -la /foo
+      run:  docker run --rm -v $GITHUB_WORKSPACE:/foo  alpine:latest ls -la /foo
 
     - name: env
-      run:  docker run --rm -v "/home/runner/work/demo.microservice/demo.microservice":/foo  alpine:latest env
+      run:  docker run --rm -v $GITHUB_WORKSPACE:/foo  alpine:latest env
 
 
