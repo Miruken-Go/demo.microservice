@@ -28,6 +28,6 @@ jobs:
       run:  ls -la 
 
     - name: docker ls -la
-      run:  docker run --rm -v $(pwd):$(pwd) -v "/var/run/docker.sock":"/var/run/docker.sock" --workdir $(pwd) --privileged alpine:latest ls -la
+      run:  docker run --rm -v "/home/runner/work":/foo -v "/var/run/docker.sock":"/var/run/docker.sock" --workdir /foo --privileged alpine:latest ls -la /foo
 
 
