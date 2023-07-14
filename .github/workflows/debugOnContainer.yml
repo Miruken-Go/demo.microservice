@@ -14,7 +14,7 @@ jobs:
     container:
       image: ghcr.io/miruken-go/demo.microservice.build:1689281138
       env:
-        GITHUB_WORKSPACE: $GITHUB_WORKSPACE
+        GITHUB_WORKSPACE: ${{ github.workspace }}
 
     steps:
     - name: Checkout repository
