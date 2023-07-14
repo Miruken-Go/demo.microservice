@@ -29,7 +29,7 @@ jobs:
       run:  ls -la 
 
     - name: echo workspace
-      run:  echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+      run:  echo $GITHUB_WORKSPACE
 
     - name: docker ls -la
       run:  docker run --rm -v $GITHUB_WORKSPACE:/foo -v "/var/run/docker.sock":"/var/run/docker.sock" alpine:latest ls -la /foo
