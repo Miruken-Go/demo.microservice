@@ -35,5 +35,5 @@ jobs:
       run:  docker run --rm -v $(pwd):$(pwd) -v /var/run/docker.sock:/var/run/docker.sock --workdir $(pwd) alpine:latest pwd
     - name: docker ls root 
       run:  docker run --rm -v $(pwd):$(pwd) -v /var/run/docker.sock:/var/run/docker.sock --workdir $(pwd) alpine:latest ls -la /
-    - name: docker ls
-      run:  docker run --rm -v $(pwd):$(pwd) -v /var/run/docker.sock:/var/run/docker.sock --workdir $(pwd) alpine:latest ls -la
+    - name: docker ls /foo
+      run:  docker run --rm -v $(pwd):/foo -v /var/run/docker.sock:/var/run/docker.sock  alpine:latest ls -la /foo
