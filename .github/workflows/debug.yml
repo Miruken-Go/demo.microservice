@@ -2,6 +2,8 @@ name: build teamapi
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ "debug"]
 
 permissions:
   contents: write
@@ -26,4 +28,4 @@ jobs:
       with: 
         fetch-depth: 0
     - name: Run buildTeamApi.js
-      run:  node ./deployment/src/debug.js 
+      run:  node ./deployment/src/buildTeamApi.js 
