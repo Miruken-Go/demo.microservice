@@ -28,4 +28,4 @@ jobs:
       with: 
         fetch-depth: 0
     - name: Debug 
-      run:  docker run --rm alpine:latest ls -la
+      run:  docker run --rm -v $(pwd):$(pwd) --workdir $(pwd) alpine:latest ls -la
