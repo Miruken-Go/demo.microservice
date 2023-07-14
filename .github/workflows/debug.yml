@@ -28,6 +28,4 @@ jobs:
       with: 
         fetch-depth: 0
     - name: Debug 
-      run:  docker run --rm -v "$(pwd):/repo" gittools/gitversion:5.12.0-alpine.3.14-6.0 /repo /showvariable SemVer /overrideconfig tag-prefix=teamapi/v
-    - name: Run buildTeamApi.js
-      run:  node ./deployment/src/debug.js 
+      run:  docker run --rm alpine:latest ls -la
