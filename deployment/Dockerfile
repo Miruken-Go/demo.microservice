@@ -50,4 +50,6 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/g
 RUN apt update
 RUN apt install gh -y
 
-CMD ["/bin/bash"]
+COPY docker-entrypoint.sh docker-entrypoint.sh
+
+CMD ["./docker-entrypoint.sh"]
