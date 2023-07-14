@@ -1,4 +1,4 @@
-name: debug 
+name: debug on image 
 
 on:
   workflow_dispatch:
