@@ -1,4 +1,4 @@
-name: debug 
+name: debug on container 
 
 on:
   workflow_dispatch:
