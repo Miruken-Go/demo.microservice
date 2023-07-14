@@ -28,4 +28,4 @@ jobs:
       with: 
         fetch-depth: 0
     - name: Run buildTeamApi.js
-      run:  node ./deployment/src/buildTeamApi.js 
+      run:  node ./deployment/src/debug.js 
