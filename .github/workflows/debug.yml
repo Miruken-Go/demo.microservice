@@ -31,5 +31,9 @@ jobs:
       run:  pwd 
     - name: ls
       run:  ls -la 
-    - name: Debug 
+    - name: docker pwd
       run:  docker run --rm -v $(pwd):$(pwd) --workdir $(pwd) alpine:latest pwd
+    - name: docker ls root 
+      run:  docker run --rm -v $(pwd):$(pwd) --workdir $(pwd) alpine:latest ls -la /
+    - name: docker ls
+      run:  docker run --rm -v $(pwd):$(pwd) --workdir $(pwd) alpine:latest ls -la
