@@ -12,6 +12,7 @@ async function main() {
 
         const rawVersion = await bash.execute(`
             docker run --rm -v "$(pwd):/$(pwd)" gittools/gitversion:5.12.0-alpine.3.14-6.0 $(pwd)
+            docker exec docker exec mycontainer 
         `)
 
         console.log(`rawVersion: ${rawVersion}`)
