@@ -36,7 +36,13 @@ async function anyChanges() {
     const status = await bash.execute(`
         git status
     `)
-    return status.substring('Changes not staged for commit');
+    const foundChanges = status.includes('Changes not staged for commit');
+    if (foundChanges) {
+        console.log("Changes found in git repo")
+    } else {
+        console.log("No changes found in git repo")
+    }
+    return foundChanges
 }
 
 async function commitAll(message) { 
