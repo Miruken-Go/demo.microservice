@@ -12,7 +12,7 @@ async function main() {
         logging.header("Updating team dependencies")
 
         await bash.execute(`
-            cd teamapi
+            cd team
             go get github.com/miruken-go/miruken@${config.mirukenVersion} github.com/miruken-go/demo.microservice/teamapi@${config.teamapiVersion}
         `)
 
