@@ -17,12 +17,14 @@ async function main() {
             go get github.com/miruken-go/miruken@${config.mirukenVersion}
         `)
 
-        await git.commitAll(`Updated miruken to ${config.mirukenVersion}`)
-        await git.push();
+        if (await git.anyChanges()) {
+            await git.commitAll(`Updated miruken to ${config.mirukenVersion}`)
+            await git.push();
 
-        await bash.execute(`
-            gh workflow run build-teamapi.yml
-        `)
+            await bash.execute(`
+                gh workflow run build-teamapi.yml
+            `)
+        }
 
         console.log("Updated teamapi dependencies")
     } catch (error) {

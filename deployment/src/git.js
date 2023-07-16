@@ -32,6 +32,13 @@ async function tagAndPush(tag) {
     }
 }
 
+async function anyChanges() { 
+    const status = await bash.execute(`
+        git status
+    `)
+    return status.substring('Changes not staged for commit');
+}
+
 async function commitAll(message) { 
     logging.header("Commiting Changes")
 
@@ -48,6 +55,7 @@ async function push() {
 }
 
 module.exports = {
+    anyChanges,
     commitAll,
     push,
     tagAndPush
