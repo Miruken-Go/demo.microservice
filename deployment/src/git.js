@@ -36,8 +36,7 @@ async function commitAll(message) {
     logging.header("Commiting Changes")
 
     await bash.execute(`
-        git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" add .
-        git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" commit -m "${message}"
+        git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" commit -am "${message}"
     `)
 }
 
