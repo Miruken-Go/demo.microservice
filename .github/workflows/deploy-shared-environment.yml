@@ -16,5 +16,5 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: deploySharedEnvironment
+    - name: Run deploySharedEnvironment.js
       run:  node ./deployment/src/deploySharedEnvironment.js 

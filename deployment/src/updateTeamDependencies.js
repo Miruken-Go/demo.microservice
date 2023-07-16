@@ -7,7 +7,6 @@ async function main() {
     try {
         config.requiredNonSecrets(['mirukenVersion', 'teamapiVersion'])
         config.requiredSecrets(['ghToken'])
-
         logging.printConfiguration(config)
 
         logging.header("Updating team dependencies")
@@ -17,14 +16,16 @@ async function main() {
             go get github.com/miruken-go/miruken@${config.mirukenVersion} github.com/miruken-go/demo.microservice/teamapi@${config.teamapiVersion}
         `)
 
-        await git.commitAll(`Updated miruken to ${config.mirukenVersion} and teamapi to ${config.teamapiVersion}`)
-        await git.push();
+        if (await git.anyChanges()) {
+            await git.commitAll(`Updated miruken to ${config.mirukenVersion} and teamapi to ${config.teamapiVersion}`)
+            await git.push();
 
-        await bash.execute(`
-            gh workflow run build-team.yml
-        `)
+            await bash.execute(`
+                gh workflow run build-team.yml
+            `)
+        }
 
-        console.log("Updated team dependencies")
+        console.log("Script completed successfully")
     } catch (error) {
         process.exitCode = 1
         console.log(error)

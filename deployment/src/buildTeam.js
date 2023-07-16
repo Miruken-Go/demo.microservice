@@ -7,6 +7,7 @@ const go      = require('./go');
 async function main() {
     try {
         config.requiredSecrets(['ghToken'])
+        config.requiredNonSecrets(['repositoryPath'])
         logging.printConfiguration(config)
 
         logging.header("Building team")
@@ -17,7 +18,7 @@ async function main() {
         `)
 
         const rawVersion = await bash.execute(`
-            docker run --rm -v "$(pwd):/repo" gittools/gitversion:5.12.0-alpine.3.14-6.0 /repo /showvariable SemVer /overrideconfig tag-prefix=team/v
+            docker run --rm -v "${config.repositoryPath}:/repo" gittools/gitversion:5.12.0-alpine.3.14-6.0 /repo /showvariable SemVer /overrideconfig tag-prefix=team/v
         `)
 
         const version = `v${rawVersion}`
@@ -28,8 +29,8 @@ async function main() {
 
         await git.tagAndPush(tag)
 
-        const mirukenVersion = await getModuleVersion(team,    'github.com/miruken-go/miruken')
-        const teamApiVersion = await getModuleVersion(teamapi, 'github.com/miruken-go/demo.microservice/teamapi') 
+        const mirukenVersion = await go.getModuleVersion('team', 'github.com/miruken-go/miruken')
+        const teamApiVersion = await go.getModuleVersion('team', 'github.com/miruken-go/demo.microservice/teamapi')
 
         console.log(`mirukenVersion: [${mirukenVersion}]`)
         console.log(`teamApiVersion: [${teamApiVersion}]`)
@@ -41,7 +42,7 @@ async function main() {
                 -f teamVersion=${version}                   \
         `)
 
-        console.log("Built team")
+        console.log("Script completed successfully")
     } catch (error) {
         process.exitCode = 1
         console.log(error)

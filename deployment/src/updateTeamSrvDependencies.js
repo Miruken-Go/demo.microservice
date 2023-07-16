@@ -5,9 +5,8 @@ const git     = require('./git');
 
 async function main() {
     try {
-        config.requiredNonSecrets(['mirukenVersion', 'teamapiVersion', 'teamVersion'])
         config.requiredSecrets(['ghToken'])
-
+        config.requiredNonSecrets(['mirukenVersion', 'teamapiVersion', 'teamVersion'])
         logging.printConfiguration(config)
 
         logging.header("Updating teamsrv dependencies")
@@ -17,14 +16,16 @@ async function main() {
             go get github.com/miruken-go/miruken@${config.mirukenVersion} github.com/miruken-go/demo.microservice/teamapi@${config.teamapiVersion} 	github.com/miruken-go/demo.microservice/team v0.2.11@${config.teamVersion}
         `)
 
-        await git.commitAll(`Updated miruken to ${config.mirukenVersion}, teamapi to ${config.teamapiVersion} and team to ${config.teamVersion}`)
-        await git.push();
+        if (await git.anyChanges()) {
+            await git.commitAll(`Updated miruken to ${config.mirukenVersion}, teamapi to ${config.teamapiVersion} and team to ${config.teamVersion}`)
+            await git.push();
 
-        await bash.execute(`
-            gh workflow run build-teamsrv.yml
-        `)
+            await bash.execute(`
+                gh workflow run build-teamsrv.yml
+            `)
+        }
 
-        console.log("Updated teamsrv dependencies")
+        console.log("Script completed successfully")
     } catch (error) {
         process.exitCode = 1
         console.log(error)

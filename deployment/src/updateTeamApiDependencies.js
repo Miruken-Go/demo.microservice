@@ -5,9 +5,8 @@ const git     = require('./git');
 
 async function main() {
     try {
-        config.requiredNonSecrets(['mirukenVersion'])
         config.requiredSecrets(['ghToken'])
-
+        config.requiredNonSecrets(['mirukenVersion'])
         logging.printConfiguration(config)
 
         logging.header("Updating teamapi dependencies")

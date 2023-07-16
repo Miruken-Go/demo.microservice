@@ -5,11 +5,11 @@ const config  = require('./config');
 
 async function main() {
     try {
-        console.log("Deploying teamsrv")
-        config.requiredNonSecrets([
-            'tag'
-        ])
+        config.requiredNonSecrets(['tag'])
         logging.printConfiguration(config)
+
+        logging.header("Deploying teamsrv")
+
         await az.login()
 
         //Create the new revision
@@ -63,7 +63,7 @@ async function main() {
             }
         }
 
-        console.log("Deployment Succeded")
+        console.log("Script completed successfully")
     } catch (error) {
         process.exitCode = 1
         console.log(error)

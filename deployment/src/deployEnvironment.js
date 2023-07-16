@@ -5,8 +5,10 @@ const config  = require('./config');
 
 async function main() {
     try {
-        console.log("Deploying Environment")
         logging.printConfiguration(config)
+        
+        logging.header("Deploying Environment")
+
         await az.login()
 
         //Environment resources
@@ -15,11 +17,11 @@ async function main() {
         const getAzureContainerRepositoryPassword = await az.getAzureContainerRepositoryPassword(config.containerRepositoryName)
         await arm.deployEnvironmentResources(getAzureContainerRepositoryPassword)
 
-        console.log("Configuration Succeded")
+        console.log("Script completed successfully")
     } catch (error) {
         process.exitCode = 1
         console.log(error)
-        console.log("Configuration Failed")
+        console.log("Script Failed")
     }
 }
 

@@ -6,9 +6,11 @@ const git     = require('./git');
 
 async function main() {
     try {
-        console.log("Building teamsrv")
         config.requiredSecrets(['ghToken'])
         logging.printConfiguration(config)
+
+        logging.header("Building teamsrv")
+
         await az.login()
 
         const version      = `v${Math.floor(Date.now()/1000)}`.trim()
@@ -44,7 +46,7 @@ async function main() {
                 -f tag=${version}              \
         `)
 
-        console.log("Built teamsrv")
+        console.log("Script completed successfully")
     } catch (error) {
         process.exitCode = 1
         console.log(error)

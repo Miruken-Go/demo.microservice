@@ -34,5 +34,5 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Run build
+    - name: Run updateTeamDependencies.js
       run:  node ./deployment/src/updateTeamDependencies.js 

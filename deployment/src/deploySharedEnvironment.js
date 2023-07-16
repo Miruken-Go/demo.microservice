@@ -5,8 +5,10 @@ const config  = require('./config');
 
 async function main() {
     try {
-        console.log("Deploying Shared Environment")
         logging.printConfiguration(config)
+
+        logging.header("Deploying Shared Environment")
+
         await az.login()
 
         //Provider Registrations
@@ -18,11 +20,11 @@ async function main() {
         await az.createResourceGroup(config.sharedResourceGroup)
         await arm.deploySharedResources()
 
-        console.log("Configuration Succeded")
+        console.log("Script completed successfully")
     } catch (error) {
         process.exitCode = 1
         console.log(error)
-        console.log("Configuration Failed")
+        console.log("Script Failed")
     }
 }
 

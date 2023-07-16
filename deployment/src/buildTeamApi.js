@@ -3,6 +3,7 @@ const bash    = require('./bash')
 const logging = require('./logging');
 const config  = require('./config');
 const git     = require('./git');
+const go      = require('./go');
 
 async function main() {
     try {
@@ -29,10 +30,7 @@ async function main() {
 
         await git.tagAndPush(tag)
 
-        const mirukenVersion = await bash.execute(`
-            cd teamapi
-            go list -m all | grep github.com/miruken-go/miruken | awk '{print $2}' \
-        `)
+        const mirukenVersion = await go.getModuleVersion('teamapi', 'github.com/miruken-go/miruken')
         console.log(`mirukenVersion: [${mirukenVersion}]`)
       
         await bash.execute(`
@@ -41,7 +39,7 @@ async function main() {
                 -f teamapiVersion=${version}             \
         `)
 
-        console.log("Built teamapi")
+        console.log("Script completed successfully")
     } catch (error) {
         process.exitCode = 1
         console.log(error)
