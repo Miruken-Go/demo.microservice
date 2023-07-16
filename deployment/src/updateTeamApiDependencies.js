@@ -26,7 +26,7 @@ async function main() {
             `)
         }
 
-        console.log("Updated teamapi dependencies")
+        console.log("Script completed successfully")
     } catch (error) {
         process.exitCode = 1
         console.log(error)
