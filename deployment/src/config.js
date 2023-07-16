@@ -48,11 +48,11 @@ const config = {
     },
     requiredNonSecrets: function (names) {
         names.forEach(function(name) {
-            const variable = process.env[name].trim()
+            const variable = process.env[name]
             if (!variable){
                 throw `Environment variable required: ${name}`
             }
-            this[name] = variable
+            this[name] = variable.trim()
         }.bind(this));
     }
 }

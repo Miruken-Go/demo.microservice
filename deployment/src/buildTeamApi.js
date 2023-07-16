@@ -7,6 +7,7 @@ const git     = require('./git');
 async function main() {
     try {
         config.requiredSecrets(['ghToken'])
+        config.requiredNonSecrets(['repositoryPath'])
         logging.printConfiguration(config)
 
         logging.header("Building teamapi")
@@ -17,7 +18,7 @@ async function main() {
         `)
 
         const rawVersion = await bash.execute(`
-            docker run --rm -v "$(pwd):/repo" gittools/gitversion:5.12.0-alpine.3.14-6.0 /repo /showvariable SemVer /overrideconfig tag-prefix=teamapi/v
+            docker run --rm -v "${config.repositoryPath}:/repo" gittools/gitversion:5.12.0-alpine.3.14-6.0 /repo /showvariable SemVer /overrideconfig tag-prefix=teamapi/v
         `)
 
         const version = `v${rawVersion}`

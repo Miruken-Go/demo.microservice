@@ -27,6 +27,7 @@ jobs:
         env:                            notused
         ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
         GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
+        repositoryPath:                 ${{ github.workspace }}
 
     steps:
     - name: Checkout repository
