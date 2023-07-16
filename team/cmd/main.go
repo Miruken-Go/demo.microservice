@@ -11,7 +11,7 @@ import (
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
-	"github.com/miruken-go/miruken/api/http/httpsrv/authenticate"
+	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
 	"github.com/miruken-go/miruken/api/http/httpsrv/openapi"
 	"github.com/miruken-go/miruken/api/http/httpsrv/openapi/ui"
 	"github.com/miruken-go/miruken/api/json/stdjson"
@@ -22,8 +22,14 @@ import (
 	"github.com/miruken-go/miruken/security/jwt/jwks"
 	play "github.com/miruken-go/miruken/validates/play"
 	"github.com/rs/zerolog"
+	"golang.org/x/net/context"
 	"net/http"
+	"net/http/pprof"
+	_ "net/http/pprof"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 func main() {
@@ -50,6 +56,7 @@ func main() {
 				URL:  "https://opensource.org/licenses/MIT",
 			},
 			Contact: &openapi3.Contact{
+				Name: "Miruken",
 				URL: "https://github.com/Miruken-Go/demo.microservice",
 			},
 		},
@@ -84,7 +91,7 @@ func main() {
 	// initialize miruken
 	handler, err := miruken.Setup(
 		team.Feature, jwt.Feature(), jwks.Feature(),
-		authenticate.Feature(), play.Feature(),
+		auth.Feature(), play.Feature(),
 		config.Feature(koanfp.P(k)), stdjson.Feature(),
 		logs.Feature(logger), openapiGen).
 		Specs(&api.GoPolymorphism{}).
@@ -98,8 +105,7 @@ func main() {
 
 	docs := openapiGen.Docs()
 
-	h := httpsrv.Pipeline(handler,
-		authenticate.WithFlowRef("login.oauth").Bearer())
+	h := httpsrv.Pipeline(handler, auth.WithFlowRef("login.oauth").Bearer())
 
 	// configure routes
 	var mux http.ServeMux
@@ -110,13 +116,38 @@ func main() {
 	mux.Handle("/openapi", openapi.Handler(docs, true))
 	mux.Handle("/", ui.Handler("", docs))
 
-	// start http server
-	err = http.ListenAndServe(":8080", &mux)
+	// Register pprof handlers
+	mux.HandleFunc("/debug/pprof/", pprof.Index)
+	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
-	if errors.Is(err, http.ErrServerClosed) {
-		logger.Info("server closed")
-	} else if err != nil {
-		logger.Error(err, "error starting server")
+	// start http server
+	server := &http.Server{
+		Addr:   ":8080",
+		Handler: &mux,
+	}
+
+	go func() {
+		if err := server.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+			logger.Error(err, "HTTP server error")
+			os.Exit(1)
+		}
+		logger.Info("Stopped serving new connections")
+	}()
+
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+	<-sigChan
+
+	shutdownCtx, shutdownRelease := context.WithTimeout(context.Background(), 10*time.Second)
+	defer shutdownRelease()
+
+	if err := server.Shutdown(shutdownCtx); err != nil {
+		logger.Error(err, "HTTP shutdown error")
+		_ = server.Close()
 		os.Exit(1)
 	}
+	logger.Info("Graceful shutdown complete")
 }

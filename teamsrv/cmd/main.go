@@ -10,7 +10,7 @@ import (
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
-	"github.com/miruken-go/miruken/api/http/httpsrv/authenticate"
+	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
 	"github.com/miruken-go/miruken/api/http/httpsrv/openapi"
 	"github.com/miruken-go/miruken/api/http/httpsrv/openapi/ui"
 	"github.com/miruken-go/miruken/api/json/stdjson"
@@ -50,6 +50,7 @@ func main() {
 				URL:  "https://opensource.org/licenses/MIT",
 			},
 			Contact: &openapi3.Contact{
+				Name: "Miruken",
 				URL: "https://github.com/Miruken-Go/demo.microservice",
 			},
 		},
@@ -101,8 +102,7 @@ func main() {
 
 	docs := openapiGen.Docs()
 
-	h := httpsrv.Pipeline(handler,
-		authenticate.WithFlowRef("Login.OAuth").Bearer())
+	h := httpsrv.Pipeline(handler, auth.WithFlowRef("Login.OAuth").Bearer())
 
 	// configure routes
 	var mux http.ServeMux
