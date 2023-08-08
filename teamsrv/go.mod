@@ -6,7 +6,7 @@ require (
 	github.com/getkin/kin-openapi v0.118.0
 	github.com/go-logr/zerologr v1.2.3
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/demo.microservice/team v0.2.18
+	github.com/miruken-go/demo.microservice/team v0.2.19
 	github.com/miruken-go/miruken v0.30.26
 	github.com/rs/zerolog v1.30.0
 )
