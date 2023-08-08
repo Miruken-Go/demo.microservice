@@ -37,7 +37,7 @@ func (h *Handler) Create(
 	  }, create *commands.CreateTeam,
 	ctx miruken.HandleContext,
 ) *promise.Promise[data.Team] {
-	composer := ctx.Composer()
+	composer := ctx.Composer
 	cp, _, err := api.Send[data.Person](composer,
 		&commands.CreatePerson{
 			FirstName: create.Coach.Person.FirstName,
@@ -70,7 +70,7 @@ func (h *Handler) Update(
 	_ *handles.It, update *commands.UpdateTeam,
 	ctx miruken.HandleContext,
 ) *promise.Promise[data.Team] {
-	composer := ctx.Composer()
+	composer := ctx.Composer
 	if coach := update.Coach; coach != nil {
 		cp, _, err := api.Send[data.Person](composer,
 			&commands.UpdatePerson{

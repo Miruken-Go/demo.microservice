@@ -10,19 +10,19 @@ import (
 )
 
 type (
-	CreatePersonIntegrity struct {
+	CreateIntegrity struct {
 		play.ValidatorT[*commands.CreatePerson]
 	}
 
-	UpdatePersonIntegrity struct {
+	UpdateIntegrity struct {
 		play.ValidatorT[*commands.UpdatePerson]
 	}
 )
 
 
-// CreatePersonIntegrity
+// CreateIntegrity
 
-func (i *CreatePersonIntegrity) Constructor(
+func (i *CreateIntegrity) Constructor(
 	_*struct{args.Optional}, translator ut.Translator,
 ) error {
 	return i.ConstructWithRules(
@@ -38,9 +38,9 @@ func (i *CreatePersonIntegrity) Constructor(
 }
 
 
-// UpdatePersonIntegrity
+// UpdateIntegrity
 
-func (i *UpdatePersonIntegrity) Constructor(
+func (i *UpdateIntegrity) Constructor(
 	_*struct{args.Optional}, translator ut.Translator,
 ) error {
 	return i.ConstructWithRules(

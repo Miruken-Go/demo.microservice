@@ -11,19 +11,19 @@ import (
 )
 
 type (
-	CreateTeamIntegrity struct {
+	CreateIntegrity struct {
 		play.ValidatorT[*commands.CreateTeam]
 	}
 
-	UpdateTeamIntegrity struct {
+	UpdateIntegrity struct {
 		play.ValidatorT[*commands.UpdateTeam]
 	}
 )
 
 
-// CreateTeamIntegrity
+// CreateIntegrity
 
-func (i *CreateTeamIntegrity) Constructor(
+func (i *CreateIntegrity) Constructor(
 	_*struct{args.Optional}, translator ut.Translator,
 ) error {
 	return i.ConstructWithRules(
@@ -50,9 +50,9 @@ func (i *CreateTeamIntegrity) Constructor(
 }
 
 
-// UpdateTeamIntegrity
+// UpdateIntegrity
 
-func (i *UpdateTeamIntegrity) Constructor(
+func (i *UpdateIntegrity) Constructor(
 	_*struct{args.Optional}, translator ut.Translator,
 ) error {
 	return i.ConstructWithRules(
