@@ -6,7 +6,6 @@ import "github.com/miruken-go/miruken"
 
 var Feature miruken.Feature = miruken.FeatureFunc(func(setup *miruken.SetupBuilder) error {
 	setup.Specs(
-		&AccessPolicy{},
 		&CreateIntegrity{},
 		&Handler{},
 		&UpdateIntegrity{},
