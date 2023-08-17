@@ -24,32 +24,17 @@ type (
 )
 
 func (h *Handler) AuthorizeCreate(
-	_ *authorizes.It, _ commands.CreatePerson,
+	_ *authorizes.It, _ *commands.CreatePerson,
 	subject security.Subject,
 ) bool {
 	return principal.All(subject, jwt.Scope("Person.Create"))
 }
 
-func (i *CreateIntegrity) Constructor(
-	_*struct{args.Optional}, translator ut.Translator,
-) error {
-	return i.ConstructWithRules(
-		play.Rules{
-			play.Type[commands.CreatePerson](map[string]string{
-				"FirstName": "required",
-				"LastName":  "required",
-				"BirthDate": "notfuture",
-			}),
-		}, func(v *validator.Validate) error {
-			return v.RegisterValidation("notfuture", notfuture)
-		}, translator)
-}
-
 func (h *Handler) Create(
 	_*struct {
-	handles.It
-	authorizes.Required
-}, create *commands.CreatePerson,
+		handles.It
+		authorizes.Required
+	  }, create *commands.CreatePerson,
 	_*struct{ args.Optional }, parts api.PartContainer,
 ) (any, error) {
 	person := data.Person{
@@ -71,6 +56,22 @@ func (h *Handler) Create(
 		Build()).
 		AddParts(parts.Parts())
 	return pb.Build(), nil
+}
+
+
+func (i *CreateIntegrity) Constructor(
+	_*struct{args.Optional}, translator ut.Translator,
+) error {
+	return i.InitWithRules(
+		play.Rules{
+			play.Type[commands.CreatePerson](map[string]string{
+				"FirstName": "required",
+				"LastName":  "required",
+				"BirthDate": "notfuture",
+			}),
+		}, func(v *validator.Validate) error {
+			return v.RegisterValidation("notfuture", notfuture)
+		}, translator)
 }
 
 func notfuture(fl validator.FieldLevel) bool {

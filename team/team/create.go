@@ -26,7 +26,7 @@ type (
 func (i *CreateIntegrity) Constructor(
 	_*struct{args.Optional}, translator ut.Translator,
 ) error {
-	return i.ConstructWithRules(
+	return i.InitWithRules(
 		play.Rules{
 			play.Type[commands.CreateTeam](map[string]string{
 				"Name": "required",
@@ -51,10 +51,10 @@ func (i *CreateIntegrity) Constructor(
 
 func (h *Handler) Create(
 	_*struct {
-	handles.It
-	authorizes.Required
-	jwt.Scope `name:"Team.Create"`
-}, create *commands.CreateTeam,
+		handles.It
+		authorizes.Required
+		jwt.Scope `name:"Team.Create"`
+	  }, create *commands.CreateTeam,
 	ctx miruken.HandleContext,
 ) *promise.Promise[data.Team] {
 	composer := ctx.Composer

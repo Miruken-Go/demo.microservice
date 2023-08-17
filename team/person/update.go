@@ -16,10 +16,21 @@ type (
 	}
 )
 
+func (h *Handler) Update(
+	_ *handles.It, update *commands.UpdatePerson,
+) (data.Person, error) {
+	return data.Person{
+		Id:        update.Id,
+		FirstName: update.FirstName,
+		LastName:  update.LastName,
+		BirthDate: update.BirthDate,
+	}, nil
+}
+
 func (i *UpdateIntegrity) Constructor(
 	_*struct{args.Optional}, translator ut.Translator,
 ) error {
-	return i.ConstructWithRules(
+	return i.InitWithRules(
 		play.Rules{
 			play.Type[commands.UpdatePerson](map[string]string{
 				"Id":        "required,gt=0",
@@ -30,15 +41,4 @@ func (i *UpdateIntegrity) Constructor(
 		}, func(v *validator.Validate) error {
 			return v.RegisterValidation("notfuture", notfuture)
 		}, translator)
-}
-
-func (h *Handler) Update(
-	_ *handles.It, update *commands.UpdatePerson,
-) (data.Person, error) {
-	return data.Person{
-		Id:        update.Id,
-		FirstName: update.FirstName,
-		LastName:  update.LastName,
-		BirthDate: update.BirthDate,
-	}, nil
 }
