@@ -62,7 +62,7 @@ func (h *Handler) Create(
 func (i *CreateIntegrity) Constructor(
 	_*struct{args.Optional}, translator ut.Translator,
 ) error {
-	return i.InitWithRules(
+	return i.WithRules(
 		play.Rules{
 			play.Type[commands.CreatePerson](map[string]string{
 				"FirstName": "required",

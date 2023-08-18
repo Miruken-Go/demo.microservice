@@ -30,7 +30,7 @@ func (h *Handler) Update(
 func (i *UpdateIntegrity) Constructor(
 	_*struct{args.Optional}, translator ut.Translator,
 ) error {
-	return i.InitWithRules(
+	return i.WithRules(
 		play.Rules{
 			play.Type[commands.UpdatePerson](map[string]string{
 				"Id":        "required,gt=0",

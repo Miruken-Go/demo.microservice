@@ -22,7 +22,7 @@ type (
 func (i *UpdateIntegrity) Constructor(
 	_*struct{args.Optional}, translator ut.Translator,
 ) error {
-	return i.InitWithRules(
+	return i.WithRules(
 		play.Rules{
 			play.Type[commands.UpdateTeam](map[string]string{
 				"Id": "required,gt=0",
