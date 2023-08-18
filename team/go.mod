@@ -6,10 +6,10 @@ require (
 	github.com/getkin/kin-openapi v0.118.0
 	github.com/go-logr/zerologr v1.2.3
 	github.com/go-playground/universal-translator v0.18.1
-	github.com/go-playground/validator/v10 v10.15.0
+	github.com/go-playground/validator/v10 v10.15.1
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/demo.microservice/teamapi v0.10.22
-	github.com/miruken-go/miruken v0.30.29
+	github.com/miruken-go/demo.microservice/teamapi v0.10.23
+	github.com/miruken-go/miruken v0.30.30
 	github.com/rs/zerolog v1.30.0
 	golang.org/x/net v0.14.0
 )
