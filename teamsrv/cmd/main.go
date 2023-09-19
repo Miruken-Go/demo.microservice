@@ -28,10 +28,10 @@ import (
 
 func authzHandler(w http.ResponseWriter, r *http.Request) {
 	type Response struct {
-		Foo []string
+		Scopes []string
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(Response {Foo: []string{"Bar", "Baz"}})
+	json.NewEncoder(w).Encode(Response {Scopes: []string{"creatTeam", "updateTeam", "createPerson", "updatePerson"}})
 }
 
 func main() {
