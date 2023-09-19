@@ -23,7 +23,16 @@ import (
 	"github.com/rs/zerolog"
 	"net/http"
 	"os"
+	"encoding/json"
 )
+
+func authzHandler(w http.ResponseWriter, r *http.Request) {
+	type Response struct {
+		Foo string
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(Response {Foo: "Bar"})
+}
 
 func main() {
 	// logging
@@ -112,6 +121,7 @@ func main() {
 	mux.Handle("/publish/", h)
 	mux.Handle("/openapi", openapi.Handler(docs, true))
 	mux.Handle("/", ui.Handler("", docs))
+	mux.HandleFunc("/authz/", authzHandler)
 
 	// start http server
 	port := k.String("App.Port")
