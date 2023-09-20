@@ -27,6 +27,14 @@ import (
 )
 
 func authzHandler(w http.ResponseWriter, r *http.Request) {
+	username := "ooYymDzee5!V&v8gk7*s"
+	password := "i**72R#PLWbx8&#$I$ok"
+	u, p, ok := r.BasicAuth()
+	if !ok || u != username || p != password {
+		w.WriteHeader(401)
+		return
+	}
+
 	type Response struct {
 		Scopes []string
 	}
