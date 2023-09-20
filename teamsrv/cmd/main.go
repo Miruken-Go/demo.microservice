@@ -39,7 +39,7 @@ func authzHandler(w http.ResponseWriter, r *http.Request) {
 		Scopes []string
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(Response {Scopes: []string{"creatTeam", "updateTeam", "createPerson", "updatePerson"}})
+	json.NewEncoder(w).Encode(Response {Scopes: []string{"createTeam", "updateTeam", "createPerson", "updatePerson"}})
 }
 
 func main() {
