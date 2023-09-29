@@ -36,10 +36,16 @@ func authzHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type Response struct {
-		Scopes []string
+		Groups []string
+		Roles []string
+		Entitlements []string
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(Response {Scopes: []string{"createTeam", "updateTeam", "createPerson", "updatePerson"}})
+	json.NewEncoder(w).Encode(Response {
+		Groups: []string{"oncall"},
+		Roles: []string{"admin", "coach", "player"},
+		Entitlements: []string{"createTeam", "updateTeam", "createPerson", "updatePerson"},
+	})
 }
 
 func main() {
