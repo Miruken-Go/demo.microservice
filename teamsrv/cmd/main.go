@@ -1,7 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
+	"net/http"
+	"os"
+
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/go-logr/zerologr"
 	"github.com/knadh/koanf"
@@ -21,9 +26,6 @@ import (
 	"github.com/miruken-go/miruken/security/jwt/jwks"
 	play "github.com/miruken-go/miruken/validates/play"
 	"github.com/rs/zerolog"
-	"net/http"
-	"os"
-	"encoding/json"
 )
 
 func authzHandler(w http.ResponseWriter, r *http.Request) {
@@ -35,15 +37,37 @@ func authzHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	type Request struct {
+		Email        string
+		ObjectId     string
+		Scope        string
+		UserLanguage string
+	}
+
+	var request Request
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		w.WriteHeader(422)
+		return
+	}
+
+	fmt.Println("")
+	fmt.Println("New Request")
+	fmt.Println("email: ", request.Email)
+	fmt.Println("objectId: ", request.ObjectId)
+	fmt.Println("scope: ", request.Scope)
+	fmt.Println("userLanguage: ", request.UserLanguage)
+
 	type Response struct {
-		Groups []string
-		Roles []string
+		Groups       []string
+		Roles        []string
 		Entitlements []string
 	}
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(Response {
-		Groups: []string{"oncall"},
-		Roles: []string{"admin", "coach", "player"},
+	json.NewEncoder(w).Encode(Response{
+		Groups:       []string{"oncall"},
+		Roles:        []string{"admin", "coach", "player"},
 		Entitlements: []string{"createTeam", "updateTeam", "createPerson", "updatePerson"},
 	})
 }
@@ -74,12 +98,12 @@ func main() {
 			},
 			Contact: &openapi3.Contact{
 				Name: "Miruken",
-				URL: "https://github.com/Miruken-Go/demo.microservice",
+				URL:  "https://github.com/Miruken-Go/demo.microservice",
 			},
 		},
-		ExternalDocs: &openapi3.ExternalDocs {
+		ExternalDocs: &openapi3.ExternalDocs{
 			Description: "teamsrv/" + k.String("App.Version"),
-			URL: k.String("App.Source.Url"),
+			URL:         k.String("App.Source.Url"),
 		},
 		Components: &openapi3.Components{
 			SecuritySchemes: openapi3.SecuritySchemes{
