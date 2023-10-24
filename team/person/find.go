@@ -1,9 +1,11 @@
 package person
 
 import (
+	"github.com/miruken-go/demo.microservice/teamapi/commands"
 	"github.com/miruken-go/demo.microservice/teamapi/data"
 	"github.com/miruken-go/demo.microservice/teamapi/queries"
 	"github.com/miruken-go/miruken/handles"
+	play "github.com/miruken-go/miruken/validates/play"
 	"time"
 )
 
@@ -11,6 +13,8 @@ import (
 
 type (
 	Handler struct {
+		play.Validates1[*commands.CreatePerson]
+		play.Validates2[*commands.UpdatePerson]
 		nextId int32
 	}
 )

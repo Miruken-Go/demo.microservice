@@ -15,7 +15,7 @@ import (
 
 type (
 	UpdateIntegrity struct {
-		play.ValidatorT[*commands.UpdateTeam]
+		play.Validates[*commands.UpdateTeam]
 	}
 )
 

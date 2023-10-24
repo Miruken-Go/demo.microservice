@@ -1,4 +1,4 @@
-docker run -v $(pwd):/go/src --workdir=/go/src/teamapi golang:1.20 go get -u
+docker run -v $(pwd):/go/src --workdir=/go/src/teamapi golang:1.21 go get -u
 if [[ $? -gt 0 ]]; then 
   echo "Failed to build and test"; 
   exit 1; 

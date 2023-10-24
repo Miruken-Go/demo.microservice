@@ -19,7 +19,7 @@ import (
 
 type (
 	CreateIntegrity struct {
-		play.ValidatorT[*commands.CreateTeam]
+		play.Validates[*commands.CreateTeam]
 	}
 )
 

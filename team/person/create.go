@@ -17,11 +17,20 @@ import (
 	"time"
 )
 
-type (
-	CreateIntegrity struct {
-		play.ValidatorT[*commands.CreatePerson]
-	}
-)
+func (h *Handler) InitCreate(
+	_*struct{args.Optional}, translator ut.Translator,
+) error {
+	return h.Validates1.WithRules(
+		play.Rules{
+			play.Type[commands.CreatePerson](map[string]string{
+				"FirstName": "required",
+				"LastName":  "required",
+				"BirthDate": "notfuture",
+			}),
+		}, func(v *validator.Validate) error {
+			return v.RegisterValidation("notfuture", notfuture)
+		}, translator)
+}
 
 func (h *Handler) AuthorizeCreate(
 	_ *authorizes.It, _ *commands.CreatePerson,
@@ -58,21 +67,6 @@ func (h *Handler) Create(
 	return pb.Build(), nil
 }
 
-
-func (i *CreateIntegrity) Constructor(
-	_*struct{args.Optional}, translator ut.Translator,
-) error {
-	return i.WithRules(
-		play.Rules{
-			play.Type[commands.CreatePerson](map[string]string{
-				"FirstName": "required",
-				"LastName":  "required",
-				"BirthDate": "notfuture",
-			}),
-		}, func(v *validator.Validate) error {
-			return v.RegisterValidation("notfuture", notfuture)
-		}, translator)
-}
 
 func notfuture(fl validator.FieldLevel) bool {
 	if t, ok := fl.Field().Interface().(time.Time); ok {
