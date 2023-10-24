@@ -2,8 +2,6 @@ module github.com/miruken-go/demo.microservice/teamapi
 
 go 1.21
 
-toolchain go1.21.3
-
 require github.com/miruken-go/miruken v0.30.32
 
 require (
