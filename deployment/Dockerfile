@@ -12,7 +12,7 @@ ENV PATH "$PATH:/usr/local/go/bin"
 ############
 #https://docs.docker.com/engine/install/debian/
 RUN apt-get update
-RUN apt-get install ca-certificates curl gnupg
+RUN apt-get -y install ca-certificates curl gnupg
 
 RUN install -m 0755 -d /etc/apt/keyrings
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
