@@ -44,7 +44,7 @@ func (h *Handler) Create(
 		handles.It
 		authorizes.Required
 	  }, create *commands.CreatePerson,
-	_*struct{ args.Optional }, parts api.PartContainer,
+	_*struct{args.Optional}, parts api.PartContainer,
 ) (any, error) {
 	person := data.Person{
 		Id:        atomic.AddInt32(&h.nextId, 1),
