@@ -4,14 +4,14 @@
 
 ### Docker image
 
-    docker pull golang:1.20-alpine3.18
+    docker pull golang:1.21.3-alpine3.18
 
 ## Local Development Workflow
 
 ### Run the docker container
 
     cd teamsrv
-    docker run -it -p 8080:8080 -v $(pwd):/go/src/app -w /go/src/app golang:1.20-alpine3.18
+    docker run -it -p 8080:8080 -v $(pwd):/go/src/app -w /go/src/app golang:1.21.3-alpine3.18
 
 ### Build the application
 
@@ -52,6 +52,6 @@
 ### Running a named image detached
 
     cd teamsrv
-    docker run -itd -p 8080:8080 -v $(pwd):/go/src/app -w /go/src/app golang:1.20-alpine3.18
+    docker run -itd -p 8080:8080 -v $(pwd):/go/src/app -w /go/src/app golang:1.21.3-alpine3.18
     docker exec -it go_server sh
     docker rm -f go_server
