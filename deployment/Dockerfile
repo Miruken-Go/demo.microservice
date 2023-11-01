@@ -3,8 +3,8 @@ FROM node:18.16.0-bookworm
 ############
 #go
 ############
-RUN wget https://go.dev/dl/go1.20.6.linux-amd64.tar.gz
-RUN tar -C /usr/local -xzf go1.20.6.linux-amd64.tar.gz
+RUN wget https://go.dev/dl/go1.21.3.linux-amd64.tar.gz
+RUN tar -C /usr/local -xzf go1.21.3.linux-amd64.tar.gz
 ENV PATH "$PATH:/usr/local/go/bin"
 
 ############
