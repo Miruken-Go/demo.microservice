@@ -2,6 +2,16 @@
 
 ## Local Development
 
+### Updating golang version
+
+* Search and replace the golang docker image `golang:1.21.3-alpine3.18` with the new version
+* Update the `demo.microservice.build` container golang version 
+    * deployment/Dockerfile
+            RUN wget https://go.dev/dl/go1.21.3.linux-amd64.tar.gz
+            RUN tar -C /usr/local -xzf go1.21.3.linux-amd64.tar.gz
+    * check in dockerfile and the new image is built automatically
+    * Seach and replace the containe version `ghcr.io/miruken-go/demo.microservice.build:1698851101` in the .github folder
+
 ### Docker image
 
     docker pull golang:1.21.3-alpine3.18
