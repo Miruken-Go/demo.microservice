@@ -1,4 +1,3 @@
-const az      = require('./az');
 const bash    = require('./bash')
 const logging = require('./logging');
 const config  = require('./config');

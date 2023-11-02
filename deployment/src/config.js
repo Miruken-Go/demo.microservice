@@ -54,7 +54,7 @@ const config = {
             }
             this[name] = variable.trim()
         }.bind(this));
-    }
+    }, 
 }
 
 config.requiredSecrets([
@@ -67,9 +67,9 @@ config.requiredNonSecrets([
     'deploymentPipelineClientId'
 ])
 
-//const envSpecific = require(`./${env}.js`)
+const envSpecific = require(`./${env}.js`)
 
 module.exports = {
     ...config,
-    //...envSpecific
+    ...envSpecific
 }
