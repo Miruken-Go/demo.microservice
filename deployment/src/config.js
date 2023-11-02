@@ -58,7 +58,8 @@ const config = {
 }
 
 config.requiredSecrets([
-    'deploymentPipelineClientSecret'
+    'deploymentPipelineClientSecret',
+    'b2cDeploymentPipelineClientSecret'
 ])
 
 config.requiredNonSecrets([

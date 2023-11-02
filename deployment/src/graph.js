@@ -9,7 +9,7 @@ const APP_ID = "00000003-0000-0000-c000-000000000000"
 async function getToken() {
     if (_token) return _token;
 
-    const uri=`https://login.microsoftonline.com/${config.b2cName}.onmicrosoft.com/oauth2/v2.0/token`
+    const uri=`https://login.microsoftonline.com/${config.b2cDomainName}/oauth2/v2.0/token`
     const result = await axios.post(uri, querystring.stringify({
         client_id:     config.b2cDeploymentPipelineClientId,
         scope:         'https://graph.microsoft.com/.default',
@@ -88,9 +88,30 @@ async function patch(endpoint, json, version) {
     return result;
 }
 
+async function updateTrustFrameworkPolicy(policyId, xml) {
+    const uri = `https://graph.microsoft.com/beta/trustFramework/policies/${policyId}/$value`
+    console.log(`Putting: ${uri}`)
+
+    const options = {
+        headers: {
+            Authorization: `Bearer ${await getToken()}`,
+            "Content-Type": "application/xml"
+        }
+    };
+    var result = await axios.put(uri, xml, options)
+        .catch(function (error) {
+            console.log(`Failed to Update: ${uri}`)  
+            logError(error)
+            throw error
+         });
+
+    return result;
+}
+
 module.exports = {
     get,
     post,
     patch,
+    updateTrustFrameworkPolicy,
     APP_ID
 }

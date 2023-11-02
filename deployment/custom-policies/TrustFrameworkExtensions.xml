@@ -4,12 +4,12 @@
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
   xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06" 
   PolicySchemaVersion="0.3.0.0" 
-  TenantId="$B2C_DOMAIN_NAME$" 
+  TenantId="{B2C_DOMAIN_NAME}" 
   PolicyId="B2C_1A_TrustFrameworkExtensions" 
-  PublicPolicyUri="http://$B2C_DOMAIN_NAME$/B2C_1A_TrustFrameworkExtensions">
+  PublicPolicyUri="http://{B2C_DOMAIN_NAME}/B2C_1A_TrustFrameworkExtensions">
   
   <BasePolicy>
-    <TenantId>$B2C_DOMAIN_NAME$</TenantId>
+    <TenantId>{B2C_DOMAIN_NAME}</TenantId>
     <PolicyId>B2C_1A_TrustFrameworkLocalization</PolicyId>
   </BasePolicy>
 
@@ -48,12 +48,12 @@
       <TechnicalProfiles>
          <TechnicalProfile Id="login-NonInteractive">
           <Metadata>
-            <Item Key="client_id">$PROXY_IDENTITY_EXPERIENCE_FRAMEWORK_CLIENTID$</Item>
-            <Item Key="IdTokenAudience">$IDENTITY_EXPERIENCE_FRAMEWORK_CLIENTID$</Item>
+            <Item Key="client_id">{PROXY_IDENTITY_EXPERIENCE_FRAMEWORK_CLIENTID}</Item>
+            <Item Key="IdTokenAudience">{IDENTITY_EXPERIENCE_FRAMEWORK_CLIENTID}</Item>
           </Metadata>
           <InputClaims>
-            <InputClaim ClaimTypeReferenceId="client_id" DefaultValue="$PROXY_IDENTITY_EXPERIENCE_FRAMEWORK_CLIENTID$" />
-            <InputClaim ClaimTypeReferenceId="resource_id" PartnerClaimType="resource" DefaultValue="$IDENTITY_EXPERIENCE_FRAMEWORK_CLIENTID$" />
+            <InputClaim ClaimTypeReferenceId="client_id" DefaultValue="{PROXY_IDENTITY_EXPERIENCE_FRAMEWORK_CLIENTID}" />
+            <InputClaim ClaimTypeReferenceId="resource_id" PartnerClaimType="resource" DefaultValue="{IDENTITY_EXPERIENCE_FRAMEWORK_CLIENTID}" />
           </InputClaims>
         </TechnicalProfile>
       </TechnicalProfiles>
