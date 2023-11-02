@@ -67,12 +67,10 @@
           <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.RestfulProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
           <Metadata>
             <!-- Set the ServiceUrl with your own REST API endpoint -->
-            <Item Key="ServiceUrl">https://teamsrv-dev-ci.livelyisland-03fdcde0.centralus.azurecontainerapps.io/authz/</Item>
+            <Item Key="ServiceUrl">{AUTHORIZATION_SERVICE_URL}</Item>
             <Item Key="SendClaimsIn">Body</Item>
             <!-- Set AuthenticationType to Basic or ClientCertificate in production environments -->
             <Item Key="AuthenticationType">Basic</Item>
-            <!-- REMOVE the following line in production environments -->
-            <!-- Item Key="AllowInsecureAuthInProduction">true</Item -->
             <Item Key="IncludeClaimResolvingInClaimsHandling">true</Item>
           </Metadata>
           <CryptographicKeys>

@@ -1,0 +1,29 @@
+b2c api connector
+
+    Documentation:
+        https://learn.microsoft.com/en-us/azure/active-directory-b2c/api-connectors-overview?pivots=b2c-custom-policy
+        https://learn.microsoft.com/en-us/azure/active-directory-b2c/add-api-connector-token-enrichment?pivots=b2c-custom-policy
+        https://learn.microsoft.com/en-us/azure/active-directory-b2c/secure-rest-api?tabs=windows&pivots=b2c-custom-policy
+
+
+Ientity Experience Framework > Select Policy Keys
+
+Add
+    Options:  Manual
+    Name:     RestApiUsername
+    Secret:   <Generate a 20 character random string for the Username> LK@kTJzb5e6wTS43&w5C
+    KeyUsage: Encryption.
+
+    Click Create
+
+Add
+    Options:  Manual
+    Name:     RestApiPassword
+    Secret:   <Generate a 20 character random string for the Password> QW7Yu@C4Q7ZRoWTRexfQ 
+    KeyUsage: Encryption.
+
+    Click Create
+
+ 
+
+

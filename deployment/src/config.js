@@ -21,6 +21,8 @@ if (simplePrefix.length > 32)
 
 const imageName = `${containerRepositoryName}.azurecr.io/${appName}`
 
+const envSpecific = require(`./${env}.js`)
+
 const config = {
     workingDirectory: process.cwd(),
     nodeDirectory:    __dirname,
@@ -36,6 +38,7 @@ const config = {
     location: process.env.location || defaultLocation,
     repository,
     secrets: {},
+    ...envSpecific,
 
     requiredSecrets: function (names) {
         names.forEach(function(name) {
@@ -48,7 +51,7 @@ const config = {
     },
     requiredNonSecrets: function (names) {
         names.forEach(function(name) {
-            const variable = process.env[name]
+            const variable = process.env[name] || this[name]
             if (!variable){
                 throw `Environment variable required: ${name}`
             }
@@ -59,18 +62,20 @@ const config = {
 
 config.requiredSecrets([
     'deploymentPipelineClientSecret',
-    'b2cDeploymentPipelineClientSecret'
+    'b2cDeploymentPipelineClientSecret',
 ])
 
 config.requiredNonSecrets([
     'tenantId',
     'subscriptionId',
-    'deploymentPipelineClientId'
+    'deploymentPipelineClientId',
+    'b2cDeploymentPipelineClientId',
+    'identityExperienceFrameworkClientId',
+    'proxyIdentityExperienceFrameworkClientId',
+    'b2cDomainName',
+    'authorizatioServiceUrl',
 ])
-
-const envSpecific = require(`./${env}.js`)
 
 module.exports = {
     ...config,
-    ...envSpecific
 }

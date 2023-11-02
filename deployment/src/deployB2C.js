@@ -16,12 +16,13 @@ async function main() {
 
         console.log('Updating Custom Policies')
 
+        //https://learn.microsoft.com/en-us/azure/active-directory-b2c/deploy-custom-policies-devops
         const customPoliciesDirectory = path.resolve(__dirname, '../custom-policies')
         const customPoliciesFileOrder = [
             'TrustFrameworkBase.xml',
             'TrustFrameworkLocalization.xml',
             'TrustFrameworkExtensions.xml',
-            'SignUpOrSignin.xml',
+            'SignUp_Signin.xml',
             'ProfileEdit.xml',
             'PasswordReset.xml',
         ]
@@ -33,6 +34,7 @@ async function main() {
                 xml = xml.replace(/{B2C_DOMAIN_NAME}/g,                              config.b2cDomainName)
                 xml = xml.replace(/{IDENTITY_EXPERIENCE_FRAMEWORK_CLIENTID}/g,       config.identityExperienceFrameworkClientId)
                 xml = xml.replace(/{PROXY_IDENTITY_EXPERIENCE_FRAMEWORK_CLIENTID}/g, config.proxyIdentityExperienceFrameworkClientId)
+                xml = xml.replace(/{AUTHORIZATION_SERVICE_URL}/g,                    config.authorizatioServiceUrl)
 
                 await graph.updateTrustFrameworkPolicy(policyId, xml)
         };
@@ -40,7 +42,7 @@ async function main() {
         console.log("Script completed successfully")
     } catch (error) {
         process.exitCode = 1
-        //console.log(error)
+        console.log(error)
         console.log("Script Failed")
     }
 }

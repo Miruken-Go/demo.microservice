@@ -88,6 +88,7 @@ async function patch(endpoint, json, version) {
     return result;
 }
 
+//https://learn.microsoft.com/en-us/graph/api/trustframework-put-trustframeworkpolicy?view=graph-rest-beta
 async function updateTrustFrameworkPolicy(policyId, xml) {
     const uri = `https://graph.microsoft.com/beta/trustFramework/policies/${policyId}/$value`
     console.log(`Putting: ${uri}`)
@@ -105,6 +106,8 @@ async function updateTrustFrameworkPolicy(policyId, xml) {
             throw error
          });
 
+    console.log(result.status)
+    
     return result;
 }
 
