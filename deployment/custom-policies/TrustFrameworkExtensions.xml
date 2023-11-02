@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TrustFrameworkPolicy 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06" 
+  PolicySchemaVersion="0.3.0.0" 
+  TenantId="$B2C_DOMAIN_NAME$" 
+  PolicyId="B2C_1A_TrustFrameworkExtensions" 
+  PublicPolicyUri="http://$B2C_DOMAIN_NAME$/B2C_1A_TrustFrameworkExtensions">
+  
+  <BasePolicy>
+    <TenantId>$B2C_DOMAIN_NAME$</TenantId>
+    <PolicyId>B2C_1A_TrustFrameworkLocalization</PolicyId>
+  </BasePolicy>
+
+  <BuildingBlocks>
+    <ClaimsSchema>
+      <ClaimType Id="userLanguage">
+        <DisplayName>User UI language (used by REST API to return localized error messages)</DisplayName>
+        <DataType>string</DataType>
+      </ClaimType>
+      <ClaimType Id="clientId">
+        <DisplayName>The OIDC clientId</DisplayName>
+        <DataType>string</DataType>
+      </ClaimType>
+      <ClaimType Id="groups">
+        <DisplayName>Groups</DisplayName>
+        <DataType>stringCollection</DataType>
+        <UserHelpText>A collection of groups for the current user.</UserHelpText>
+      </ClaimType>
+      <ClaimType Id="roles">
+        <DisplayName>Roles</DisplayName>
+        <DataType>stringCollection</DataType>
+        <UserHelpText>A collection of roles for the current user.</UserHelpText>
+      </ClaimType>
+      <ClaimType Id="entitlements">
+        <DisplayName>Entitlements</DisplayName>
+        <DataType>stringCollection</DataType>
+        <UserHelpText>A collection of entitlements for the current user.</UserHelpText>
+      </ClaimType>
+    </ClaimsSchema>
+  </BuildingBlocks>
+
+  <ClaimsProviders>
+
+    <ClaimsProvider>
+      <DisplayName>Local Account SignIn</DisplayName>
+      <TechnicalProfiles>
+         <TechnicalProfile Id="login-NonInteractive">
+          <Metadata>
+            <Item Key="client_id">$PROXY_IDENTITY_EXPERIENCE_FRAMEWORK_CLIENTID$</Item>
+            <Item Key="IdTokenAudience">$IDENTITY_EXPERIENCE_FRAMEWORK_CLIENTID$</Item>
+          </Metadata>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="client_id" DefaultValue="$PROXY_IDENTITY_EXPERIENCE_FRAMEWORK_CLIENTID$" />
+            <InputClaim ClaimTypeReferenceId="resource_id" PartnerClaimType="resource" DefaultValue="$IDENTITY_EXPERIENCE_FRAMEWORK_CLIENTID$" />
+          </InputClaims>
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+
+    <ClaimsProvider>
+      <DisplayName>REST APIs</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="REST-EnrichToken">
+          <DisplayName>Enrich claims for user with application api</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.RestfulProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <Metadata>
+            <!-- Set the ServiceUrl with your own REST API endpoint -->
+            <Item Key="ServiceUrl">https://teamsrv-dev-ci.livelyisland-03fdcde0.centralus.azurecontainerapps.io/authz/</Item>
+            <Item Key="SendClaimsIn">Body</Item>
+            <!-- Set AuthenticationType to Basic or ClientCertificate in production environments -->
+            <Item Key="AuthenticationType">Basic</Item>
+            <!-- REMOVE the following line in production environments -->
+            <!-- Item Key="AllowInsecureAuthInProduction">true</Item -->
+            <Item Key="IncludeClaimResolvingInClaimsHandling">true</Item>
+          </Metadata>
+          <CryptographicKeys>
+            <Key Id="BasicAuthenticationUsername" StorageReferenceId="B2C_1A_RestApiUsername" />
+            <Key Id="BasicAuthenticationPassword" StorageReferenceId="B2C_1A_RestApiPassword" />
+          </CryptographicKeys>
+          <InputClaims>
+            <!-- Claims sent to your REST API -->
+            <InputClaim ClaimTypeReferenceId="signInNames.emailAddress" PartnerClaimType="email" />
+            <InputClaim ClaimTypeReferenceId="objectId" />
+            <InputClaim ClaimTypeReferenceId="scope" DefaultValue="{OIDC:Scope}" AlwaysUseDefaultValue="true" />
+            <InputClaim ClaimTypeReferenceId="userLanguage" DefaultValue="{Culture:LCID}" AlwaysUseDefaultValue="true" />
+            <InputClaim ClaimTypeReferenceId="clientId" DefaultValue="{OIDC:ClientId}" AlwaysUseDefaultValue="true" />
+          </InputClaims>
+          <OutputClaims>
+            <!-- Claims parsed from your REST API -->
+            <OutputClaim ClaimTypeReferenceId="groups" />
+            <OutputClaim ClaimTypeReferenceId="roles" />
+            <OutputClaim ClaimTypeReferenceId="entitlements" />
+          </OutputClaims>
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-Noop" />
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+  </ClaimsProviders>
+
+  <UserJourneys>
+    <UserJourney Id="SignUpOrSignIn">
+      <OrchestrationSteps>
+
+        <OrchestrationStep Order="1" Type="CombinedSignInAndSignUp" ContentDefinitionReferenceId="api.signuporsignin">
+          <ClaimsProviderSelections>
+            <ClaimsProviderSelection ValidationClaimsExchangeId="LocalAccountSigninEmailExchange" />
+          </ClaimsProviderSelections>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="LocalAccountSigninEmailExchange" TechnicalProfileReferenceId="SelfAsserted-LocalAccountSignin-Email" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <OrchestrationStep Order="2" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
+              <Value>objectId</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="SignUpWithLogonEmailExchange" TechnicalProfileReferenceId="LocalAccountSignUpWithLogonEmail" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <!-- This step reads any user attributes that we may not have received when in the token. -->
+        <OrchestrationStep Order="3" Type="ClaimsExchange">
+          <ClaimsExchanges>
+            <ClaimsExchange Id="AADUserReadWithObjectId" TechnicalProfileReferenceId="AAD-UserReadUsingObjectId" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <OrchestrationStep Order="4" Type="ClaimsExchange">
+          <ClaimsExchanges>
+            <ClaimsExchange Id="RESTEnrichToken" TechnicalProfileReferenceId="REST-EnrichToken" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <OrchestrationStep Order="5" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="JwtIssuer" />
+
+      </OrchestrationSteps>
+      <ClientDefinition ReferenceId="DefaultWeb" />
+    </UserJourney>
+
+    <UserJourney Id="RedeemRefreshToken">
+      <PreserveOriginalAssertion>false</PreserveOriginalAssertion>
+      <OrchestrationSteps>
+        <OrchestrationStep Order="1" Type="ClaimsExchange">
+          <ClaimsExchanges>
+            <ClaimsExchange Id="RefreshTokenSetupExchange" TechnicalProfileReferenceId="RefreshTokenReadAndSetup" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+        
+        <!-- Extra steps can be added before or after this step for REST API or claims transformation calls-->
+
+        <OrchestrationStep Order="2" Type="ClaimsExchange">
+          <ClaimsExchanges>
+            <ClaimsExchange Id="CheckRefreshTokenDateFromAadExchange" TechnicalProfileReferenceId="AAD-UserReadUsingObjectId-CheckRefreshTokenDate" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <OrchestrationStep Order="3" Type="ClaimsExchange">
+          <ClaimsExchanges>
+            <ClaimsExchange Id="RESTEnrichToken" TechnicalProfileReferenceId="REST-EnrichToken" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <OrchestrationStep Order="4" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="JwtIssuer" />
+      </OrchestrationSteps>
+    </UserJourney>
+	
+	</UserJourneys>
+
+</TrustFrameworkPolicy>

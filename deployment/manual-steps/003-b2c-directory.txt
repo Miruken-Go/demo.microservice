@@ -1,0 +1,34 @@
+B2C Directory Creation
+    create the b2c instances in the manual resouce group
+        Organization          Domain
+        teamsrv Identity Dev  teamsrvidentitydev
+        teamsrv Identity Qa   teamsrvidentityqa
+        teamsrv Identity Prod teamsrvidentityprod
+
+    Add the domain name to the <env>.js config file
+        b2cDomainName: "teamsrvidentity<env>.onmicrosoft.com"  
+
+    For dev, qa, and prod do the following in the b2c directory 
+        App registrations > New registration
+            1. Name:   DeploymentPipeline
+            2. Select: Accounts in this organizational directory only (teamsrv only - Single tenant)
+            3. Clear:  Grant admin consent to openid and offline_access permissions check box 
+            4. Click: Register
+        Give DeployPipeline permissions to Microsoft Graph
+            Api permissions > Add a permission > Microsoft APIs > Microsoft Graph > Application Permissions
+                Application.ReadWrite.All 
+                IdentityUserFlow.ReadWrite.All
+                User.ReadWrite.All
+        Grant Admin Concent for the GraphApi Permissions
+            click button: "Grant admin consent for teamsrv Identity <Env>"    
+            check that status is "granted" for the permissions. May have to refresh the page. If that 
+                doesn't work wait a minute and try to grant again.
+        Create Secret for DeploymentPipeline
+            Certificates & secrets > New client secret
+                Description: DeploymentPipeline
+                Expires: 24 month expiration
+            Copy secret immediatly and put secret in keyvault: teamsrv-pipeline-<env>
+                name: b2cDeploymentPipelineClientSecret
+        Add the ids to <env>.js in the javascript src
+            b2cTenantId
+            b2cDeploymentPipelineClientId

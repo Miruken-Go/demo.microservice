@@ -1,0 +1,4 @@
+create the resource groups
+    teamsrv-dev-manual-rg
+    teamsrv-qa-manual-rg
+    teamsrv-prod-manual-rg
