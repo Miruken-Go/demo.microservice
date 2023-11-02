@@ -1,0 +1,72 @@
+Register the following Applications
+
+Maybe I can automate this with Graph API
+Eventually we will need the application deployment to set the redirect in the application
+
+    https://learn.microsoft.com/en-us/answers/questions/476151/is-it-possible-to-create-a-redirect-uri-via-an-api
+    https://learn.microsoft.com/en-us/graph/api/application-post-applications?view=graph-rest-1.0&tabs=http
+    https://learn.microsoft.com/en-us/graph/api/application-get?view=graph-rest-1.0&tabs=http
+    https://learn.microsoft.com/en-us/graph/api/application-update?view=graph-rest-1.0&tabs=http
+
+
+Click > IdentityExperienceFramework > App registrations
+
+    Click > New Registration
+    
+    Name:                              teamsrv
+    Supported account types:           Accounts in this organizational directory only
+    Grant admin consent to openid ...: checked
+
+    Expose an API
+        Add ID URI > Click Add
+
+            Application ID URI: teamsrv
+
+        Add a scope
+
+            Scope Name:                 Groups
+            Admin consent display name: Groups
+            Admin consent description:  Groups to which the user belongs.
+            State:                      Enabled 
+
+            Click > Add scope
+
+        Add a scope
+
+            Scope Name:                 Roles
+            Admin consent display name: Roles
+            Admin consent description:  Roles to which the user belongs.
+            State:                      Enabled 
+
+            Click > Add scope
+
+        Add a scope
+
+            Scope Name:                 Entitlements
+            Admin consent display name: Entitlements
+            Admin consent description:  Entitlements to which the user belongs.
+            State:                      Enabled 
+
+            Click > Add scope
+
+    Click > New Registration
+    
+    Name:                              teamsrv_openapi
+    Supported account types:           Accounts in this organizational directory only
+    Grant admin consent to openid ...: checked
+
+    Authentication
+
+        Add a platform
+
+            Single-page application
+                Redirect URIs:                                 http://localhost:8080/oauth2-redirect.html
+                Access tokens (used for implicit flows):       checked
+                ID tokens(used for implicit and hybrid flows): checked
+            
+            click > Configure
+
+            click > Add URI
+                type in > https://jwt.ms/
+
+                click save
