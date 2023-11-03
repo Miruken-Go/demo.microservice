@@ -5,7 +5,7 @@
 flowchart LR
     A(Deploy Global Resources)
     
-    B(Deploy the Environment's Shared Resources)
+    B(Deploy the Environment's Common Resources)
 
     C[[Configure Manual Environment Resources]]
 
@@ -28,7 +28,7 @@ flowchart
         Container Repository
     ) 
     G  --- DS(
-        teamsrv-dev-shared
+        teamsrv-dev-common
 
         Key Vault
         Cosmos DB
@@ -58,7 +58,7 @@ flowchart
     )
 
     G  --- QS(
-        teamsrv-qa-shared
+        teamsrv-qa-common
 
         Key Vault
         Cosmos DB
@@ -69,20 +69,20 @@ flowchart
         B2C Tenant
     )
     QM --- Q1(
-        teamsrv-qa1
+        teamsrv-qa-1
 
         Container Apps Environment
         Container App
     )
     QM --- Q2(
-        teamsrv-qa2
+        teamsrv-qa-2
 
         Container Apps Environment
         Container App
     )
 
     G  --- PS(
-        teamsrv-prod-shared
+        teamsrv-prod-common
 
         Key Vault
         Cosmos DB
