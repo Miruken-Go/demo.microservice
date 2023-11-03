@@ -2,6 +2,7 @@ const az      = require('./az');
 const arm     = require('./arm');
 const logging = require('./logging');
 const config  = require('./config');
+const b2c     = require('./b2c')
 
 async function main() {
     try {
@@ -16,6 +17,7 @@ async function main() {
 
         const getAzureContainerRepositoryPassword = await az.getAzureContainerRepositoryPassword(config.containerRepositoryName)
         await arm.deployEnvironmentResources(getAzureContainerRepositoryPassword)
+        await b2c.configure()
 
         console.log("Script completed successfully")
     } catch (error) {
