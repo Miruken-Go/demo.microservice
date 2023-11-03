@@ -45,6 +45,8 @@ github.com/miruken-go/miruken v0.30.32 h1:NyvrS0To97BxfJyB8dotn0MidwEqf8eZh1gDVx
 github.com/miruken-go/miruken v0.30.32/go.mod h1:Af3AgzjFbd97yNl8Y2b+K26NYdkmaIgWGLiufV438Ws=
 github.com/miruken-go/miruken v0.30.33 h1:iQzP7CLzheVDVKboC3H6yaGdqrNPCm+/bdDHLWh/OkA=
 github.com/miruken-go/miruken v0.30.33/go.mod h1:Af3AgzjFbd97yNl8Y2b+K26NYdkmaIgWGLiufV438Ws=
+github.com/miruken-go/miruken v0.30.34 h1:K7sQ6DHaKxU6k49SWH2MqfF78I3Ge9anyhvJYaSB5BY=
+github.com/miruken-go/miruken v0.30.34/go.mod h1:Af3AgzjFbd97yNl8Y2b+K26NYdkmaIgWGLiufV438Ws=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
 gopkg.in/yaml.v3 v3.0.1/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
