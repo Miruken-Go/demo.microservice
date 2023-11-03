@@ -5,14 +5,14 @@
 flowchart LR
     A(Deploy Global Resources)
     
-    B(Deploy the Environment's Common Resources)
+    B(Deploy Common Environment Resources)
 
     C[[Configure Manual Environment Resources]]
 
     D(
-        Deploy the Environment Instance Resources
+        Deploy Environment Instance Resources
     
-        Do I Configure Manual resources here???
+        Configure Manual Resources
     )
 
     A --> B --> C --> D
