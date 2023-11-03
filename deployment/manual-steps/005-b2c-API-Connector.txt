@@ -11,7 +11,7 @@ Ientity Experience Framework > Select Policy Keys
 Add
     Options:  Manual
     Name:     RestApiUsername
-    Secret:   <Generate a 20 character random string for the Username> LK@kTJzb5e6wTS43&w5C
+    Secret:   <Generate a 20 character random string for the Username> "ooYymDzee5!V&v8gk7*s"
     KeyUsage: Encryption.
 
     Click Create
@@ -19,7 +19,7 @@ Add
 Add
     Options:  Manual
     Name:     RestApiPassword
-    Secret:   <Generate a 20 character random string for the Password> QW7Yu@C4Q7ZRoWTRexfQ 
+    Secret:   <Generate a 20 character random string for the Password> "i**72R#PLWbx8&#$I$ok"
     KeyUsage: Encryption.
 
     Click Create

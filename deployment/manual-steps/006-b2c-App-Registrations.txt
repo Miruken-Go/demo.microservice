@@ -14,7 +14,7 @@ Click > IdentityExperienceFramework > App registrations
     Click > New Registration
     
     Name:                              teamsrv
-    Supported account types:           Accounts in this organizational directory only
+    Supported account types:           Accounts in any identity provider or organizational directory (for authenticating users with user flows)
     Grant admin consent to openid ...: checked
 
     Expose an API
@@ -52,7 +52,7 @@ Click > IdentityExperienceFramework > App registrations
     Click > New Registration
     
     Name:                              teamsrv_openapi
-    Supported account types:           Accounts in this organizational directory only
+    Supported account types:           Accounts in any identity provider or organizational directory (for authenticating users with user flows)
     Grant admin consent to openid ...: checked
 
     Authentication
@@ -70,3 +70,21 @@ Click > IdentityExperienceFramework > App registrations
                 type in > https://jwt.ms/
 
                 click save
+
+            click > Add URI
+                type in > http://localhost:8080/oauth2-redirect.html 
+
+                click save
+
+        API permissions
+
+           Add a permission >  APIs my organization uses > teamsrv
+
+            Entitlements: checked
+            Groups:       checked
+            Roles:        checked
+
+            click Add permissions
+            click Grant admin consent for teamsrv Identity Dev
+            click Yes
+
