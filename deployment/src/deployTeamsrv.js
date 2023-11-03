@@ -10,8 +10,6 @@ async function main() {
 
         logging.header("Deploying teamsrv")
 
-        await az.login()
-
         //Create the new revision
         await bash.execute(`
             az containerapp update                        \

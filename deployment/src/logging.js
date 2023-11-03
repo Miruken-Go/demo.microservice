@@ -21,10 +21,10 @@ function printConfiguration (config) {
             for (const [secretkey, secretvalue] of Object.entries(config.secrets)) {
                 console.log(`        ${secretkey}: length ${secretvalue.length}`);
             }
-        } else if (key == 'armParams') {
+        } else if (Array.isArray(value)) {
             console.log(`    ${key}:`);
-            for (const [armkey, armvalue] of Object.entries(config.armParams)) {
-                console.log(`        ${armkey}: ${armvalue.value}`);
+            for (const [_, arrayValue] of Object.entries(value)) {
+                console.log(`        ${arrayValue}`);
             }
         } else {
             console.log(`    ${key}: ${value}`);

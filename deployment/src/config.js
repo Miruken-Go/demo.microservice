@@ -39,7 +39,6 @@ const config = {
     repository,
     secrets: {},
     ...envSpecific,
-
     requiredSecrets: function (names) {
         names.forEach(function(name) {
             const variable = process.env[name].trim()
@@ -61,8 +60,7 @@ const config = {
 }
 
 config.requiredSecrets([
-    'deploymentPipelineClientSecret',
-    'b2cDeploymentPipelineClientSecret',
+    'deploymentPipelineClientSecret'
 ])
 
 config.requiredNonSecrets([
@@ -75,6 +73,10 @@ config.requiredNonSecrets([
     'b2cDomainName',
     'authorizatioServiceUrl',
 ])
+
+config.requiredKeyVaultSecrets = [
+    'b2cDeploymentPipelineClientSecret',
+]
 
 module.exports = {
     ...config,

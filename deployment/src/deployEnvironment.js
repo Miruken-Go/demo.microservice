@@ -1,16 +1,16 @@
-const az      = require('./az');
-const arm     = require('./arm');
-const logging = require('./logging');
-const config  = require('./config');
-const b2c     = require('./b2c')
+const az       = require('./az');
+const arm      = require('./arm');
+const logging  = require('./logging');
+const config   = require('./config');
+const b2c      = require('./b2c')
+const keyvault = require('./keyvault')
 
 async function main() {
     try {
         logging.printConfiguration(config)
+        await keyvault.requireSecrets()
         
         logging.header("Deploying Environment")
-
-        await az.login()
 
         //Environment resources
         await az.createResourceGroup(config.resourceGroup)

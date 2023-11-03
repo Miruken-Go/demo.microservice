@@ -14,7 +14,8 @@ https://learn.microsoft.com/en-us/azure/active-directory/develop/howto-create-se
 Give DeploymentPipeline permissions
 
     Subscriptions > Access control (IAM)
-    Add role assignement Owner
+    Add > Add role assignement > Owner
+    Add > Add role assignment  > Key Vault Secrets User
 
 ### Add secrets and variables in github
 

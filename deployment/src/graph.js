@@ -1,6 +1,7 @@
 const config      = require('./config');
 const axios       = require('axios').default;
 const querystring = require('querystring');
+const keyvault    = require('./keyvault');
 
 let _token  = undefined
 
@@ -13,7 +14,7 @@ async function getToken() {
     const result = await axios.post(uri, querystring.stringify({
         client_id:     config.b2cDeploymentPipelineClientId,
         scope:         'https://graph.microsoft.com/.default',
-        client_secret: config.secrets.b2cDeploymentPipelineClientSecret,
+        client_secret: keyvault.secrets.b2cDeploymentPipelineClientSecret,
         grant_type:    'client_credentials'
     }));
     console.log('Retrieved token')
@@ -107,7 +108,7 @@ async function updateTrustFrameworkPolicy(policyId, xml) {
          });
 
     console.log(result.status)
-    
+
     return result;
 }
 

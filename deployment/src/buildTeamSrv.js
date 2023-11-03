@@ -11,8 +11,6 @@ async function main() {
 
         logging.header("Building teamsrv")
 
-        await az.login()
-
         const version      = `v${Math.floor(Date.now()/1000)}`.trim()
         const imageName    = `${config.imageName}:${version}`
         const tag          = `${config.appName}/${version}`

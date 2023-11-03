@@ -9,8 +9,6 @@ async function main() {
 
         logging.header("Deploying Shared Environment")
 
-        await az.login()
-
         //Provider Registrations
         await az.registerAzureProvider('Microsoft.AzureActiveDirectory')
         await az.registerAzureProvider('Microsoft.App')
