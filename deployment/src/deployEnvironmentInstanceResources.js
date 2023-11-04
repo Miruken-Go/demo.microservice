@@ -16,7 +16,7 @@ async function main() {
         await az.createResourceGroup(config.resourceGroup)
 
         const getAzureContainerRepositoryPassword = await az.getAzureContainerRepositoryPassword(config.containerRepositoryName)
-        await arm.deployEnvironmentResources(getAzureContainerRepositoryPassword)
+        await arm.deployEnvironmentInstanceResources(getAzureContainerRepositoryPassword)
         await b2c.configure()
 
         console.log("Script completed successfully")

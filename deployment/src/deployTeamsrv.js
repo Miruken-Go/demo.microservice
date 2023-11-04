@@ -10,6 +10,7 @@ async function main() {
 
         logging.header("Deploying teamsrv")
 
+        //https://learn.microsoft.com/en-us/cli/azure/containerapp?view=azure-cli-latest#az-containerapp-update
         //Create the new revision
         await bash.execute(`
             az containerapp update                        \
@@ -18,6 +19,7 @@ async function main() {
                 --image ${config.imageName}:${config.tag} \
                 --container-name ${config.appName}        \
                 --revision-suffix ${config.tag}           \
+                --replace-env-vars ${envVars}             \
         `)
 
         const revisions = await bash.json(`

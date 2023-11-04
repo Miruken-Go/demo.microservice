@@ -6,7 +6,7 @@ const config     = require('./config')
 async function deploySharedResources() {
     header("Deploying Shared Arm Template")
 
-    const bicepFile = path.join(config.nodeDirectory, 'bicep/shared.bicep')
+    const bicepFile = path.join(config.nodeDirectory, 'bicep/globalResources.bicep')
 
     return await bash.json(`
         az deployment group create                                        \
@@ -20,10 +20,10 @@ async function deploySharedResources() {
     `)
 }
 
-async function deployEnvironmentResources(containerRepositoryPassword) {
+async function deployEnvironmentInstanceResources(containerRepositoryPassword) {
     header("Deploying Environment Arm Template")
 
-    const bicepFile = path.join(config.nodeDirectory, 'bicep/environment.bicep')
+    const bicepFile = path.join(config.nodeDirectory, 'bicep/environmentInstanceResources.bicep')
 
     return await bash.json(`
         az deployment group create                                         \
@@ -41,6 +41,6 @@ async function deployEnvironmentResources(containerRepositoryPassword) {
 }
 
 module.exports = {
-    deployEnvironmentResources,
+    deployEnvironmentInstanceResources,
     deploySharedResources,
 }
