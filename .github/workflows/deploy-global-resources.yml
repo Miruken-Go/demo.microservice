@@ -1,4 +1,4 @@
-name: Deploy Shared Environment 
+name: Deploy Global Resources 
 
 on: workflow_dispatch
 
@@ -16,5 +16,5 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Run deploySharedEnvironment.js
-      run:  node ./deployment/src/deploySharedEnvironment.js 
+    - name: Run deployGlobalResources.js
+      run:  node ./deployment/src/deployGlobalResources.js 

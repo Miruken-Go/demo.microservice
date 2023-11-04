@@ -32,7 +32,7 @@ const config = {
     prefix,
     simplePrefix,
     resourceGroup: `${prefix}-rg`,
-    sharedResourceGroup: `${appName}-shared-rg`,
+    globalResourceGroup: `${appName}-global`,
     containerRepositoryName,
     imageName,
     location: process.env.location || defaultLocation,

@@ -12,7 +12,7 @@ async function deploySharedResources() {
         az deployment group create                                        \
             --template-file ${bicepFile}                                  \
             --subscription ${config.subscriptionId}                       \
-            --resource-group ${config.sharedResourceGroup}                \
+            --resource-group ${config.globalResourceGroup}                \
             --mode complete                                               \
             --parameters                                                  \
                 containerRepositoryName=${config.containerRepositoryName} \

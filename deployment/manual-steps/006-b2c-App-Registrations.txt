@@ -44,7 +44,7 @@ Click > IdentityExperienceFramework > App registrations
 
             Scope Name:                 Entitlements
             Admin consent display name: Entitlements
-            Admin consent description:  Entitlements to which the user belongs.
+            Admin consent description:  Entitlements the user has.
             State:                      Enabled 
 
             Click > Add scope

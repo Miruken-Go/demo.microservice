@@ -7,7 +7,7 @@ async function main() {
     try {
         logging.printConfiguration(config)
 
-        logging.header("Deploying Shared Environment")
+        logging.header("Deploying Global Resources")
 
         //Provider Registrations
         await az.registerAzureProvider('Microsoft.AzureActiveDirectory')
@@ -15,7 +15,7 @@ async function main() {
         await az.registerAzureProvider('Microsoft.OperationalInsights')
 
         //Shared resources 
-        await az.createResourceGroup(config.sharedResourceGroup)
+        await az.createResourceGroup(config.globalResourceGroup)
         await arm.deploySharedResources()
 
         console.log("Script completed successfully")
