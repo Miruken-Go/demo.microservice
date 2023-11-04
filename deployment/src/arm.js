@@ -3,7 +3,7 @@ const path       = require('path')
 const bash       = require('./bash')
 const config     = require('./config')
 
-async function deploySharedResources() {
+async function deployGlobalResources() {
     header("Deploying Shared Arm Template")
 
     const bicepFile = path.join(config.nodeDirectory, 'bicep/globalResources.bicep')
@@ -42,5 +42,5 @@ async function deployEnvironmentInstanceResources(containerRepositoryPassword) {
 
 module.exports = {
     deployEnvironmentInstanceResources,
-    deploySharedResources,
+    deployGlobalResources,
 }

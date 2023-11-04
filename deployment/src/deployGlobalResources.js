@@ -16,7 +16,7 @@ async function main() {
 
         //Shared resources 
         await az.createResourceGroup(config.globalResourceGroup)
-        await arm.deploySharedResources()
+        await arm.deployGlobalResources()
 
         console.log("Script completed successfully")
     } catch (error) {
