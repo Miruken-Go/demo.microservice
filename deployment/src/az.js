@@ -2,13 +2,26 @@ const bash       = require('./bash')
 const config     = require('./config')
 const { header } = require('./logging')
 
-let loggedIn = false 
+let loggedInToAZ  = false 
+let loggedInToACR = false 
+
 async function login() {
-    if (loggedIn) return 
+    if (loggedInToAZ) return 
 
     header('Logging into az')
     await bash.execute(`az login --service-principal --username ${config.deploymentPipelineClientId} --password ${config.secrets.deploymentPipelineClientSecret} --tenant ${config.tenantId}`);
-    loggedIn = true 
+    loggedInToAZ = true 
+}
+
+async function loginToACR() {
+    if (loggedInToACR) return 
+
+    header('Logging into ACR')
+    await login()
+    await bash.execute(`
+        az acr login -n ${config.containerRepositoryName}
+    `)
+    loggedInToACR = true
 }
 
 async function createResourceGroup(name) {
@@ -52,6 +65,7 @@ async function getKeyVaultSecret(secretName, keyVaultName) {
 }
 
 module.exports = {
+    loginToACR,
     createResourceGroup,
     registerAzureProvider,
     getAzureContainerRepositoryPassword,

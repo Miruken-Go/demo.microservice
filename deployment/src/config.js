@@ -29,6 +29,7 @@ const config = {
     env,
     instance,
     appName,
+    defaultContainerImage: 'defaultContainerImage',
     prefix,
     simplePrefix,
     resourceGroup: `${prefix}-rg`,

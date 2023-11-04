@@ -1,0 +1,35 @@
+name: build defaultContainerImage
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main", "develop"]
+    paths:
+    - 'defaultContainerImage/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+    - 'defaultContainerImage/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build-pipeline:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/miruken-go/demo.microservice.build:1698851101
+      env:
+        tenantId:                       ${{ vars.TENANT_ID }}
+        subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
+        deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
+        deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
+        env:                            notused
+        ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
+        GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Run defaultContainerImage.j
+      run:  node ./deployment/src/defaultContainerImage.js 
