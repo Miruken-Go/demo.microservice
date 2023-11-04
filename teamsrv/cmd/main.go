@@ -72,6 +72,40 @@ func authzHandler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+type Config struct {
+	App struct {
+		Version string
+		Source  struct {
+			Url string
+		}
+	}
+	OpenApi struct {
+		AuthorizationURL string
+		TokenURL         string
+		Scopes           []struct {
+			Name        string
+			Description string
+		}
+		OpenIdConnectUrl string
+	}
+}
+
+func (c Config) ScopesAsMap() map[string]string {
+	ret := map[string]string{}
+	for _, s := range c.OpenApi.Scopes {
+		ret[s.Name] = s.Description
+	}
+	return ret
+}
+
+func (c Config) ScopeNames() []string {
+	ret := make([]string, len(c.OpenApi.Scopes))
+	for i, s := range c.OpenApi.Scopes {
+		ret[i] = s.Name
+	}
+	return ret
+}
+
 func main() {
 	// logging
 	zl := zerolog.New(os.Stderr)
@@ -86,6 +120,9 @@ func main() {
 		logger.Error(err, "error loading configuration")
 		os.Exit(1)
 	}
+
+	var appConfig Config
+	k.Unmarshal("", &appConfig)
 
 	// openapi generator
 	openapiGen := openapi.Feature(openapi3.T{
@@ -103,7 +140,7 @@ func main() {
 		},
 		ExternalDocs: &openapi3.ExternalDocs{
 			Description: "teamsrv/" + k.String("App.Version"),
-			URL:         k.String("App.Source.Url"),
+			URL:         appConfig.App.Source.Url,
 		},
 		Components: &openapi3.Components{
 			SecuritySchemes: openapi3.SecuritySchemes{
@@ -112,26 +149,20 @@ func main() {
 						Type: "oauth2",
 						Flows: &openapi3.OAuthFlows{
 							Implicit: &openapi3.OAuthFlow{
-								AuthorizationURL: "https://teamsrvidentitydev.b2clogin.com/teamsrvidentitydev.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1a_signup_signin",
-								TokenURL:         "https://teamsrvidentitydev.b2clogin.com/teamsrvidentitydev.onmicrosoft.com/oauth2/v2.0/token?p=b2c_1a_signup_signin",
-								Scopes: map[string]string{
-									"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Groups":       "Groups the user belongs to.",
-									"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Roles":        "Roles the user belongs to.",
-									"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Entitlements": "Entitlements the user has.",
-								},
+								AuthorizationURL: appConfig.OpenApi.AuthorizationURL,
+								TokenURL:         appConfig.OpenApi.TokenURL,
+								Scopes:           appConfig.ScopesAsMap(),
 							},
 						},
-						OpenIdConnectUrl: "https://teamsrvidentitydev.b2clogin.com/teamsrvidentitydev.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_SIGNUP_SIGNIN",
+						OpenIdConnectUrl: appConfig.OpenApi.OpenIdConnectUrl,
 					},
 				},
 			},
 		},
 		Security: openapi3.SecurityRequirements{
-			{"team_auth": []string{
-				"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Groups",
-				"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Roles",
-				"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Entitlements",
-			}},
+			{
+				"team_auth": appConfig.ScopeNames(),
+			},
 		},
 	})
 
