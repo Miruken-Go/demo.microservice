@@ -14,7 +14,7 @@ function printConfiguration (config) {
     ]
 
     for (const [key, value] of Object.entries(config)) {
-        if (ignore.includes(key)){
+        if (typeof value === 'function') {
             //ignore
         } else if (key == 'secrets') {
             console.log(`    ${key}:`);

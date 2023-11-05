@@ -26,20 +26,13 @@ const prefix = (instance)
     ? `${appName}-${env}-${instance}`
     : `${appName}-${env}`
 
+const keyVaultName            = `${commonPrefix}-keyvault` 
 const containerRepositoryName = `${appName}global`.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
 
 if (containerRepositoryName.length > 32)
     throw `Configuration Error - containerRepositoryName cannot be longer than 32 characters : ${containerRepositoryName} [${containerRepositoryName.length}]`
 
-const imageName    = `${containerRepositoryName}.azurecr.io/${appName}`
-
-const keyVaultName = `${prefix}-keyvault` 
-
-//If the env environement varialbe is set to an expected environment
-//pull in environemnt specific configurations
-const envSpecific = (appDescription.environments.includes(env))
-    ? require(`./${env}.js`)
-    : {}
+const imageName = `${containerRepositoryName}.azurecr.io/${appName}`
 
 const config = {
     env,
@@ -58,8 +51,7 @@ const config = {
     commonEnvironmentResourceGroup:   `${commonPrefix}-common`,
     environmentInstanceResourceGroup: `${prefix}`,
     secrets: {},
-    ...envSpecific,
-    requiredSecrets: function (names) {
+    requiredEnvironmentVariableSecrets: function (names) {
         names.forEach(function(name) {
             const variable = process.env[name].trim()
             if (!variable){
@@ -68,7 +60,7 @@ const config = {
             this.secrets[name] = variable
         }.bind(this));
     },
-    requiredNonSecrets: function (names) {
+    requiredEnvironmentVariableNonSecrets: function (names) {
         names.forEach(function(name) {
             const variable = process.env[name] || this[name]
             if (!variable){
@@ -77,16 +69,31 @@ const config = {
             this[name] = variable.trim()
         }.bind(this));
     }, 
+    requiredEnvFileNonSecrets: function(names){
+        if (appDescription.environments.includes(env)) {
+            const envSpecific = require(`./${env}.js`)
+            names.forEach(function(name) {
+                const variable =  envSpecific[name]
+                if (!variable){
+                    throw `Variable required from ${env}.js: ${name}`
+                }
+                this[name] = variable.trim()
+            }.bind(this));
+        }
+    }
 }
 
-config.requiredSecrets([
-    'deploymentPipelineClientSecret'
+config.requiredEnvironmentVariableSecrets([
+    'deploymentPipelineClientSecret',
 ])
 
-config.requiredNonSecrets([
+config.requiredEnvironmentVariableNonSecrets([
     'tenantId',
     'subscriptionId',
     'deploymentPipelineClientId',
+])
+
+config.requiredEnvFileNonSecrets([
     'b2cDeploymentPipelineClientId',
     'identityExperienceFrameworkClientId',
     'proxyIdentityExperienceFrameworkClientId',

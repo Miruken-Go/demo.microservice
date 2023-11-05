@@ -5,7 +5,7 @@ const git     = require('./git');
 
 async function main() {
     try {
-        config.requiredSecrets(['ghToken'])
+        config.requiredEnvironmentVariableSecrets(['ghToken'])
         config.requiredNonSecrets(['mirukenVersion'])
         logging.printConfiguration(config)
 
