@@ -8,7 +8,7 @@ import (
 
 func main() {
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        fmt.Fprintf(w, "Default Container Image\nENV: %s\n", os.Getenv("ENV"))
+        fmt.Fprintf(w, "Default Container Image\nResource Group: %s\n", os.Getenv("RESOURCE_GROUP"))
     })
 
     http.ListenAndServe(":8080", nil)

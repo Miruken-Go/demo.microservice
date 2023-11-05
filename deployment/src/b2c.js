@@ -26,7 +26,7 @@ async function configure () {
             xml = xml.replace(/{B2C_DOMAIN_NAME}/g,                              config.b2cDomainName)
             xml = xml.replace(/{IDENTITY_EXPERIENCE_FRAMEWORK_CLIENTID}/g,       config.identityExperienceFrameworkClientId)
             xml = xml.replace(/{PROXY_IDENTITY_EXPERIENCE_FRAMEWORK_CLIENTID}/g, config.proxyIdentityExperienceFrameworkClientId)
-            xml = xml.replace(/{AUTHORIZATION_SERVICE_URL}/g,                    config.authorizatioServiceUrl)
+            xml = xml.replace(/{AUTHORIZATION_SERVICE_URL}/g,                    config.authorizationServiceUrl)
 
             await graph.updateTrustFrameworkPolicy(policyId, xml)
     };

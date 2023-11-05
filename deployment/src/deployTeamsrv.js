@@ -15,7 +15,7 @@ async function main() {
         await bash.execute(`
             az containerapp update                        \
                 -n ${config.prefix}                       \
-                -g ${config.resourceGroup}                \
+                -g ${config.environmentInstanceResourceGroup}                \
                 --image ${config.imageName}:${config.tag} \
                 --container-name ${config.appName}        \
                 --revision-suffix ${config.tag}           \
@@ -25,7 +25,7 @@ async function main() {
         const revisions = await bash.json(`
             az containerapp revision list  \
                 -n ${config.prefix}        \
-                -g ${config.resourceGroup} \
+                -g ${config.environmentInstanceResourceGroup} \
         `)
 
         const revisionsToActivate   = revisions.filter(r => r.name.includes(config.tag))
@@ -38,7 +38,7 @@ async function main() {
                 await bash.execute(`
                     az containerapp revision activate \
                         -n ${config.prefix}           \
-                        -g ${config.resourceGroup}    \
+                        -g ${config.environmentInstanceResourceGroup}    \
                         --revision ${revision.name}   \
                 `)
             }
@@ -46,7 +46,7 @@ async function main() {
             await bash.execute(`
                 az containerapp ingress traffic set \
                     -n ${config.prefix}           \
-                    -g ${config.resourceGroup}    \
+                    -g ${config.environmentInstanceResourceGroup}    \
                     --revision-weight ${revision.name}=100
             `)
         }
@@ -57,7 +57,7 @@ async function main() {
                 await bash.execute(`
                     az containerapp revision deactivate \
                         -n ${config.prefix}           \
-                        -g ${config.resourceGroup}    \
+                        -g ${config.environmentInstanceResourceGroup}    \
                         --revision ${revision.name}   \
                 `)
             }

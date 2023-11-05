@@ -24,29 +24,30 @@ Settings > Security > Secrets and Variables > Actions
 Secrets
 
 * DEPLOYMENT_PIPELINE_CLIENT_SECRET
+* WORKFLOW_GH_TOKEN
+
+`WORKFLOW_GH_TOKEN` should be a github personal access token that has permissions to edit workflows
     
 Variables
 
 * TENANT_ID
 * SUBSCRIPTION_ID
 * DEPLOYMENT_PIPELINE_CLIENT_ID
-* WORKFLOW_GH_TOKEN
 
-`WORKFLOW_GH_TOKEN` should be a github personal access token that has permissions to edit workflows
 
 ### Run the "build-and-push-deployment-image" pipeline
 
 Get the deployment tag from the container and update the 
 other pipeline files with the latest tag.
 
-### Run the "deploy-shared-environment" pipeline
+### Run the "deploy-global-resources" pipeline
 
 ### Push the initial image to the shared Azure Container Repository
 
     TAG=initial
-    IMAGE_NAME="teamsrvshared.azurecr.io/teamsrv:$TAG"; echo $IMAGE_NAME
+    IMAGE_NAME="teamsrvglobal.azurecr.io/teamsrv:$TAG"; echo $IMAGE_NAME
     docker build --build-arg application_version=$TAG -t $IMAGE_NAME demo.microservice/teamsrv 
-    az acr login -n teamsrvshared
+    az acr login -n teamsrvglobal
     docker push $IMAGE_NAME
 
 ### Run the "deploy-environment" pipeline

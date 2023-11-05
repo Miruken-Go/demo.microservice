@@ -70,8 +70,14 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' ={
     template: {
       containers: [
         {
-          image: '${containerRepositoryName}.azurecr.io/${appName}:initial' 
+          image: '${containerRepositoryName}.azurecr.io/${appName}:default' 
           name:  appName
+          env: [
+            {
+              name: 'RESOURCE_GROUP'
+              value: resourceGroup().name
+            }
+          ]
         }
       ]
     }

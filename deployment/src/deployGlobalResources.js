@@ -14,7 +14,7 @@ async function main() {
         await az.registerAzureProvider('Microsoft.App')
         await az.registerAzureProvider('Microsoft.OperationalInsights')
 
-        //Shared resources 
+        //Global resources 
         await az.createResourceGroup(config.globalResourceGroup)
         await arm.deployGlobalResources()
 

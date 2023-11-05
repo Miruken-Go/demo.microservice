@@ -10,13 +10,15 @@ async function main() {
         logging.printConfiguration(config)
         await keyvault.requireSecrets()
         
-        logging.header("Deploying Environment")
+        logging.header(`Deploying Environment Instance Resources for ${config.env}`)
 
         //Environment resources
-        await az.createResourceGroup(config.resourceGroup)
+        await az.createResourceGroup(config.environmentInstanceResourceGroup)
 
-        const getAzureContainerRepositoryPassword = await az.getAzureContainerRepositoryPassword(config.containerRepositoryName)
-        await arm.deployEnvironmentInstanceResources(getAzureContainerRepositoryPassword)
+        const azureContainerRepositoryPassword = await az.getAzureContainerRepositoryPassword(config.containerRepositoryName)
+        await arm.deployEnvironmentInstanceResources(azureContainerRepositoryPassword)
+
+        //App whatever automated configuration we can to the manual resource group
         await b2c.configure()
 
         console.log("Script completed successfully")

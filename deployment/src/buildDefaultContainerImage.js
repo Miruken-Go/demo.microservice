@@ -21,7 +21,6 @@ async function main() {
 
         await bash.execute(`
             docker build                                   \
-                --build-arg app_version=${version}         \
                 -t ${imageName}                            \
                 defaultContainerImage                      \
         `)

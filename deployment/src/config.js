@@ -11,7 +11,7 @@ const prefix   = (instance)
     : `${appName}-${env}`
 
 const simplePrefix = prefix.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
-const containerRepositoryName = `${appName}shared`.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
+const containerRepositoryName = `${appName}global`.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
 
 if (containerRepositoryName.length > 32)
     throw `Configuration Error - containerRepositoryName cannot be longer than 32 characters : ${containerRepositoryName} [${containerRepositoryName.length}]`
@@ -20,6 +20,8 @@ if (simplePrefix.length > 32)
     throw `Configuration Error - simplePrefix cannot be longer than 50 characters because of ACA naming restrictions: ${simplePrefix} [${simplePrefix.length}]`
 
 const imageName = `${containerRepositoryName}.azurecr.io/${appName}`
+
+const keyVaultName = `${prefix}-keyvault` 
 
 const envSpecific = require(`./${env}.js`)
 
@@ -32,10 +34,12 @@ const config = {
     defaultContainerImage: 'defaultContainerImage',
     prefix,
     simplePrefix,
-    resourceGroup: `${prefix}-rg`,
     globalResourceGroup: `${appName}-global`,
+    commonEnvironmentResourceGroup: `${appName}-${env}-common`,
+    environmentInstanceResourceGroup: `${prefix}`,
     containerRepositoryName,
     imageName,
+    keyVaultName,
     location: process.env.location || defaultLocation,
     repository,
     secrets: {},
@@ -72,7 +76,7 @@ config.requiredNonSecrets([
     'identityExperienceFrameworkClientId',
     'proxyIdentityExperienceFrameworkClientId',
     'b2cDomainName',
-    'authorizatioServiceUrl',
+    'authorizationServiceUrl',
 ])
 
 config.requiredKeyVaultSecrets = [

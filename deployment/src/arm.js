@@ -4,19 +4,36 @@ const bash       = require('./bash')
 const config     = require('./config')
 
 async function deployGlobalResources() {
-    header("Deploying Shared Arm Template")
+    header("Deploying GlobalResources Arm Template")
 
     const bicepFile = path.join(config.nodeDirectory, 'bicep/globalResources.bicep')
 
     return await bash.json(`
         az deployment group create                                        \
-            --template-file ${bicepFile}                                  \
-            --subscription ${config.subscriptionId}                       \
+            --template-file  ${bicepFile}                                  \
+            --subscription   ${config.subscriptionId}                       \
             --resource-group ${config.globalResourceGroup}                \
             --mode complete                                               \
             --parameters                                                  \
                 containerRepositoryName=${config.containerRepositoryName} \
                 location=${config.location}                               \
+    `)
+}
+
+async function deployCommonEnvironmentResources() {
+    header("Deploying CommonEnvironmentResources Arm Template")
+
+    const bicepFile = path.join(config.nodeDirectory, 'bicep/commonEnvironmentResources.bicep')
+
+    return await bash.json(`
+        az deployment group create                                    \
+            --template-file  ${bicepFile}                             \
+            --subscription   ${config.subscriptionId}                 \
+            --resource-group ${config.commonEnvironmentResourceGroup} \
+            --mode complete                                           \
+            --parameters                                              \
+                keyVaultName=${config.keyVaultName}                   \
+                location=${config.location}                           \
     `)
 }
 
@@ -29,7 +46,7 @@ async function deployEnvironmentInstanceResources(containerRepositoryPassword) {
         az deployment group create                                         \
             --template-file ${bicepFile}                                   \
             --subscription ${config.subscriptionId}                        \
-            --resource-group ${config.resourceGroup}                       \
+            --resource-group ${config.environmentInstanceResourceGroup}    \
             --mode complete                                                \
             --parameters                                                   \
                 prefix=${config.prefix}                                    \
@@ -41,6 +58,7 @@ async function deployEnvironmentInstanceResources(containerRepositoryPassword) {
 }
 
 module.exports = {
-    deployEnvironmentInstanceResources,
     deployGlobalResources,
+    deployCommonEnvironmentResources,
+    deployEnvironmentInstanceResources,
 }

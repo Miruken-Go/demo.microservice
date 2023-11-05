@@ -1,5 +1,5 @@
 function header (text) {
-    const separator = "********************************************"
+    const separator = "*********************************************************************"
     console.log(separator)
     console.log(text)
     console.log(separator)
