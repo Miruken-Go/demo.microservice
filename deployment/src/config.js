@@ -10,6 +10,8 @@ const prefix   = (instance)
     ? `${appName}-${env}-${instance}`
     : `${appName}-${env}`
 
+const commonPrefix = `${appName}-${env}`
+
 const simplePrefix = prefix.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
 const containerRepositoryName = `${appName}global`.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
 
@@ -35,7 +37,7 @@ const config = {
     prefix,
     simplePrefix,
     globalResourceGroup: `${appName}-global`,
-    commonEnvironmentResourceGroup: `${appName}-${env}-common`,
+    commonEnvironmentResourceGroup: `${commonPrefix}-common`,
     environmentInstanceResourceGroup: `${prefix}`,
     containerRepositoryName,
     imageName,
