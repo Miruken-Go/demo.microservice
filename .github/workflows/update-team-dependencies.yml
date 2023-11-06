@@ -19,7 +19,7 @@ jobs:
   build-pipeline:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/miruken-go/demo.microservice.build:1698851101
+      image: ghcr.io/miruken-go/demo.microservice.build:1699298856
       env:
         tenantId:                       ${{ vars.TENANT_ID }}
         subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
