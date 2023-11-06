@@ -1,9 +1,11 @@
-param prefix                      string
-param appName                     string
-param location                    string 
-param containerRepositoryName     string 
+param prefix                         string
+param appName                        string
+param location                       string 
+param containerRepositoryName        string 
 @secure()
-param containerRepositoryPassword string 
+param containerRepositoryPassword    string 
+param keyVaultName                   string
+param commonEnvironmentResourceGroup string
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -81,5 +83,15 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' ={
         }
       ]
     }
+  }
+}
+
+module keyVaultRoleAssignment 'keyVaultSecretsUserRoleAssignment.bicep' = {
+  name:  'keyVaultRoleAssignment' 
+  scope: resourceGroup(commonEnvironmentResourceGroup)
+  params: {
+     keyVaultName: keyVaultName
+     prefix:       prefix
+     principalId:  containerApp.identity.principalId
   }
 }
