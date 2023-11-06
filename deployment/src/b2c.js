@@ -15,7 +15,7 @@ async function configure () {
         'TrustFrameworkBase.xml',
         'TrustFrameworkLocalization.xml',
         'TrustFrameworkExtensions.xml',
-        'SignUp_Signin.xml',
+        'SignUp_SignIn.xml',
         'ProfileEdit.xml',
         'PasswordReset.xml',
     ]
