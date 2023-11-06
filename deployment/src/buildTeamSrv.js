@@ -28,9 +28,9 @@ async function main() {
                 -t ${imageName}                            \
                 teamsrv                                    \
         `)
-        await bash.execute(`
-            az acr login -n ${config.containerRepositoryName}
-        `)
+
+        await az.loginToACR()
+        
         await bash.execute(`
             docker push ${imageName}
         `)

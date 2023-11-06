@@ -3,6 +3,7 @@ const config  = require('./config');
 const graph   = require('./graph');
 const fs      = require('fs')
 const path    = require('path')
+const axios   = require('axios')
 
 async function configure () {
 
@@ -32,6 +33,21 @@ async function configure () {
     };
 }
 
+async function getWellKnownOpenIdConfiguration() {
+    const uri = config.wellKnownOpenIdConfigurationUrl
+    console.log(`Getting: ${uri}`)
+    const result = await axios.get(uri)
+        .catch(function (error) {
+            console.log(`Failed to Get: ${uri}`)  
+            logError(error)
+            throw error
+         });
+   
+    console.log(result.data)
+    return result.data
+}
+
 module.exports = {
-    configure
+    configure,
+    getWellKnownOpenIdConfiguration
 }

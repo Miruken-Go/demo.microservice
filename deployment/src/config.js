@@ -98,7 +98,9 @@ config.requiredEnvFileNonSecrets([
     'identityExperienceFrameworkClientId',
     'proxyIdentityExperienceFrameworkClientId',
     'b2cDomainName',
+    'wellKnownOpenIdConfigurationUrl',
     'authorizationServiceUrl',
+    'authorizationServiceUsername',
 ])
 
 config.requiredKeyVaultSecrets = [

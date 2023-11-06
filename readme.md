@@ -10,7 +10,7 @@
             RUN wget https://go.dev/dl/go1.21.3.linux-amd64.tar.gz
             RUN tar -C /usr/local -xzf go1.21.3.linux-amd64.tar.gz
     * check in dockerfile and the new image is built automatically
-    * Seach and replace the containe version `ghcr.io/miruken-go/demo.microservice.build:1698851101` in the .github folder
+    * Seach and replace the container version `ghcr.io/miruken-go/demo.microservice.build:1699298856` in the .github folder
 
 ### Docker image
 

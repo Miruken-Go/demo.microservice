@@ -41,7 +41,7 @@ resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-10-01'
   }
 }
 
-resource containerApp 'Microsoft.App/containerApps@2022-03-01' ={
+resource containerApp 'Microsoft.App/containerApps@2023-05-01' ={
   name: prefix
   location: location
   identity: {
@@ -59,6 +59,11 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' ={
         {
           name: 'acr-password'
           value: containerRepositoryPassword
+        }
+        {
+          name:        'authorization-service-password'
+          keyVaultUrl: 'https://${keyVaultName}.vault.azure.net/secrets/authorizationServicePassword'
+          identity:    'system'
         }
       ]
       registries: [

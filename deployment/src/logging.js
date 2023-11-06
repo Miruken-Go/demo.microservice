@@ -10,7 +10,7 @@ function printConfiguration (config) {
 
     const ignore = [
         'requiredSecrets',
-        'requiredNonSecrets'
+        'requiredEnvironmentVariableNonSecrets'
     ]
 
     for (const [key, value] of Object.entries(config)) {

@@ -65,6 +65,7 @@ async function getKeyVaultSecret(secretName, keyVaultName) {
 }
 
 module.exports = {
+    login,
     loginToACR,
     createResourceGroup,
     registerAzureProvider,

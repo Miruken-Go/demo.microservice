@@ -43,17 +43,19 @@ async function deployEnvironmentInstanceResources(containerRepositoryPassword) {
     const bicepFile = path.join(config.nodeDirectory, 'bicep/environmentInstanceResources.bicep')
 
     return await bash.json(`
-        az deployment group create                                         \
-            --template-file ${bicepFile}                                   \
-            --subscription ${config.subscriptionId}                        \
-            --resource-group ${config.environmentInstanceResourceGroup}    \
-            --mode complete                                                \
-            --parameters                                                   \
-                prefix=${config.prefix}                                    \
-                appName=${config.appName}                                  \
-                location=${config.location}                                \
-                containerRepositoryName=${config.containerRepositoryName}  \
-                containerRepositoryPassword=${containerRepositoryPassword} \
+        az deployment group create                                                      \
+            --template-file ${bicepFile}                                                \
+            --subscription ${config.subscriptionId}                                     \
+            --resource-group ${config.environmentInstanceResourceGroup}                 \
+            --mode complete                                                             \
+            --parameters                                                                \
+                prefix=${config.prefix}                                                 \
+                appName=${config.appName}                                               \
+                location=${config.location}                                             \
+                containerRepositoryName=${config.containerRepositoryName}               \
+                containerRepositoryPassword=${containerRepositoryPassword}              \
+                keyVaultName=${config.keyVaultName}                                     \
+                commonEnvironmentResourceGroup=${config.commonEnvironmentResourceGroup} \
     `)
 }
 

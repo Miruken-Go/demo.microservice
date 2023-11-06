@@ -7,7 +7,7 @@ const go      = require('./go');
 async function main() {
     try {
         config.requiredEnvironmentVariableSecrets(['ghToken'])
-        config.requiredNonSecrets(['repositoryPath'])
+        config.requiredEnvironmentVariableNonSecrets(['repositoryPath'])
         logging.printConfiguration(config)
 
         logging.header("Building teamapi")
