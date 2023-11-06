@@ -40,6 +40,11 @@ RUN apt-get -y install python3-pip
 # Irritatingly Github Actions overrides $HOME when running the container
 RUN az extension add --name containerapp --system
 
+# The build started failing because the bicep download url was unavailable for a while
+# Didn't realize the build was downloading it when it need it
+# Doing it here instead
+RUN az bicep install
+
 ############
 #gh
 ############
