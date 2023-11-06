@@ -34,8 +34,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+    - name: npm ci
+      working-directory: ./deployment/src
+      run: npm ci
     - name: Run deployEnvironmentInstanceResources.js
-      run: | 
-        cd ./deployment/src
-        npm ci
-        node ./deployEnvironmentInstanceResources.js 
+      run: node ./deployment/src/deployEnvironmentInstanceResources.js 
