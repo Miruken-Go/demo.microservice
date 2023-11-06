@@ -9,9 +9,10 @@ on:
         options: 
         - dev 
         - qa
-        - staging
+        - uat
         - demo
         - prod
+        - dr
       instance:
         description: 'Optional unique instance in an environment'
         default: ''

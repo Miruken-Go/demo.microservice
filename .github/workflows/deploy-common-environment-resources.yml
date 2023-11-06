@@ -1,6 +1,18 @@
-name: Deploy Global Resources 
+name: Deploy Common Environment Resources
 
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+    inputs:
+      env:
+        type: choice
+        description: Environment
+        options: 
+        - dev 
+        - qa
+        - uat
+        - demo
+        - prod
+        - dr
 
 jobs:
   containerized_job:
@@ -12,9 +24,9 @@ jobs:
         subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
         deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
-        env:                            global
+        env:                            ${{ inputs.env }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Run deployGlobalResources.js
-      run:  node ./deployment/src/deployGlobalResources.js 
+    - name: Run deployCommonEnvironmentResources.js
+      run:  node ./deployment/src/deployCommonEnvironmentResources.js 
