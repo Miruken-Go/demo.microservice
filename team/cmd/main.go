@@ -67,23 +67,25 @@ func main() {
 						Type: "oauth2",
 						Flows: &openapi3.OAuthFlows{
 							Implicit: &openapi3.OAuthFlow{
-								AuthorizationURL: "https://teamsrvdevcraig.b2clogin.com/teamsrvdevcraig.onmicrosoft.com/b2c_1_signIn/oauth2/v2.0/authorize",
-								TokenURL:         "https://teamsrvdevcraig.b2clogin.com/teamsrvdevcraig.onmicrosoft.com/b2c_1_signIn/oauth2/v2.0/token",
+								AuthorizationURL: "https://teamsrvidentitydev.b2clogin.com/teamsrvidentitydev.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1a_signup_signin",
+								TokenURL:         "https://teamsrvidentitydev.b2clogin.com/teamsrvidentitydev.onmicrosoft.com/oauth2/v2.0/token?p=b2c_1a_signup_signin",
 								Scopes: map[string]string{
-									"https://teamsrvdevcraig.onmicrosoft.com/60f123ab-de4d-4d2f-bb93-b54fddc38ee1/Person.Create": "create a person",
-									"https://teamsrvdevcraig.onmicrosoft.com/60f123ab-de4d-4d2f-bb93-b54fddc38ee1/Team.Create":   "create a team",
+									"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Groups": "Groups to which the user belongs.",
+									"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Roles":  "Roles to which the user belongs.",
+									"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Entitlements":  "Entitlements the user has.",
 								},
 							},
 						},
-						OpenIdConnectUrl: "https://login.microsoftonline.com/048cf208-778f-496b-b892-9d03d15652cd/v2.0/.well-known/openid-configuration",
+						OpenIdConnectUrl: "https://teamsrvidentitydev.b2clogin.com/teamsrvidentitydev.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_SIGNUP_SIGNIN",
 					},
 				},
 			},
 		},
 		Security: openapi3.SecurityRequirements{
 			{"team_auth": []string{
-				"https://teamsrvdevcraig.onmicrosoft.com/60f123ab-de4d-4d2f-bb93-b54fddc38ee1/Person.Create",
-				"https://teamsrvdevcraig.onmicrosoft.com/60f123ab-de4d-4d2f-bb93-b54fddc38ee1/Team.Create",
+				"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Groups",
+				"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Roles",
+				"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Roles",
 			}},
 		},
 	})
@@ -105,7 +107,9 @@ func main() {
 
 	docs := openapiGen.Docs()
 
-	h := httpsrv.Pipeline(handler, auth.WithFlowRef("login.oauth").Bearer())
+	h := httpsrv.Pipeline(handler,
+		auth.WithFlowRef("login.oauth").Bearer(),
+	)
 
 	// configure routes
 	var mux http.ServeMux

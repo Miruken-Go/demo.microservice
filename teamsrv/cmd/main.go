@@ -123,7 +123,10 @@ func main() {
 	}
 
 	var appConfig Config
-	k.Unmarshal("", &appConfig)
+	if err := k.Unmarshal("", &appConfig); err != nil {
+		logger.Error(err, "error unmarshalling configuration")
+		os.Exit(1)
+	}
 
 	// openapi generator
 	openapiGen := openapi.Feature(openapi3.T{

@@ -7,6 +7,4 @@ import (
 	"github.com/miruken-go/miruken"
 )
 
-//go:generate $GOPATH/bin/miruken -tests
-
 var Feature = miruken.FeatureSet(teamapi.Feature, person.Feature, team.Feature)

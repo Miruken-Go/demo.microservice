@@ -9,6 +9,7 @@ require (
 	github.com/go-logr/zerologr v1.2.3
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.16.0
+	github.com/golang/mock v1.1.1
 	github.com/knadh/koanf v1.5.0
 	github.com/miruken-go/demo.microservice/teamapi v0.10.29
 	github.com/miruken-go/miruken v0.30.37
