@@ -23,6 +23,10 @@
         <DisplayName>The OIDC clientId</DisplayName>
         <DataType>string</DataType>
       </ClaimType>
+      <ClaimType Id="@type">
+        <DisplayName>Request type for the authorization service </DisplayName>
+        <DataType>string</DataType>
+      </ClaimType>
       <ClaimType Id="groups">
         <DisplayName>Groups</DisplayName>
         <DataType>stringCollection</DataType>
@@ -82,8 +86,8 @@
             <InputClaim ClaimTypeReferenceId="signInNames.emailAddress" PartnerClaimType="email" />
             <InputClaim ClaimTypeReferenceId="objectId" />
             <InputClaim ClaimTypeReferenceId="scope" DefaultValue="{OIDC:Scope}" AlwaysUseDefaultValue="true" />
-            <InputClaim ClaimTypeReferenceId="userLanguage" DefaultValue="{Culture:LCID}" AlwaysUseDefaultValue="true" />
             <InputClaim ClaimTypeReferenceId="clientId" DefaultValue="{OIDC:ClientId}" AlwaysUseDefaultValue="true" />
+            <InputClaim ClaimTypeReferenceId="@type" DefaultValue="FooBarBaz" AlwaysUseDefaultValue="true" />
           </InputClaims>
           <OutputClaims>
             <!-- Claims parsed from your REST API -->

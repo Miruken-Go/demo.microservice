@@ -38,10 +38,10 @@ func authzHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type Request struct {
-		Email        string
-		ObjectId     string
-		Scope        string
-		UserLanguage string
+		Type     string `json:"@type"`
+		Email    string
+		ObjectId string
+		Scope    string
 	}
 
 	var request Request
@@ -53,10 +53,10 @@ func authzHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("")
 	fmt.Println("New Request")
+	fmt.Println("@type: ", request.Type)
 	fmt.Println("email: ", request.Email)
 	fmt.Println("objectId: ", request.ObjectId)
 	fmt.Println("scope: ", request.Scope)
-	fmt.Println("userLanguage: ", request.UserLanguage)
 
 	type Response struct {
 		Groups       []string
