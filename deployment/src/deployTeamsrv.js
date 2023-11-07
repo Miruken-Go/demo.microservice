@@ -19,7 +19,7 @@ async function main() {
             `Login__Basic__0__Module="login.pwd"`,
             `Login__Basic__0__Options__Credentials__0__Username="${config.authorizationServiceUsername}"`,
             `Login__Basic__0__Options__Credentials__0__Password=secretref:authorization-service-password`,
-            `OpenApi__AuthorizationUrl="${openIdConfig.authorization_endpoint}&client_id=${config.openapiClientId}"`,
+            `OpenApi__AuthorizationUrl="${openIdConfig.authorization_endpoint}"`,
             `OpenApi__TokenURL="${openIdConfig.token_endpoint}"`,
             `OpenApi__Scopes__0__Name="https://${config.b2cDomainName}/teamsrv/Groups"`,
             `OpenApi__Scopes__0__Description="Groups to which the user belongs."`,

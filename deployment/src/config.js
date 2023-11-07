@@ -97,7 +97,6 @@ config.requiredEnvFileNonSecrets([
     'b2cDeploymentPipelineClientId',
     'identityExperienceFrameworkClientId',
     'proxyIdentityExperienceFrameworkClientId',
-    'openapiClientId',
     'b2cDomainName',
     'wellKnownOpenIdConfigurationUrl',
     'authorizationServiceUrl',
