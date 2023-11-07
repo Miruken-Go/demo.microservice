@@ -6,4 +6,5 @@ module.exports = {
     wellKnownOpenIdConfigurationUrl:          "https://teamsrvidentitydev.b2clogin.com/teamsrvidentitydev.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_SIGNUP_SIGNIN",
     authorizationServiceUrl:                  "https://teamsrv-dev.prouddune-3b6fb895.centralus.azurecontainerapps.io/authz/",
     authorizationServiceUsername:             "ooYymDzee5!V&v8gk7*s",
+    openApiClientId:                          "3d8bd886-f1a7-42be-9319-acdf39a7673b"
 }

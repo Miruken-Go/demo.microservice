@@ -101,6 +101,7 @@ config.requiredEnvFileNonSecrets([
     'wellKnownOpenIdConfigurationUrl',
     'authorizationServiceUrl',
     'authorizationServiceUsername',
+    'openApiClientId'
 ])
 
 config.requiredKeyVaultSecrets = [

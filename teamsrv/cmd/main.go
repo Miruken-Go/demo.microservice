@@ -82,6 +82,7 @@ type Config struct {
 	OpenApi struct {
 		AuthorizationURL string
 		TokenURL         string
+		ClientId         string
 		Scopes           []struct {
 			Name        string
 			Description string
