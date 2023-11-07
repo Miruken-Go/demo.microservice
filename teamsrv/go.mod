@@ -8,7 +8,7 @@ require (
 	github.com/getkin/kin-openapi v0.120.0
 	github.com/go-logr/zerologr v1.2.3
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/demo.microservice/team v0.2.28
+	github.com/miruken-go/demo.microservice/team v0.2.29
 	github.com/miruken-go/miruken v0.30.37
 	github.com/rs/zerolog v1.31.0
 )
