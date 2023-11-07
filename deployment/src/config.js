@@ -2,6 +2,7 @@ const env = process.env.env
 if (!env) throw "Environment variable required: [env]"
 
 const appDescription ={
+    systemName: 'teamsrv',
     appName:    'teamsrv',
     repository: 'https://github.com/Miruken-Go/demo.microservice',
     location:   'CentralUs',
@@ -15,6 +16,7 @@ const appDescription ={
     ]
 }
 
+const systemName   = appDescription.systemName.toLowerCase() //must be lowercase
 const appName      = appDescription.appName.toLowerCase() //must be lowercase
 const repository   = appDescription.repository
 const location     = appDescription.location
@@ -26,6 +28,8 @@ const prefix = (instance)
     ? `${appName}-${env}-${instance}`
     : `${appName}-${env}`
 
+const b2cName                 = `${systemName}identity${env}`.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
+const b2cDisplayName          = `${systemName} Identity ${env}`.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
 const keyVaultName            = `${commonPrefix}-keyvault` 
 const containerRepositoryName = `${appName}global`.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
 
@@ -42,6 +46,8 @@ const config = {
     containerRepositoryName,
     imageName,
     keyVaultName,
+    b2cName,       
+    b2cDisplayName,
     location,
     repository,
     workingDirectory:                 process.cwd(),
@@ -49,6 +55,7 @@ const config = {
     defaultContainerImage:            'defaultContainerImage',
     globalResourceGroup:              globalPrefix,
     commonEnvironmentResourceGroup:   `${commonPrefix}-common`,
+    manualEnvironmentResourceGroup:   `${commonPrefix}-manual`,
     environmentInstanceResourceGroup: `${prefix}`,
     secrets: {},
     requiredEnvironmentVariableSecrets: function (names) {
@@ -92,21 +99,6 @@ config.requiredEnvironmentVariableNonSecrets([
     'subscriptionId',
     'deploymentPipelineClientId',
 ])
-
-config.requiredEnvFileNonSecrets([
-    'b2cDeploymentPipelineClientId',
-    'identityExperienceFrameworkClientId',
-    'proxyIdentityExperienceFrameworkClientId',
-    'b2cDomainName',
-    'wellKnownOpenIdConfigurationUrl',
-    'authorizationServiceUrl',
-    'authorizationServiceUsername',
-    'openApiClientId'
-])
-
-config.requiredKeyVaultSecrets = [
-    'b2cDeploymentPipelineClientSecret',
-]
 
 module.exports = {
     ...config,

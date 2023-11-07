@@ -1,8 +1,8 @@
-const bash    = require('./bash')
-const logging = require('./logging');
+const bash    = require('./infrastructure/bash')
+const logging = require('./infrastructure/logging');
+const git     = require('./infrastructure/git');
+const go      = require('./infrastructure/go');
 const config  = require('./config');
-const git     = require('./git');
-const go      = require('./go');
 
 async function main() {
     try {

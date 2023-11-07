@@ -1,11 +1,21 @@
-const az       = require('./az');
-const arm      = require('./arm');
-const logging  = require('./logging');
+const az       = require('./infrastructure/az');
+const arm      = require('./infrastructure/arm');
+const logging  = require('./infrastructure/logging');
+const keyvault = require('./infrastructure/keyvault')
 const config   = require('./config');
-const keyvault = require('./keyvault')
 
 async function main() {
     try {
+        config.requiredEnvFileNonSecrets([
+            'b2cDeploymentPipelineClientId',
+            'identityExperienceFrameworkClientId',
+            'proxyIdentityExperienceFrameworkClientId',
+            'b2cDomainName',
+            'wellKnownOpenIdConfigurationUrl',
+            'authorizationServiceUrl',
+            'authorizationServiceUsername',
+        ])
+        
         logging.printConfiguration(config)
         await keyvault.requireSecrets()
         

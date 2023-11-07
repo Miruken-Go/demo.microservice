@@ -1,7 +1,7 @@
 const { header } = require('./logging')
 const path       = require('path')
 const bash       = require('./bash')
-const config     = require('./config')
+const config     = require('../config')
 
 async function deployGlobalResources() {
     header("Deploying GlobalResources Arm Template")
@@ -10,8 +10,8 @@ async function deployGlobalResources() {
 
     return await bash.json(`
         az deployment group create                                        \
-            --template-file  ${bicepFile}                                  \
-            --subscription   ${config.subscriptionId}                       \
+            --template-file  ${bicepFile}                                 \
+            --subscription   ${config.subscriptionId}                     \
             --resource-group ${config.globalResourceGroup}                \
             --mode complete                                               \
             --parameters                                                  \

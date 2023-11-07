@@ -1,5 +1,5 @@
 const logging = require('./logging');
-const config  = require('./config');
+const config  = require('../config');
 const graph   = require('./graph');
 const fs      = require('fs')
 const path    = require('path')

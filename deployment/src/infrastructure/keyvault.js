@@ -1,5 +1,5 @@
 const az     = require('./az')
-const config = require('./config')
+const config = require('../config')
 
 const secrets = {}
 

@@ -7,15 +7,24 @@ flowchart LR
     
     B(Deploy Common Environment Resources)
 
-    C[[Configure Manual Environment Resources]]
+    C[[
+        Create Manual Environment Resources
+
+        B2C
+        Env Configuration 
+    ]]
 
     D(
+        Configure Manual Resources
+    )
+
+    E(
         Deploy Environment Instance Resources
     
         Configure Manual Resources
     )
 
-    A --> B --> C --> D
+    A --> B --> C --> D --> E
 ```
 
 

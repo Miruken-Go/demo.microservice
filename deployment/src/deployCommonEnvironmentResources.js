@@ -1,6 +1,6 @@
-const az       = require('./az');
-const arm      = require('./arm');
-const logging  = require('./logging');
+const az       = require('./infrastructure/az');
+const arm      = require('./infrastructure/arm');
+const logging  = require('./infrastructure/logging');
 const config   = require('./config');
 
 async function main() {
@@ -10,6 +10,7 @@ async function main() {
         logging.header("Deploying Common Environment Resources")
 
         await az.createResourceGroup(config.commonEnvironmentResourceGroup)
+        await az.createResourceGroup(config.manualEnvironmentResourceGroup)
         await arm.deployCommonEnvironmentResources()
 
         console.log("Script completed successfully")

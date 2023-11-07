@@ -1,5 +1,5 @@
 const bash       = require('./bash')
-const config     = require('./config')
+const config     = require('../config')
 const { header } = require('./logging')
 
 let loggedInToAZ  = false 

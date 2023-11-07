@@ -1,8 +1,8 @@
-const az      = require('./az');
-const bash    = require('./bash')
-const logging = require('./logging');
+const az      = require('./infrastructure/az');
+const bash    = require('./infrastructure/bash')
+const logging = require('./infrastructure/logging');
+const b2c     = require('./infrastructure/b2c')
 const config  = require('./config');
-const b2c     = require('./b2c')
 
 async function main() {
     try {
