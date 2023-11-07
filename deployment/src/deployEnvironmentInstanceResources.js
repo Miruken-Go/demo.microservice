@@ -2,7 +2,6 @@ const az       = require('./az');
 const arm      = require('./arm');
 const logging  = require('./logging');
 const config   = require('./config');
-const b2c      = require('./b2c')
 const keyvault = require('./keyvault')
 
 async function main() {
@@ -17,9 +16,6 @@ async function main() {
 
         const azureContainerRepositoryPassword = await az.getAzureContainerRepositoryPassword(config.containerRepositoryName)
         await arm.deployEnvironmentInstanceResources(azureContainerRepositoryPassword)
-
-        //App whatever automated configuration we can to the manual resource group
-        await b2c.configure()
 
         console.log("Script completed successfully")
     } catch (error) {
