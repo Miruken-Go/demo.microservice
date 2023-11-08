@@ -1,7 +1,0 @@
-For dev, qa, and prod
-    Create Key Vault
-        resourcegroup: teamsrv-<env>-manual-rg 
-        name: teamsrv-pipeline-<env>
-        pricing tier: standard
-        disable purge protection
-        

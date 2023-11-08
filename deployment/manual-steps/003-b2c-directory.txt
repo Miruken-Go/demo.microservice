@@ -1,17 +1,17 @@
+For dev, qa, and prod do the following:
+
 B2C Directory Creation
-    create the b2c instances in the manual resouce group
-        Organization          Domain
-        teamsrv Identity Dev  teamsrvidentitydev
-        teamsrv Identity Qa   teamsrvidentityqa
-        teamsrv Identity Prod teamsrvidentityprod
+    create the b2c instance in the environments manual resource group
+        Organization                 Domain
+        <systemName> identity <env>  <systemName>identity<env>
 
     Add the domain name to the <env>.js config file
-        b2cDomainName: "teamsrvidentity<env>.onmicrosoft.com"  
+        b2cDomainName: "<systemName>identity<env>.onmicrosoft.com"  
 
-    For dev, qa, and prod do the following in the b2c directory 
+    Switch to the b2c directory 
         App registrations > New registration
             1. Name:   DeploymentPipeline
-            2. Select: Accounts in this organizational directory only (teamsrv only - Single tenant)
+            2. Select: Accounts in any identity provider or organizational directory...
             3. Clear:  Grant admin consent to openid and offline_access permissions check box 
             4. Click: Register
         Give DeployPipeline permissions to Microsoft Graph
@@ -21,15 +21,14 @@ B2C Directory Creation
                 Policy.ReadWrite.TrustFramework 
                 User.ReadWrite.All
         Grant Admin Concent for the GraphApi Permissions
-            click button: "Grant admin consent for teamsrv Identity <Env>"    
+            click button: "Grant admin consent for <systemName> Identity <Env>"    
             check that status is "granted" for the permissions. May have to refresh the page. If that 
                 doesn't work wait a minute and try to grant again.
         Create Secret for DeploymentPipeline
             Certificates & secrets > New client secret
                 Description: DeploymentPipeline
                 Expires: 24 month expiration
-            Copy secret immediatly and put secret in keyvault: teamsrv-pipeline-<env>
+            Copy secret immediatly and put secret in the common keyvault: <systemName>-<env>-keyvault
                 name: b2cDeploymentPipelineClientSecret
         Add the ids to <env>.js in the javascript src
-            b2cTenantId
             b2cDeploymentPipelineClientId
