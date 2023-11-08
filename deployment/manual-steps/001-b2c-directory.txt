@@ -5,8 +5,13 @@ B2C Directory Creation
         Organization                 Domain
         <systemName> identity <env>  <systemName>identity<env>
 
+    Create an <env>.js file in the deployment/src directory
     Add the domain name to the <env>.js config file
         b2cDomainName: "<systemName>identity<env>.onmicrosoft.com"  
+
+        module.exports = {
+            b2cDomainName: "<systemName>identity<env>.onmicrosoft.com",
+        }
 
     Switch to the b2c directory 
         App registrations > New registration
