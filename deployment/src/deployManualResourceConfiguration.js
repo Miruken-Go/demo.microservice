@@ -14,9 +14,10 @@ async function main() {
             // 'authorizationServiceUrl',
             // 'authorizationServiceUsername',
         ])
-        config.requiredKeyVaultSecrets = [
+        config.requiredSecrets([
             'b2cDeploymentPipelineClientSecret',
-        ]
+        ])
+        
         logging.printConfiguration(config)
         await keyvault.requireSecrets()
         
