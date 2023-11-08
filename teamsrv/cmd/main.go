@@ -80,14 +80,14 @@ type Config struct {
 		}
 	}
 	OpenApi struct {
-		AuthorizationURL string
-		TokenURL         string
 		ClientId         string
+		AuthorizationUrl string
+		TokenUrl         string
+		OpenIdConnectUrl string
 		Scopes           []struct {
 			Name        string
 			Description string
 		}
-		OpenIdConnectUrl string
 	}
 }
 
@@ -153,8 +153,8 @@ func main() {
 						Type: "oauth2",
 						Flows: &openapi3.OAuthFlows{
 							Implicit: &openapi3.OAuthFlow{
-								AuthorizationURL: appConfig.OpenApi.AuthorizationURL,
-								TokenURL:         appConfig.OpenApi.TokenURL,
+								AuthorizationURL: appConfig.OpenApi.AuthorizationUrl,
+								TokenURL:         appConfig.OpenApi.TokenUrl,
 								Scopes:           appConfig.ScopesAsMap(),
 							},
 						},
