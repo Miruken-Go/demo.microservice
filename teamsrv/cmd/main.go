@@ -79,16 +79,7 @@ type Config struct {
 			Url string
 		}
 	}
-	OpenApi struct {
-		ClientId         string
-		AuthorizationUrl string
-		TokenUrl         string
-		OpenIdConnectUrl string
-		Scopes           []struct {
-			Name        string
-			Description string
-		}
-	}
+	OpenApi openapi.Config
 }
 
 func (c Config) ScopesAsMap() map[string]string {
@@ -195,7 +186,7 @@ func main() {
 	mux.Handle("/publish", h)
 	mux.Handle("/publish/", h)
 	mux.Handle("/openapi", openapi.Handler(docs, true))
-	mux.Handle("/", ui.Handler("", docs))
+	mux.Handle("/", ui.Handler("", docs, appConfig.OpenApi))
 	mux.HandleFunc("/authz/", authzHandler)
 
 	// start http server

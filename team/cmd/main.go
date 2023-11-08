@@ -118,7 +118,9 @@ func main() {
 	mux.Handle("/publish", h)
 	mux.Handle("/publish/", h)
 	mux.Handle("/openapi", openapi.Handler(docs, true))
-	mux.Handle("/", ui.Handler("", docs))
+	mux.Handle("/", ui.Handler("", docs, openapi.Config{
+		ClientId: "3d8bd886-f1a7-42be-9319-acdf39a7673b",
+	}))
 
 	// Register pprof handlers
 	mux.HandleFunc("/debug/pprof/", pprof.Index)
