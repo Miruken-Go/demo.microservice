@@ -1,19 +1,21 @@
 b2c applications
 
-    Follow the instructions in
+    Navigate to 
     
         https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy
-    
-    to set up the following Identity Experience Framework applications:
 
+    Under "Choose a policy type" select "Custom Policy"
+
+    Work through these sections
+        "Add signing and encryption keys for Identity Experience Framework applications"
+        "Register Identity Experience Framework applications"
+    to set up the following Identity Experience Framework applications:
         IdentityExperienceFramework
         ProxyIdentityExperienceFramework
 
-    We already have the custom policies checked in here so we can skip the "Custom policy starter pack" section 
-    We are not using other identity providers so skip the "Add Facebook as an identity provider" section.
-    The custom policies files are already tokenized so don't replace the values in the files. 
-    Custom policy files will be uploaded when the environment is deployed.
-    Update the <env>.js config file with the following values
+    Skip the other sections such as "Custom policy starter pack" and "Add Facebook as an identity provider"
+
+    Update the <env>.js config file with the following values from the two application created above.
 
         identityExperienceFrameworkClientId:      "",
         proxyIdentityExperienceFrameworkClientId: "",
