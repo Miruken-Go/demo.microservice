@@ -1,25 +1,40 @@
-b2c api connector
+For dev, qa, prod and any other desired environments, do the following:
+
+B2C API Connector
 
     Documentation:
         https://learn.microsoft.com/en-us/azure/active-directory-b2c/api-connectors-overview?pivots=b2c-custom-policy
         https://learn.microsoft.com/en-us/azure/active-directory-b2c/add-api-connector-token-enrichment?pivots=b2c-custom-policy
         https://learn.microsoft.com/en-us/azure/active-directory-b2c/secure-rest-api?tabs=windows&pivots=b2c-custom-policy
 
+The api connector uses basic authentication and a different username and password in each environment.
 
-Ientity Experience Framework > Select Policy Keys
+    Generate a 20 character random string for the Username
+    Add the username to the <env>.js file
+
+        authorizationServiceUsername: "",
+
+    Generate a 20 character random string for the Password
+    Add the password to the common keyvault: <systemName>-<env>-keyvault
+
+        authorizationServicePassword
+
+Using the authorizationServiceUsername and authorizationServicePassword from above 
+
+Identity Experience Framework > Select Policy Keys
 
 Add
     Options:  Manual
-    Name:     RestApiUsername
-    Secret:   <Generate a 20 character random string for the Username> "ooYymDzee5!V&v8gk7*s"
+    Name:     authorizationServiceUsername
+    Secret:   <the username generated above>
     KeyUsage: Encryption.
 
     Click Create
 
 Add
     Options:  Manual
-    Name:     RestApiPassword
-    Secret:   <Generate a 20 character random string for the Password> "i**72R#PLWbx8&#$I$ok"
+    Name:     authorizationServicePassword
+    Secret:   <the password generated above>
     KeyUsage: Encryption.
 
     Click Create

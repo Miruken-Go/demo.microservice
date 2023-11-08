@@ -78,8 +78,8 @@
             <Item Key="IncludeClaimResolvingInClaimsHandling">true</Item>
           </Metadata>
           <CryptographicKeys>
-            <Key Id="BasicAuthenticationUsername" StorageReferenceId="B2C_1A_RestApiUsername" />
-            <Key Id="BasicAuthenticationPassword" StorageReferenceId="B2C_1A_RestApiPassword" />
+            <Key Id="BasicAuthenticationUsername" StorageReferenceId="B2C_1A_authorizationServiceUsername" />
+            <Key Id="BasicAuthenticationPassword" StorageReferenceId="B2C_1A_authorizationServicePassword" />
           </CryptographicKeys>
           <InputClaims>
             <!-- Claims sent to your REST API -->

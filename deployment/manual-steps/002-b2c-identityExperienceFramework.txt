@@ -1,5 +1,6 @@
-b2c applications
+For dev, qa, prod and any other desired environments, do the following:
 
+Identity Experience Framework Configuration
     Navigate to 
     
         https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy

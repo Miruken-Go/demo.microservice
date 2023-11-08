@@ -1,4 +1,4 @@
-For dev, qa, and prod do the following:
+For dev, qa, prod and any other desired environments, do the following:
 
 B2C Directory Creation
     create the b2c instance in the environments manual resource group
