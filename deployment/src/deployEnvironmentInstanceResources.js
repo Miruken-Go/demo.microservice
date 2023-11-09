@@ -6,18 +6,7 @@ const config   = require('./config');
 
 async function main() {
     try {
-        config.requiredEnvFileNonSecrets([
-            'b2cDeploymentPipelineClientId',
-            'identityExperienceFrameworkClientId',
-            'proxyIdentityExperienceFrameworkClientId',
-            'b2cDomainName',
-            'wellKnownOpenIdConfigurationUrl',
-            'authorizationServiceUrl',
-            'authorizationServiceUsername',
-        ])
-        
         logging.printConfiguration(config)
-        await keyvault.requireSecrets()
         
         logging.header(`Deploying Environment Instance Resources for ${config.env}`)
 

@@ -1,17 +1,29 @@
-const az      = require('./infrastructure/az');
-const bash    = require('./infrastructure/bash')
-const logging = require('./infrastructure/logging');
-const b2c     = require('./infrastructure/b2c')
-const config  = require('./config');
+const config             = require('./config');
+const logging            = require('./infrastructure/logging');
+const az                 = require('./infrastructure/az');
+const bash               = require('./infrastructure/bash')
+const b2c                = require('./infrastructure/b2c')
+const keyvault           = require('./infrastructure/keyvault')
+const b2cAppRegistration = require('./infrastructure/b2cAppRegistration')
 
 async function main() {
     try {
         config.requiredEnvironmentVariableNonSecrets(['tag'])
+        config.requiredEnvFileNonSecrets([
+            'b2cDeploymentPipelineClientId',
+            'authorizationServiceUsername',
+        ])
+        await keyvault.requireSecrets([
+            'b2cDeploymentPipelineClientSecret',
+        ])
         logging.printConfiguration(config)
 
-        logging.header("Deploying teamsrv")
+        const applicationName = config.prefix
 
-        const openIdConfig = await b2c.getWellKnownOpenIdConfiguration()
+        logging.header(`Deploying ${applicationName}`)
+
+        const openIdConfig    = await b2c.getWellKnownOpenIdConfiguration()
+        const teamsrv_openapi = await b2cAppRegistration.getApplicationByName('teamsrv_openapi')
 
         const envVars = [
             `Login__OAuth__0__Module="login.jwt"`,
@@ -21,7 +33,7 @@ async function main() {
             `Login__Basic__0__Options__Credentials__0__Password=secretref:authorization-service-password`,
             `OpenApi__AuthorizationUrl="${openIdConfig.authorization_endpoint}"`,
             `OpenApi__TokenUrl="${openIdConfig.token_endpoint}"`,
-            `OpenApi__ClientId="${config.openApiClientId}"`,
+            `OpenApi__ClientId="${teamsrv_openapi.appId}"`,
             `OpenApi__OpenIdConnectUrl="${config.wellKnownOpenIdConfigurationUrl}"`,
             `OpenApi__Scopes__0__Name="https://${config.b2cDomainName}/teamsrv/Groups"`,
             `OpenApi__Scopes__0__Description="Groups to which the user belongs."`,
@@ -37,7 +49,7 @@ async function main() {
         //Create the new revision
         await bash.execute(`
             az containerapp update                            \
-                -n ${config.prefix}                           \
+                -n ${applicationName}                         \
                 -g ${config.environmentInstanceResourceGroup} \
                 --image ${config.imageName}:${config.tag}     \
                 --container-name ${config.appName}            \
@@ -85,6 +97,9 @@ async function main() {
                 `)
             }
         }
+
+        const appUrl = await az.getContainerAppUrl(applicationName)
+        await b2cAppRegistration.addRedirectUris(teamsrv_openapi.id, [`https://${appUrl}`])
 
         console.log("Script completed successfully")
     } catch (error) {

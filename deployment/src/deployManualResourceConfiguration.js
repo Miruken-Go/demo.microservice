@@ -1,30 +1,24 @@
-const logging  = require('./infrastructure/logging');
-const b2c      = require('./infrastructure/b2c')
-const keyvault = require('./infrastructure/keyvault')
-const config   = require('./config');
+const logging            = require('./infrastructure/logging');
+const b2c                = require('./infrastructure/b2c')
+const b2cAppRegistration = require('./infrastructure/b2cAppRegistration')
+const keyvault           = require('./infrastructure/keyvault')
+const config             = require('./config');
 
 async function main() {
     try {
         config.requiredEnvFileNonSecrets([
-            // 'b2cDeploymentPipelineClientId',
-            // 'identityExperienceFrameworkClientId',
-            // 'proxyIdentityExperienceFrameworkClientId',
-            // 'b2cDomainName',
-            // 'wellKnownOpenIdConfigurationUrl',
-            // 'authorizationServiceUrl',
-            // 'authorizationServiceUsername',
+            'b2cDeploymentPipelineClientId',
+            'authorizationServiceUsername',
         ])
-        config.requiredSecrets([
+        await keyvault.requireSecrets([
             'b2cDeploymentPipelineClientSecret',
         ])
-        
         logging.printConfiguration(config)
-        await keyvault.requireSecrets()
         
         logging.header(`Deploying Manual Resource Configuration for ${config.env}`)
 
-        //App whatever automated configuration we can to the manual resource group
-        await b2c.configure()
+        await b2c.configureCustomPolicies()
+        await b2cAppRegistration.configure()
 
         console.log("Script completed successfully")
     } catch (error) {

@@ -21,15 +21,39 @@ Manual resources are created by hand.  In an ideal world there would be no resou
 ```mermaid
 
 flowchart LR
-    B(Deploy Common Environment Resources)
+    A(Deploy Common Environment Resources)
 
-    C[[Create Manual Environment Resources </br></br> B2C </br> Env Configuration]]
+    B(Deploy Environment Instance Resources </br></br> teamsrv-dev </br> teamsrv-dev-ci)
+    
+    C[[Create Manual Environment Resources </br></br> B2C]]
 
     D(Configure Manual Resources)
 
-    E(Deploy Environment Instance Resources </br></br> Configure Manual Resources)
+    A --> B --> C --> D
+```
 
-    B --> C --> D --> E
+## Deploy application
+
+After the environment is fully deployed, deploy the desired version of the application to the desired environment instance.   The environment ci instance will automatically be deployed on each successful build.
+
+```mermaid
+
+flowchart LR
+    A(Deploy teamsrv)
+
+```
+
+## To create multiple environment instances of the application
+
+If there is a use case you can deploy more environment instances.  For example if a developer need to work on their own instance or maybe a new feature needs a dedicated instance.
+
+```mermaid
+
+flowchart LR
+    A(Deploy teamsrv)
+    B(Deploy Environment Instance Resources </br></br> teamsrv-dev-feature)
+
+    A --> B
 ```
 
 

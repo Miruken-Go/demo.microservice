@@ -64,11 +64,20 @@ async function getKeyVaultSecret(secretName, keyVaultName) {
     }
 }
 
+async function getContainerAppUrl(name) {
+    await login()
+    const result = await bash.json(`
+        az containerapp show -n ${name} --resource-group ${config.environmentInstanceResourceGroup}
+    `)
+    return result.properties.configuration.ingress.fqdn
+}
+
 module.exports = {
     login,
     loginToACR,
     createResourceGroup,
     registerAzureProvider,
     getAzureContainerRepositoryPassword,
-    getKeyVaultSecret
+    getKeyVaultSecret,
+    getContainerAppUrl,
 }
