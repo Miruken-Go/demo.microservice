@@ -60,11 +60,11 @@ Build the Docker Container
 
 Run the Docker Container interactively
 
-    docker run -it -v $(pwd):/build demo.microservice.build:local
+    docker run -it --rm -v $(pwd):/build demo.microservice.build:local
 
 Execute the build
 
-    docker run -it                                                         \
+    docker run -it --rm                                                    \
         -v $(pwd):/build                                                   \
         -e tenantId=<tenantId>                                             \
         -e subscriptionId=<subscriptionId>                                 \

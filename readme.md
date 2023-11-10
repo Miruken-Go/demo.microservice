@@ -21,7 +21,7 @@
 ### Run the docker container
 
     cd teamsrv
-    docker run -it -p 8080:8080 -v $(pwd):/go/src/app -w /go/src/app golang:1.21.3-alpine3.18
+    docker run -it --rm -p 8080:8080 -v $(pwd):/go/src/app -w /go/src/app golang:1.21.3-alpine3.18
 
 ### Build the application
 
@@ -45,7 +45,7 @@
     
 ### Run Docker container locally
 
-    docker run -it -p 8080:8080 teamsrv:local
+    docker run -it --rm -p 8080:8080 teamsrv:local
 
 ## Build and Push Docker Image to Azure Container Repo
 

@@ -9,7 +9,7 @@
 ### Run the docker container
 
     cd defaultContainerImage
-    docker run -it -p 8080:8080 -v $(pwd):/go/src/app -w /go/src/app golang:1.21.3-alpine3.18
+    docker run -it --rm -p 8080:8080 -v $(pwd):/go/src/app -w /go/src/app golang:1.21.3-alpine3.18
 
 ### Build the application
 
