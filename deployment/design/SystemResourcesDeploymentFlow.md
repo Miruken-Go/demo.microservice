@@ -142,3 +142,36 @@ flowchart
     )
 
 ```
+
+# Naming
+
+We are using `Organization` because Azure B2C uses organization.
+
+org-global
+    Resource Group
+        Container Registry: org-global
+
+org-env-manual
+    Resource Group
+        B2C Tenant: orgauthenv 
+
+Domain 1
+    b2c appRegistration
+        ui
+        api
+            scopes
+                Groups
+                Roles
+                Entitlements
+
+    domain-env-common
+        Resource Group
+            KeyVault: domain-env-keyvault
+            CosmosDb: domain-env-cosmosdb
+
+    domain-env-instance
+        Resource Group
+            Container Apps Environment: domain-env-instance-cae
+            Container App: domain-env-instance-ui
+            Container App: domain-env-instance-api1
+            Container App: domain-env-instance-api2
