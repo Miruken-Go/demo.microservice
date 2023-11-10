@@ -164,14 +164,49 @@ Domain 1
                 Roles
                 Entitlements
 
-    domain-env-common
+    domain1-env-common
         Resource Group
-            KeyVault: domain-env-keyvault
-            CosmosDb: domain-env-cosmosdb
+            KeyVault: domain1-env-keyvault
+            CosmosDb: domain1-env-cosmosdb
 
-    domain-env-instance
+    domain1-env-instance1
+        Resource Group
+            Container Apps Environment: domain1-env-instance-cae
+            Container App: domain1-env-instance-ui
+            Container App: domain1-env-instance-api1
+            Container App: domain1-env-instance-api2
+
+    domain1-env-instance2
+        Resource Group
+            Container Apps Environment: domain1-env-instance-cae
+            Container App: domain1-env-instance-ui
+            Container App: domain1-env-instance-api1
+            Container App: domain1-env-instance-api2
+
+Domain 2
+    b2c appRegistration
+        ui
+        api
+            scopes
+                Groups
+                Roles
+                Entitlements
+
+    domain2-env-common
+        Resource Group
+            KeyVault: domain2-env-keyvault
+            CosmosDb: domain2-env-cosmosdb
+
+    domain2-env-instance1
+        Resource Group
+            Container Apps Environment: domain2-env-instance-cae
+            Container App: domain2-env-instance-ui
+            Container App: domain2-env-instance-api1
+            Container App: domain2-env-instance-api2
+
+    domain2-env-instance2
         Resource Group
             Container Apps Environment: domain-env-instance-cae
-            Container App: domain-env-instance-ui
-            Container App: domain-env-instance-api1
-            Container App: domain-env-instance-api2
+            Container App: domain2-env-instance-ui
+            Container App: domain2-env-instance-api1
+            Container App: domain2-env-instance-api2
