@@ -5,20 +5,21 @@ B2C Directory Creation
         Organization                 Domain
         <systemName> identity <env>  <systemName>identity<env>
 
-    Create an <env>.js file in the deployment/src directory
-    Add the domain name to the <env>.js config file
-        b2cDomainName: "<systemName>identity<env>.onmicrosoft.com"  
-
-        module.exports = {
-            b2cDomainName: "<systemName>identity<env>.onmicrosoft.com",
-        }
-
-    Switch to the b2c directory 
+    Switch to the b2c directory using "Switch directory" in the upper right hand corner of the azure portal
+        Search for Azure AD B2C
         App registrations > New registration
             1. Name:   DeploymentPipeline
             2. Select: Accounts in any identity provider or organizational directory...
             3. Clear:  Grant admin consent to openid and offline_access permissions check box 
             4. Click: Register
+
+        Create an <env>.js file in the deployment/src directory
+        Add the DeploymentPipeline client id  to the <env>.js file
+
+            module.exports = {
+                b2cDeploymentPipelineClientId: "<Application (cloient) ID>",
+            }
+
         Give DeployPipeline permissions to Microsoft Graph
             Api permissions > Add a permission > Microsoft APIs > Microsoft Graph > Application Permissions
                 Application.ReadWrite.All 
@@ -35,5 +36,3 @@ B2C Directory Creation
                 Expires: 24 month expiration
             Copy secret immediatly and put secret in the common keyvault: <systemName>-<env>-keyvault
                 name: b2cDeploymentPipelineClientSecret
-        Add the ids to <env>.js in the javascript src
-            b2cDeploymentPipelineClientId

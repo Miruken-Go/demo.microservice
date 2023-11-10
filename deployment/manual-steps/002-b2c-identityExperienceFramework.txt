@@ -15,8 +15,3 @@ Identity Experience Framework Configuration
         ProxyIdentityExperienceFramework
 
     Skip the other sections such as "Custom policy starter pack" and "Add Facebook as an identity provider"
-
-    Update the <env>.js config file with the following values from the two application created above.
-
-        identityExperienceFrameworkClientId:      "",
-        proxyIdentityExperienceFrameworkClientId: "",

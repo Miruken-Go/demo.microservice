@@ -1,6 +1,6 @@
 For dev, qa, prod and any other desired environments, do the following:
 
-B2C API Connector
+Configure the B2C API Connector
 
     Documentation:
         https://learn.microsoft.com/en-us/azure/active-directory-b2c/api-connectors-overview?pivots=b2c-custom-policy
@@ -9,35 +9,44 @@ B2C API Connector
 
 The api connector uses basic authentication and a different username and password in each environment.
 
+Create the Username:
+
     Generate a 20 character random string for the Username
     Add the username to the <env>.js file
 
         authorizationServiceUsername: "",
+
+    Create a policy key for the Username
+
+        Identity Experience Framework > Select Policy Keys
+
+        Add
+            Options:  Manual
+            Name:     authorizationServiceUsername
+            Secret:   <the username generated above>
+            KeyUsage: Encryption
+
+            Click Create
+
+
+Create the Password:
 
     Generate a 20 character random string for the Password
     Add the password to the common keyvault: <systemName>-<env>-keyvault
 
         authorizationServicePassword
 
-Using the authorizationServiceUsername and authorizationServicePassword from above 
+    Create a policy key for the Username
 
-Identity Experience Framework > Select Policy Keys
+        Identity Experience Framework > Select Policy Keys
 
-Add
-    Options:  Manual
-    Name:     authorizationServiceUsername
-    Secret:   <the username generated above>
-    KeyUsage: Encryption.
+        Add
+            Options:  Manual
+            Name:     authorizationServicePassword
+            Secret:   <the password generated above>
+            KeyUsage: Encryption
 
-    Click Create
-
-Add
-    Options:  Manual
-    Name:     authorizationServicePassword
-    Secret:   <the password generated above>
-    KeyUsage: Encryption.
-
-    Click Create
+            Click Create
 
  
 
