@@ -64,7 +64,22 @@ async function configure() {
     const ENTITLEMENTS_ID = 'd748b2c9-a76b-47b2-8c7b-fa348fbb474d'
     
     for (const app of config.systemDescription.applications) {
-        const api = await createOrUpdateApplication({
+        const appUrl = await az.getContainerAppUrl(config.prefix)
+        if(!appUrl) throw new Error(`default application redirectUri could not be calculated. The AppUrl for ${config.prefix} container app was not found. The default application environment instance needs to be deployed before common configuration can run.`)
+        const appRedirectUri = `https://${appUrl}/oauth2-redirect.html`
+        
+        const redirectUris = (['dev', 'qa'].includes(config.env))
+            ? [
+                appRedirectUri,
+                'https://jwt.ms/',
+                'http://localhost:8080/oauth2-redirect.html',
+              ] 
+            : [
+
+                appRedirectUri,
+              ]
+
+        const appRegistration = await createOrUpdateApplication({
             displayName:    app.name,
             signInAudience: 'AzureADandPersonalMicrosoftAccount',
             requiredResourceAccess: [
@@ -111,31 +126,25 @@ async function configure() {
                         value:                   'Entitlements',
                     },
                 ],
-            }
+            },
+            web: {
+                implicitGrantSettings: {
+                    enableAccessTokenIssuance: true,
+                    enableIdTokenIssuance:     true,
+                }
+            },
+            spa: {
+                redirectUris: redirectUris
+            },
         })
-        console.log(api)
+        console.log(appRegistration)
 
-        const appUrl = await az.getContainerAppUrl(config.prefix)
-        if(!appUrl) throw new Error(`default application redirectUri could not be calculated. The AppUrl for ${config.prefix} container app was not found. The default application environment instance needs to be deployed before common configuration can run.`)
-        const appRedirectUri = `https://${appUrl}/oauth2-redirect.html`
-        
-        const redirectUris = (['dev', 'qa'].includes(config.env))
-            ? [
-                appRedirectUri,
-                'https://jwt.ms/',
-                'http://localhost:8080/oauth2-redirect.html',
-              ] 
-            : [
 
-                appRedirectUri,
-              ]
-
-        const openapiUI = await createOrUpdateApplication({
-            displayName:    `${app.name}_openapi`,
-            signInAudience: 'AzureADandPersonalMicrosoftAccount',
+        const updatedAppRegistration = await createOrUpdateApplication({
+            displayName: app.name,
             requiredResourceAccess: [
                 {
-                    resourceAppId: api.appId, 
+                    resourceAppId: appRegistration.appId, 
                     resourceAccess: [
                         {
                             id:   GROUPS_ID,
@@ -165,17 +174,8 @@ async function configure() {
                     ]
                 }
             ],
-            web: {
-                implicitGrantSettings: {
-                    enableAccessTokenIssuance: true,
-                    enableIdTokenIssuance:     true,
-                }
-            },
-            spa: {
-                redirectUris: redirectUris
-            },
         })
-        console.log(openapiUI)
+        console.log(updatedAppRegistration)
     }
 }
 
