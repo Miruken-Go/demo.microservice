@@ -67,6 +67,21 @@ async function configure() {
         const api = await createOrUpdateApplication({
             displayName:    app.name,
             signInAudience: 'AzureADandPersonalMicrosoftAccount',
+            requiredResourceAccess: [
+                {
+                    resourceAppId: '00000003-0000-0000-c000-000000000000',
+                    resourceAccess: [
+                        {
+                            'id':   '37f7f235-527c-4136-accd-4a02d197296e',
+                            'type': 'Scope'
+                        },
+                        {
+                            'id':   '7427e0e9-2fba-42fe-b0c0-848c9e6a8182',
+                            'type': 'Scope'
+                        }
+                    ]
+                }
+            ],
             identifierUris: [ `https://${config.b2cName}.onmicrosoft.com/${app.name}` ],
             api: {
                 requestedAccessTokenVersion: 2,
@@ -76,7 +91,7 @@ async function configure() {
                         adminConsentDescription: 'Groups to which the user belongs.',
                         adminConsentDisplayName: 'Groups',
                         isEnabled:               true,
-                        type:                    'User',
+                        type:                    'Admin',
                         value:                   'Groups',
                     },
                     {
@@ -84,7 +99,7 @@ async function configure() {
                         adminConsentDescription: 'Roles to which a user belongs',
                         adminConsentDisplayName: 'Roles',
                         isEnabled:               true,
-                        type:                    'User',
+                        type:                    'Admin',
                         value:                   'Roles',
                     },
                     {
@@ -92,7 +107,7 @@ async function configure() {
                         adminConsentDescription: 'Entitlements which belong to the user',
                         adminConsentDisplayName: 'Entitlements',
                         isEnabled:               true,
-                        type:                    'User',
+                        type:                    'Admin',
                         value:                   'Entitlements',
                     },
                 ],
@@ -102,12 +117,12 @@ async function configure() {
 
         const appUrl = await az.getContainerAppUrl(config.prefix)
         if(!appUrl) throw new Error(`default application redirectUri could not be calculated. The AppUrl for ${config.prefix} container app was not found. The default application environment instance needs to be deployed before common configuration can run.`)
-        const appRedirectUri = `https://${appUrl}`
+        const appRedirectUri = `https://${appUrl}/oauth2-redirect.html`
         
         const redirectUris = (['dev', 'qa'].includes(config.env))
             ? [
                 appRedirectUri,
-                'https://jwt.ms',
+                'https://jwt.ms/',
                 'http://localhost:8080/oauth2-redirect.html',
               ] 
             : [
@@ -136,6 +151,19 @@ async function configure() {
                         },
                     ],
                 },
+                {
+                    resourceAppId: '00000003-0000-0000-c000-000000000000',
+                    resourceAccess: [
+                        {
+                            'id':   '37f7f235-527c-4136-accd-4a02d197296e',
+                            'type': 'Scope'
+                        },
+                        {
+                            'id':   '7427e0e9-2fba-42fe-b0c0-848c9e6a8182',
+                            'type': 'Scope'
+                        }
+                    ]
+                }
             ],
             web: {
                 implicitGrantSettings: {

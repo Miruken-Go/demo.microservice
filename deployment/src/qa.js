@@ -1,4 +1,4 @@
 module.exports = {
-    b2cDeploymentPipelineClientId: "2c51617b-8287-4b69-a2b5-2a499b53bd60",
-    authorizationServiceUsername:  "hlTi4M5TYu%%xX81bLxM",
+    b2cDeploymentPipelineClientId: "c87df0b7-f93c-4b68-9833-13ddaa423b6d",
+    authorizationServiceUsername:  "ooYymDzee5!V&v8gk7*s",
 }
