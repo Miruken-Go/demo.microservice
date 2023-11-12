@@ -11,8 +11,8 @@ require (
 	github.com/go-playground/validator/v10 v10.16.0
 	github.com/golang/mock v1.1.1
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/demo.microservice/teamapi v0.10.32
-	github.com/miruken-go/miruken v0.30.40
+	github.com/miruken-go/demo.microservice/teamapi v0.10.33
+	github.com/miruken-go/miruken v0.30.41
 	github.com/rs/zerolog v1.31.0
 	golang.org/x/net v0.18.0
 )
