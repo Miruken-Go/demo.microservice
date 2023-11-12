@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/miruken-go/miruken/security/password"
 	"net/http"
 	"os"
 
@@ -23,7 +24,6 @@ import (
 	koanfp "github.com/miruken-go/miruken/config/koanf"
 	"github.com/miruken-go/miruken/logs"
 	"github.com/miruken-go/miruken/security/jwt"
-	"github.com/miruken-go/miruken/security/jwt/jwks"
 	play "github.com/miruken-go/miruken/validates/play"
 	"github.com/rs/zerolog"
 )
@@ -65,11 +65,14 @@ func authzHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(Response{
+	err = json.NewEncoder(w).Encode(Response{
 		Groups:       []string{"oncall"},
 		Roles:        []string{"admin", "coach", "player"},
 		Entitlements: []string{"createTeam", "updateTeam", "createPerson", "updatePerson"},
 	})
+	if err != nil {
+		w.WriteHeader(500)
+	}
 }
 
 type Config struct {
@@ -78,24 +81,9 @@ type Config struct {
 		Source  struct {
 			Url string
 		}
+		Port    string
 	}
 	OpenApi openapi.Config
-}
-
-func (c Config) ScopesAsMap() map[string]string {
-	ret := map[string]string{}
-	for _, s := range c.OpenApi.Scopes {
-		ret[s.Name] = s.Description
-	}
-	return ret
-}
-
-func (c Config) ScopeNames() []string {
-	ret := make([]string, len(c.OpenApi.Scopes))
-	for i, s := range c.OpenApi.Scopes {
-		ret[i] = s.Name
-	}
-	return ret
 }
 
 func main() {
@@ -134,7 +122,7 @@ func main() {
 			},
 		},
 		ExternalDocs: &openapi3.ExternalDocs{
-			Description: "teamsrv/" + k.String("App.Version"),
+			Description: "teamsrv/" + appConfig.App.Version,
 			URL:         appConfig.App.Source.Url,
 		},
 		Components: &openapi3.Components{
@@ -146,7 +134,7 @@ func main() {
 							Implicit: &openapi3.OAuthFlow{
 								AuthorizationURL: appConfig.OpenApi.AuthorizationUrl,
 								TokenURL:         appConfig.OpenApi.TokenUrl,
-								Scopes:           appConfig.ScopesAsMap(),
+								Scopes:           appConfig.OpenApi.ScopeMap(),
 							},
 						},
 						OpenIdConnectUrl: appConfig.OpenApi.OpenIdConnectUrl,
@@ -156,16 +144,17 @@ func main() {
 		},
 		Security: openapi3.SecurityRequirements{
 			{
-				"team_auth": appConfig.ScopeNames(),
+				"team_auth": appConfig.OpenApi.ScopeNames(),
 			},
 		},
 	})
 
 	// initialize miruken
 	handler, err := miruken.Setup(
-		team.Feature, jwt.Feature(), jwks.Feature(),
-		play.Feature(), config.Feature(koanfp.P(k)),
-		stdjson.Feature(), logs.Feature(logger), openapiGen).
+		team.Feature, jwt.Feature(),
+		password.Feature(), play.Feature(),
+		config.Feature(koanfp.P(k)), stdjson.Feature(),
+		logs.Feature(logger), openapiGen).
 		Specs(&api.GoPolymorphism{}).
 		Options(stdjson.CamelCase).
 		Handler()
@@ -177,7 +166,9 @@ func main() {
 
 	docs := openapiGen.Docs()
 
-	h := httpsrv.Pipeline(handler, auth.WithFlowRef("Login.OAuth").Bearer())
+	h := httpsrv.Api(handler,
+		auth.WithFlowRef("Login.OAuth").Bearer(),
+	)
 
 	// configure routes
 	var mux http.ServeMux
@@ -190,7 +181,7 @@ func main() {
 	mux.HandleFunc("/authz/", authzHandler)
 
 	// start http server
-	port := k.String("App.Port")
+	port := appConfig.App.Port
 	if port == "" {
 		port = "8080"
 	}
