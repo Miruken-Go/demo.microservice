@@ -210,3 +210,83 @@ Domain 2
             Container App: domain2-env-instance-ui
             Container App: domain2-env-instance-api1
             Container App: domain2-env-instance-api2
+
+## Organization Resources
+
+```mermaid
+
+flowchart
+
+    G(majorleaguemiruken-global</br></br> Container Repository) 
+        G --- DevC(       majorleaguemiruken-dev-common  </br></br> Key Vault)
+     DevC --- DevM(       majorleaguemiruken-dev-manual  </br></br> B2C Tenant)
+     DevM --- DevInst1(   majorleaguemiruken-dev         </br></br> Container Apps Environment </br> Container Apps)
+     DevM --- DevInst2(   majorleaguemiruken-dev-ci      </br></br> Container Apps Environment </br> Container Apps)
+
+        G --- QaC(        majorleaguemiruken-qa-common   </br></br> Key Vault)
+      QaC --- QaM(        majorleaguemiruken-qa-manual   </br></br> B2C Tenant)
+      QaM --- QAInst1(    majorleaguemiruken-qa          </br></br> Container Apps Environment </br> Container Apps)
+
+        G --- ProdC(      majorleaguemiruken-prod-common </br></br> Key Vault)
+    ProdC --- ProdM(      majorleaguemiruken-prod-manual </br></br> B2C Tenant)
+    ProdM --- ProdInst1(  majorleaguemiruken-qa          </br></br> Container Apps Environment </br> Container Apps)
+    
+```
+
+# Billing Domain Resources
+```mermaid
+
+flowchart
+
+    G(majorleaguemiruken-global</br></br> Container Repository) 
+
+    G --- Dom2(Billing Domain)
+
+    Dom2 --- Dom2DevCommon( billing-dev-common  </br></br> CosmosDB)
+    Dom2 --- Dom2QACommon(  billing-qa-common   </br></br> CosmosDB)
+    Dom2 --- Dom2ProdCommon(billing-prod-common </br></br> CosmosDB)
+
+    Dom2DevCommon --- Dom2DevInst1(billing-dev           </br></br> Stable Dev            </br> Container Apps Environment </br> Container Apps)
+    Dom2DevCommon --- Dom2DevInst2(billing-dev-ci        </br></br> CI/CD                 </br> Container Apps Environment </br> Container Apps)
+    Dom2DevCommon --- Dom2DevInst3(billing-dev-developerA</br></br> Isolated Feature Work </br> Container Apps Environment </br> Container Apps)
+
+    Dom2QACommon --- Dom2QAInst1(  billing-qa-1</br></br> Container Apps Environment</br> Container Apps)
+    Dom2QACommon --- Dom2QAInst2(  billing-qa-2</br></br> Container Apps Environment</br> Container Apps)
+
+    Dom2ProdCommon --- Dom2ProdInst1(billing-prod    </br></br> Production        </br> Container Apps Environment </br> Container Apps)
+    Dom2ProdCommon --- Dom2ProdInst2(billing-prod-dr </br></br> Disaster Recovery </br> Container Apps Environment </br> Container Apps)
+
+```
+
+# League Domain Resources
+```mermaid
+
+flowchart
+
+    G(majorleaguemiruken-global</br></br> Container Repository) 
+    
+    G --- Dom3(League Domain)
+
+    Dom3 --- Dom3DevCommon(  league-dev-common  </br></br> CosmosDB)
+    Dom3 --- Dom3QACommon(   league-qa-common   </br></br> CosmosDB)
+    Dom3 --- Dom3UATCommon(  league-uat-common  </br></br> CosmosDB)
+    Dom3 --- Dom3DemoCommon( league-demo-common </br></br> CosmosDB)
+    Dom3 --- Dom3ProdCommon( league-prod-common </br></br> CosmosDB)
+    Dom3 --- Dom3DRCommon(   league-dr-common   </br></br> CosmosDB)
+
+     Dom3DevCommon --- Dom3DevInst1(  league-dev            </br></br> Stable Dev                </br> Container Apps Environment </br> Container Apps)
+     Dom3DevCommon --- Dom3DevInst2(  league-dev-ci         </br></br> CI/CD                     </br> Container Apps Environment </br> Container Apps)
+     Dom3DevCommon --- Dom3DevInst3(  league-dev-developerA </br></br> Isolated Feature Work     </br> Container Apps Environment </br> Container Apps)
+
+      Dom3QACommon --- Dom3QAInst1(   league-qa-1           </br></br> Stable QA Env             </br> Container Apps Environment </br> Container Apps)
+      Dom3QACommon --- Dom3QAInst2(   league-qa-2           </br></br> New Feature Work          </br> Container Apps Environment </br> Container Apps)
+      
+     Dom3UATCommon --- Dom3UATInst2(  league-uat            </br></br> User Acceptance           </br> Container Apps Environment </br> Container Apps)
+
+    Dom3DemoCommon --- Dom3DemoInst2( league-demo           </br></br> New Customer Demos        </br> Container Apps Environment </br> Container Apps)
+
+    Dom3ProdCommon --- Dom3ProdInst1( league-prod           </br></br> Production                </br> Container Apps Environment </br> Container Apps)
+
+    Dom3DRCommon   --- Dom3ProdInst2( league-dr             </br></br> Disaster Recovery         </br> Container Apps Environment </br> Container Apps)
+
+```

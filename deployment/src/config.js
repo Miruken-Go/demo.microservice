@@ -5,112 +5,6 @@ if (!env) throw "Environment variable required: [env]"
 
 const instance = process.env.instance
 
-class Application {
-    name
-    organization
-    domain
-    api
-    ui
-
-    constructor (opts) {
-        this.name         = opts.name.toLowerCase()
-        this.organization = opts.organization
-        this.domain       = opts.domain
-        this.api          = opts.api || false
-        this.ui           = opts.ui  || false
-    }
-
-    get containerAppEnvironmentName () {
-        return `${domain.instancePrefix}-cae`
-    }
-
-    get containerAppName () {
-        return `${domain.instancePrefix}-${this.name}`
-    }
-
-    get imageName () { 
-        return `${this.organization.containerRepositoryName}.azurecr.io/${appName}` 
-    }
-}
-
-class Domain {
-    name
-    organization
-    apps = []
-
-    constructor (opts) {
-        this.name         = opts.name
-        this.organization = opts.organization
-        this.apps         = opts.apps
-    }
-
-    get commonPrefix () {
-        return `${this.name}-${env}`
-    }
-    get instancePrefix () {
-        return (instance) 
-        ? `${this.name}-${env}-${instance}`
-        : `${this.name}-${env}`
-    }
-
-    get commonResourceGroup () {
-        return this.commonPrefix
-    }
-
-    get instanceResourceGroup () {
-        return this.instancePrefix
-    }
-
-    get keyVaultName () {
-        return `${this.commonPrefix}-keyvault` 
-    }
-}
-
-
-class Organization {
-    name
-    domains = []
-
-    constructor (opts) {
-        if (!opts.name) throw new Error("name required")
-
-        this.name     = opts.name.toLowerCase()
-        this.domains  = opts.domains
-    }
-
-    get globalPrefix () {
-        return `${this.name}`
-    }
-
-    get globalResourceGroup () {
-        return `${this.name}-global`
-    }
-
-    get b2cName () {
-        return `${this.name.replace(/[^A-Za-z0-9]/g, "")}identity${env}`.toLowerCase()
-    }
-
-    get b2cDisplayName () {
-        return `${this.name.replace(/[^A-Za-z0-9]/g, "")} identity ${env}`.toLowerCase()
-    }
-
-    get b2cDomainName () {
-        return `${this.b2cName}.onmicrosoft.com`
-    }
-
-    get openIdConfigurationUrl () {
-        return `https://${this.b2cName}.b2clogin.com/${this.b2cName}.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_SIGNUP_SIGNIN`
-    }
-    
-    get containerRepositoryName () {
-        const containerRepositoryName = `${this.name}global`.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
-        if (containerRepositoryName.length > 32)
-            throw `Configuration Error - containerRepositoryName cannot be longer than 32 characters : ${containerRepositoryName} [${containerRepositoryName.length}]`
-        return containerRepositoryName
-    }
-
-}
-
 const org = new Organization({
     name:     'MajorLeageMiruken',
     location: 'CentralUs',
@@ -273,8 +167,5 @@ const config = {
 // ])
 
 module.exports = {
-    ...config,
-    Organization,
-    Domain,
-    Application,
+    ...config
 }
