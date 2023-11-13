@@ -1,4 +1,4 @@
-const {ApplicationType} = require('./infrastructure/systemDescription')
+const { Organization } = require('./infrastructure/config')
 
 const env = process.env.env
 if (!env) throw "Environment variable required: [env]"
@@ -8,64 +8,49 @@ const instance = process.env.instance
 const org = new Organization({
     name:     'MajorLeageMiruken',
     location: 'CentralUs',
+    env:      env,
+    instance: instance,
     domains: [
-        new Domain({
-            name: 'auth',
-            apps: [
-                new Application({
-                    name: 'authui' ,
-                    ui: true
-                }),
-                new Application({
-                    name: 'authsrv', 
-                    ui:   true, 
-                    api:  true
-                }),
-            ]
-        }),
-        new Domain({
-            name: 'league', 
-            apps: [
-                new Application({
-                    name: 'majorleaguemiruken', 
-                    ui:   true
-                }),
-                new Application({
-                    name: 'tournaments',
-                    ui:   true
-                }),
-                new Application({
-                    name: 'facilities',
-                    ui:   true
-                }),
-                new Application({
-                    name: 'teamsrv',            
-                    ui:   true, 
-                    api:  true
-                }),
-                new Application({
-                    name: 'schedulesrv',        
-                    ui:   true, 
-                    api:  true
-                }),
-            ]
-        }),
-        new Domain({
+        {
             name: 'billing', 
             apps: [
-                new Application({
+                {
                     name: 'billingui',  
-                    ui: true
-                }),
-                new Application({
+                    ui:   true
+                },
+                {
                     name: 'billingsrv', 
                     ui:   true, 
                     api:  true
-                }),
+                },
             ]
-        }),
+        },
+        {
+            name: 'league', 
+            apps: [
+                {
+                    name: 'majorleaguemiruken', 
+                    ui:   true
+                },
+                {
+                    name: 'tournaments',
+                    ui:   true
+                },
+                {
+                    name: 'teamsrv',            
+                    ui:   true, 
+                    api:  true
+                },
+                {
+                    name: 'schedulesrv',        
+                    ui:   true, 
+                    api:  true
+                },
+            ]
+        },
     ],
 })
+
 
 
 const systemDescription = {
@@ -155,6 +140,7 @@ const config = {
         }
     }
 }
+
 
 // config.requiredEnvironmentVariableSecrets([
 //     'deploymentPipelineClientSecret',

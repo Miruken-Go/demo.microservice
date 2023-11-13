@@ -1,4 +1,6 @@
-const {expect} = require('chai');
+const { expect }  = require('chai');
+const { inspect } = require('node:util');
+
 
 const {
     Organization,
@@ -173,8 +175,8 @@ describe('Domain', function () {
         name:         'billing',
         organization: org,
         env:          env,
-        apps: [
-            new Application({name: 'app1'})
+        applications: [
+            {name: 'app1'}
         ]
     })
 
@@ -194,8 +196,8 @@ describe('Domain', function () {
         expect(domain.organization).to.equal(org)
     })
 
-    it('has array of apps', function () {
-        expect(domain.apps.length).to.equal(1)
+    it('has array of applications', function () {
+        expect(domain.applications.length).to.equal(1)
     })
     
     it('commonPrefix', function () {
@@ -212,3 +214,61 @@ describe('Application', function () {
         expect(Application).to.exist
     })
 })
+
+describe('Instantiating Organization', function () {
+    const org = new Organization({
+        name:     'MajorLeageMiruken',
+        location: 'CentralUs',
+        env:      'dev',
+        instance: 'ci',
+        domains: [
+            {
+                name: 'billing', 
+                applications: [
+                    {
+                        name: 'billingui',  
+                        ui:   true
+                    },
+                    {
+                        name: 'billingsrv', 
+                        ui:   true, 
+                        api:  true
+                    },
+                ]
+            },
+            {
+                name: 'league', 
+                applications: [
+                    {
+                        name: 'majorleaguemiruken', 
+                        ui:   true
+                    },
+                    {
+                        name: 'tournaments',
+                        ui:   true
+                    },
+                    {
+                        name: 'teamsrv',            
+                        ui:   true, 
+                        api:  true
+                    },
+                    {
+                        name: 'schedulesrv',        
+                        ui:   true, 
+                        api:  true
+                    },
+                ]
+            },
+        ],
+    })
+    it('creates domain', function () { 
+        console.log(inspect(org, { depth: null }))
+        expect(org.domains.length).to.be.equal(2)
+        expect(org.domains[0].instance).to.be.equal('ci')
+        expect(org.domains[0].applications.length).to.be.equal(2)
+        expect(org.domains[0].applications[0].instance).to.be.equal('ci')
+        expect(org.domains[1].instance).to.be.equal('ci')
+        expect(org.domains[1].applications.length).to.be.equal(4)
+    })
+})
+

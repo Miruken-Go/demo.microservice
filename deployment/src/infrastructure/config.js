@@ -48,13 +48,26 @@ class B2C {
 
 class Application {
     name
+    env
+    instance
     organization
     domain
     api
     ui
 
     constructor (opts) {
-        this.name         = opts.name.toLowerCase()
+        if (!opts.name)         throw new Error("name required")
+        if (!opts.env)          throw new Error("env required")
+        if (!opts.organization) throw new Error("organization required")
+        if (!opts.domain)       throw new Error("domain required")
+
+        const name     = opts.name
+        const env      = opts.env
+        const instance = opts.instance
+
+        this.name         = name 
+        this.env          = env
+        this.instance     = instance
         this.organization = opts.organization
         this.domain       = opts.domain
         this.api          = opts.api || false
@@ -79,22 +92,41 @@ class Domain {
     env
     instance
     organization
-    apps = []
+    applications = []
 
     constructor (opts) {
-        if (!opts.name) throw new Error("name required")
-        if (!opts.env)  throw new Error("env required")
+        if (!opts.name)         throw new Error("name required")
+        if (!opts.env)          throw new Error("env  required")
+        if (!opts.organization) throw new Error("organization required")
 
-        this.name         = opts.name
-        this.env          = opts.env
+        const name     = opts.name
+        const env      = opts.env
+        const instance = opts.instance
+
+        this.name         = name
+        this.env          = env
+        this.instance     = instance
         this.organization = opts.organization
-        this.apps         = opts.apps
 
         this.resourceGroups = new ResourceGroups({
-            name:     opts.name,
-            env:      opts.env,
-            instance: opts.instance,
+            name:     name,
+            env:      env,
+            instance: instance,
         })
+
+        if(opts.applications) {
+            for (const application of opts.applications) {
+                this.applications.push((application instanceof Application)
+                    ? application
+                    : new Application({
+                        domain:       this,
+                        organization: this.organization,
+                        env:          env, 
+                        instance:     instance,
+                        ...application,
+                    }))
+            }
+        }
     }
 
     get commonPrefix () {
@@ -125,26 +157,41 @@ class Organization {
         if (!opts.name) throw new Error("name required")
         if (!opts.env)  throw new Error("env required")
 
-        const name = opts.name.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
+        const name     = opts.name.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
+        const env      = opts.env
+        const instance = opts.instance
 
         this.name     = name
-        this.env      = opts.env
-        this.instance = opts.instance 
-        this.domains  = opts.domains
+        this.env      = env 
+        this.instance = instance
 
         this.containerRepositoryName = `${name}global`
         if (this.containerRepositoryName.length > 32)
             throw `Configuration Error - containerRepositoryName cannot be longer than 32 characters : ${this.containerRepositoryName} [${this.containerRepositoryName.length}]`
 
         this.resourceGroups = new ResourceGroups({
-            name: name, 
-            env:  opts.env
+            name:     name, 
+            env:      env,
+            instance: instance,
         })
 
         this.b2c = new B2C({
             name: name, 
-            env:  opts.env
+            env:  env
         })
+
+        if(opts.domains) {
+            for (const domain of opts.domains) {
+                this.domains.push((domain instanceof Domain)
+                    ? domain
+                    : new Domain({
+                        organization: this,
+                        env:          env,
+                        instance:     instance,
+                        ...domain,
+                    }))
+            }
+        }
     }
 }
 
