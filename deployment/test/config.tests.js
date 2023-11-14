@@ -142,6 +142,10 @@ describe('Organization', function () {
         expect(org.b2c).to.exist
     })
 
+    it('keyVaultName', function () {
+        expect(org.keyVaultName).to.be.equal('majorleaguemiruken-dev-common-keyvault')
+    })
+
     describe('containerRepository', function(){
         let org = new Organization({
             name: 'Major-League-Miruken',

@@ -1,6 +1,19 @@
-const bash       = require('./bash')
+const bash           = require('./bash')
+const { header }     = require('./logging')
+const { variables }  = require('./envVariables')
+const { secrets }    = require('./envSecrets')
+
 const config     = require('../config')
-const { header } = require('./logging')
+
+variables.require([
+    'tenantId',
+    'subscriptionId',
+    'deploymentPipelineClientId',
+])
+
+secrets.require([
+    'deploymentPipelineClientSecret',
+])
 
 let loggedInToAZ  = false 
 let loggedInToACR = false 
@@ -9,7 +22,7 @@ async function login() {
     if (loggedInToAZ) return 
 
     header('Logging into az')
-    await bash.execute(`az login --service-principal --username ${config.deploymentPipelineClientId} --password ${config.secrets.deploymentPipelineClientSecret} --tenant ${config.tenantId}`);
+    await bash.execute(`az login --service-principal --username ${variables.deploymentPipelineClientId} --password ${secrets.deploymentPipelineClientSecret} --tenant ${variables.tenantId}`);
     loggedInToAZ = true 
 }
 
@@ -24,9 +37,9 @@ async function loginToACR() {
     loggedInToACR = true
 }
 
-async function createResourceGroup(name) {
+async function createResourceGroup(name, location) {
     await login()
-    await bash.execute(`az group create --location ${config.location} --name ${name} --subscription ${config.subscriptionId}`)
+    await bash.execute(`az group create --location ${location} --name ${name} --subscription ${variables.subscriptionId}`)
 }
 
 //https://learn.microsoft.com/en-us/azure/azure-resource-manager/troubleshooting/error-register-resource-provider?tabs=azure-cli
@@ -45,7 +58,7 @@ async function registerAzureProvider(providerName) {
 
 async function getAzureContainerRepositoryPassword(name) {
     await login()
-    const result = await bash.json(`az acr credential show --name ${name} --subscription ${config.subscriptionId}`, true)
+    const result = await bash.json(`az acr credential show --name ${name} --subscription ${variables.subscriptionId}`, true)
     if (!result.passwords.length)
         throw new `Expected passwords from the Azure Container Registry: ${name}`
 

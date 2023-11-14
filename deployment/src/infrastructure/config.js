@@ -50,6 +50,7 @@ class Application {
     name
     env
     instance
+    location
     organization
     domain
     api
@@ -58,16 +59,19 @@ class Application {
     constructor (opts) {
         if (!opts.name)         throw new Error("name required")
         if (!opts.env)          throw new Error("env required")
+        if (!opts.location)     throw new Error("location required")
         if (!opts.organization) throw new Error("organization required")
         if (!opts.domain)       throw new Error("domain required")
 
         const name     = opts.name
         const env      = opts.env
         const instance = opts.instance
+        const location = opts.location
 
         this.name         = name 
         this.env          = env
         this.instance     = instance
+        this.location     = location
         this.organization = opts.organization
         this.domain       = opts.domain
         this.api          = opts.api || false
@@ -97,15 +101,18 @@ class Domain {
     constructor (opts) {
         if (!opts.name)         throw new Error("name required")
         if (!opts.env)          throw new Error("env  required")
+        if (!opts.location)     throw new Error("location required")
         if (!opts.organization) throw new Error("organization required")
 
         const name     = opts.name
         const env      = opts.env
         const instance = opts.instance
+        const location = opts.location
 
         this.name         = name
         this.env          = env
         this.instance     = instance
+        this.location     = location
         this.organization = opts.organization
 
         this.resourceGroups = new ResourceGroups({
@@ -123,6 +130,7 @@ class Domain {
                         organization: this.organization,
                         env:          env, 
                         instance:     instance,
+                        location:     location,
                         ...application,
                     }))
             }
@@ -138,9 +146,6 @@ class Domain {
         : `${this.name}-${this.env}`
     }
 
-    get keyVaultName () {
-        return `${this.commonPrefix}-keyvault` 
-    }
 }
 
 
@@ -148,22 +153,33 @@ class Organization {
     name
     env
     instance
+    location
     containerRepositoryName
-    domains = []
     resourceGroups
     b2c
+    keyVaultName
+    domains = []
 
     constructor (opts) {
-        if (!opts.name) throw new Error("name required")
-        if (!opts.env)  throw new Error("env required")
+        if (!opts.name)     throw new Error("name required")
+        if (!opts.env)      throw new Error("env required")
+        if (!opts.location) throw new Error("location required")
 
-        const name     = opts.name.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
-        const env      = opts.env
+        const name = opts.name.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
+        if (name.length > 19)
+            throw `Configuration Error - Organization name cannot be longer than 19 characters : ${name} [${name.length}]`
+
+        const env = opts.env
+        if (env.length > 4)
+            throw `Configuration Error - Env cannot be longer than 4 characters : ${env} [${env.length}]`
+
         const instance = opts.instance
+        const location = opts.location
 
         this.name     = name
         this.env      = env 
         this.instance = instance
+        this.location = location
 
         this.containerRepositoryName = `${name}global`
         if (this.containerRepositoryName.length > 32)
@@ -180,6 +196,10 @@ class Organization {
             env:  env
         })
 
+        this.keyVaultName = `${name}-${env}` 
+        if (this.keyVaultName.length > 24)
+            throw `Configuration Error - keyVaultName cannot be longer than 24 characters : ${this.keyVaultName} [${this.keyVaultName.length}]`
+
         if(opts.domains) {
             for (const domain of opts.domains) {
                 this.domains.push((domain instanceof Domain)
@@ -188,6 +208,7 @@ class Organization {
                         organization: this,
                         env:          env,
                         instance:     instance,
+                        location:     location, 
                         ...domain,
                     }))
             }
