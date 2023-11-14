@@ -55,6 +55,7 @@ class Application {
     domain
     api
     ui
+    scopes = []
 
     constructor (opts) {
         if (!opts.name)         throw new Error("name required")
@@ -78,6 +79,7 @@ class Application {
         this.api          = opts.api || false
         this.ui           = opts.ui  || false
         this.imageName    = `${organization.containerRepositoryName}.azurecr.io/${name}` 
+        this.scopes       = opts.scopes || ['Groups', 'Roles', 'Entitlements']
     }
 
     get containerAppEnvironmentName () {
@@ -157,7 +159,8 @@ class Organization {
     resourceGroups
     b2c
     keyVaultName
-    domains = []
+    domains      = []
+    applications = []
 
     constructor (opts) {
         if (!opts.name)     throw new Error("name required")

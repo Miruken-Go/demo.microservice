@@ -10,16 +10,23 @@ const org = new Organization({
     location: 'CentralUs',
     env:      env,
     instance: instance,
+    applications: [
+        {
+            name: 'adb2c-auth-srv', 
+            ui:   true, 
+            api:  true
+        },
+    ],
     domains: [
         {
             name: 'billing', 
             applications: [
                 {
-                    name: 'billingui',  
+                    name: 'billing-ui',  
                     ui:   true
                 },
                 {
-                    name: 'billingsrv', 
+                    name: 'billing-srv', 
                     ui:   true, 
                     api:  true
                 },
@@ -29,7 +36,7 @@ const org = new Organization({
             name: 'league', 
             applications: [
                 {
-                    name: 'majorleaguemiruken', 
+                    name: 'major-league-miruken', 
                     ui:   true
                 },
                 {
@@ -37,12 +44,12 @@ const org = new Organization({
                     ui:   true
                 },
                 {
-                    name: 'teamsrv',            
+                    name: 'team-srv',            
                     ui:   true, 
                     api:  true
                 },
                 {
-                    name: 'schedulesrv',        
+                    name: 'schedule-srv',        
                     ui:   true, 
                     api:  true
                 },

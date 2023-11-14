@@ -1,18 +1,36 @@
-## Global Resources Deployment Flow
+# Azure Resources Deployment Flow
 
-Global resources are shared across all environments.   There will not be many of these types of resources because in general you want strict environment seperation.   The container repository is an example of one such resource.  It is shared across all the environments because we want the exact same bits that were compiled and tested to be deployed to production.  This minimizes the risk of hidden and unintended changes from creaping in after testing.  An example of hidden and unintended changes would be new versions of code dependencies being pulled in during a package restore.
+## Organization Resources
+
+An organization contains one or more domains. Authentication would be at the domain level enable single sign on for all the contained domains.
+
+Global resources are shared across all environments. There will not be many of these types of resources because in general you want strict environment seperation.   The container repository is an example of one such resource.  It is shared across all the environments because we want the exact same bits that were compiled and tested to be deployed to production.  This minimizes the risk of hidden and unintended changes from creaping in after testing.  An example of hidden and unintended changes would be new versions of code dependencies being pulled in during a package restore.
 
 ```mermaid
 
 flowchart LR
-    A(Deploy Global Resources)
+    A(Deploy Organization Global Resources </br></br> majorleaguemiruken-global </br></br> Container Repository)
     
-    B(Build Default Container Image)
+    B(Build Default Container Images </br></br> For all applications </br>Push to Global Container Repository)
 
-    A --> B
+    C(Deploy Organization Environment Common Resources </br></br> majorleaguemiruken-dev-common </br></br> keyVault </br> cosmosdb)
+
+    D(Deploy Organization Environment Instance Resources </br></br> majorleaguemiruken-dev </br> majorleaguemiruken-dev-ci </br> majorleaguemiruken-dev-feature </br></br> Container Apps Environment </br> Container App )
+
+    E[[Create Organization Environment Manual Resources </br></br> majorleaguemiruken-dev-manual </br></br> B2C]]
+
+    F(Configure Organization Environment Manual Resources </br></br> B2C App Registrations)
+
+    G(Deploy Organization Environment Applications</br></br> azb2c-auth-srv)
+
+    A --> B --> C --> D
+    E --> F --> G
 ```
 
-## Environment Deployment Flow
+## Domain Deployment Flow
+
+A domain can be thought of as a microservice.  It is one or more applications that implement buisness functionality.  
+Domains share a database and user permissions.
 
 Common environment resources are resources that are shared by all the invironment instances.  For example you may decide to share a database to reduce maintainence and mock data creation.  You may also want to share a single key store per environment.  These are long lasting resources that will be recreated less frequently.
 
@@ -21,15 +39,13 @@ Manual resources are created by hand.  In an ideal world there would be no resou
 ```mermaid
 
 flowchart LR
-    A(Deploy Common Environment Resources)
+    A(Deploy Domain Environment Common Resources </br></br> billing-dev-common </br></br> cosmosdb)
 
-    B(Deploy Environment Instance Resources </br></br> teamsrv-dev </br> teamsrv-dev-ci)
+    B(Deploy Domain Environment Instance Resources </br></br> billing-dev </br> billing-dev-ci </br>billing-dev-feature </br></br> Container Apps Environment </br> Container App)
+
+    C(Deploy Domain Environment Applications</br></br> azb2c-auth-srv)
     
-    C[[Create Manual Environment Resources </br></br> B2C]]
-
-    D(Configure Manual Resources)
-
-    A --> B --> C --> D
+    A --> B --> C
 ```
 
 ## Deploy application
