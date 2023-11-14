@@ -62,7 +62,7 @@ class Application {
         if (!opts.env)          throw new Error("env required")
         if (!opts.location)     throw new Error("location required")
         if (!opts.organization) throw new Error("organization required")
-        if (!opts.domain)       throw new Error("domain required")
+        //if (!opts.domain)       throw new Error("domain required")
 
         const name         = opts.name
         const env          = opts.env
@@ -75,20 +75,20 @@ class Application {
         this.instance     = instance
         this.location     = location
         this.organization = organization
-        this.domain       = opts.domain
+        //this.domain       = opts.domain
         this.api          = opts.api || false
         this.ui           = opts.ui  || false
         this.imageName    = `${organization.containerRepositoryName}.azurecr.io/${name}` 
         this.scopes       = opts.scopes || ['Groups', 'Roles', 'Entitlements']
     }
 
-    get containerAppEnvironmentName () {
-        return `${domain.instancePrefix}-cae`
-    }
+    // get containerAppEnvironmentName () {
+    //     return `${domain.instancePrefix}-cae`
+    // }
 
-    get containerAppName () {
-        return `${domain.instancePrefix}-${this.name}`
-    }
+    // get containerAppName () {
+    //     return `${domain.instancePrefix}-${this.name}`
+    // }
 }
 
 class Domain {
@@ -155,7 +155,6 @@ class Organization {
     instance
     location
     containerRepositoryName
-    apiConnectorImageName
     resourceGroups
     b2c
     keyVaultName
@@ -187,8 +186,6 @@ class Organization {
         if (this.containerRepositoryName.length > 32)
             throw `Configuration Error - containerRepositoryName cannot be longer than 32 characters : ${this.containerRepositoryName} [${this.containerRepositoryName.length}]`
 
-        this.apiConnectorImageName = `${this.containerRepositoryName}.azurecr.io/apiconnector` 
-
         this.resourceGroups = new ResourceGroups({
             name:     name, 
             env:      env,
@@ -203,6 +200,20 @@ class Organization {
         this.keyVaultName = `${name}-${env}` 
         if (this.keyVaultName.length > 24)
             throw `Configuration Error - keyVaultName cannot be longer than 24 characters : ${this.keyVaultName} [${this.keyVaultName.length}]`
+
+        if(opts.applications) {
+            for (const application of opts.applications) {
+                this.applications.push((application instanceof Application)
+                    ? application
+                    : new Application({
+                        organization: this,
+                        env:          env, 
+                        instance:     instance,
+                        location:     location,
+                        ...application,
+                    }))
+            }
+        }
 
         if(opts.domains) {
             for (const domain of opts.domains) {

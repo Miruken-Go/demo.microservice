@@ -36,11 +36,11 @@ const org = new Organization({
             name: 'league', 
             applications: [
                 {
-                    name: 'major-league-miruken', 
+                    name: 'major-league-miruken-ui', 
                     ui:   true
                 },
                 {
-                    name: 'tournaments',
+                    name: 'tournaments-ui',
                     ui:   true
                 },
                 {
