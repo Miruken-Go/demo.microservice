@@ -13,7 +13,7 @@ const org = new Organization({
     domains: [
         {
             name: 'billing', 
-            apps: [
+            applications: [
                 {
                     name: 'billingui',  
                     ui:   true
@@ -27,7 +27,7 @@ const org = new Organization({
         },
         {
             name: 'league', 
-            apps: [
+            applications: [
                 {
                     name: 'majorleaguemiruken', 
                     ui:   true

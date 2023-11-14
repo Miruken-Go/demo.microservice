@@ -3,8 +3,6 @@ const { header }     = require('./logging')
 const { variables }  = require('./envVariables')
 const { secrets }    = require('./envSecrets')
 
-const config     = require('../config')
-
 variables.require([
     'tenantId',
     'subscriptionId',
@@ -26,13 +24,13 @@ async function login() {
     loggedInToAZ = true 
 }
 
-async function loginToACR() {
+async function loginToACR(containerRepositoryName) {
     if (loggedInToACR) return 
 
     header('Logging into ACR')
     await login()
     await bash.execute(`
-        az acr login -n ${config.containerRepositoryName}
+        az acr login -n ${containerRepositoryName}
     `)
     loggedInToACR = true
 }

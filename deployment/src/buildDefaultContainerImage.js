@@ -1,19 +1,18 @@
-const az      = require('./infrastructure/az');
-const bash    = require('./infrastructure/bash')
-const logging = require('./infrastructure/logging');
-const git     = require('./infrastructure/git');
-const config  = require('./config');
+const az               = require('./infrastructure/az');
+const bash             = require('./infrastructure/bash')
+const logging          = require('./infrastructure/logging');
+const git              = require('./infrastructure/git');
+const { organization } = require('./config');
 
 async function main() {
     try {
-        config.requiredEnvironmentVariableSecrets(['ghToken'])
-        logging.printConfiguration(config)
+        logging.printOrganization(organization)
 
         logging.header("Building defaultContainerImage")
 
-        const version      = `v${Math.floor(Date.now()/1000)}`.trim()
-        const imageName    = `${config.imageName}:default`
-        const tag          = `${config.defaultContainerImage}/${version}`
+        const version   = `v${Math.floor(Date.now()/1000)}`.trim()
+        const imageName = `${organization.apiConnectorImageName}:default`
+        const tag       = `defaultContainerImage/${version}`
 
         console.log(`version:      [${version}]`)
         console.log(`imageName:    [${imageName}]`)
@@ -25,11 +24,23 @@ async function main() {
                 defaultContainerImage                      \
         `)
 
-        await az.loginToACR()
+        await az.loginToACR(organization.containerRepositoryName)
 
         await bash.execute(`
             docker push ${imageName}
         `)
+
+        //Push a default container for all the apps
+        for(const domain of organization.domains) {
+            for (const app of domain.applications) {
+                const appImage = `${app.imageName}:default`
+                console.log(`imageName:    [${appImage}]`)
+                await bash.execute(`
+                    docker tag ${imageName} ${appImage}
+                    docker push ${appImage}
+                `)
+            }
+        }
 
         await git.tagAndPush(tag)
 

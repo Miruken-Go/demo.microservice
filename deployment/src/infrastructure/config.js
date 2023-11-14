@@ -63,19 +63,21 @@ class Application {
         if (!opts.organization) throw new Error("organization required")
         if (!opts.domain)       throw new Error("domain required")
 
-        const name     = opts.name
-        const env      = opts.env
-        const instance = opts.instance
-        const location = opts.location
+        const name         = opts.name
+        const env          = opts.env
+        const instance     = opts.instance
+        const location     = opts.location
+        const organization = opts.organization
 
         this.name         = name 
         this.env          = env
         this.instance     = instance
         this.location     = location
-        this.organization = opts.organization
+        this.organization = organization
         this.domain       = opts.domain
         this.api          = opts.api || false
         this.ui           = opts.ui  || false
+        this.imageName    = `${organization.containerRepositoryName}.azurecr.io/${name}` 
     }
 
     get containerAppEnvironmentName () {
@@ -84,10 +86,6 @@ class Application {
 
     get containerAppName () {
         return `${domain.instancePrefix}-${this.name}`
-    }
-
-    get imageName () { 
-        return `${this.organization.containerRepositoryName}.azurecr.io/${appName}` 
     }
 }
 
@@ -155,6 +153,7 @@ class Organization {
     instance
     location
     containerRepositoryName
+    apiConnectorImageName
     resourceGroups
     b2c
     keyVaultName
@@ -184,6 +183,8 @@ class Organization {
         this.containerRepositoryName = `${name}global`
         if (this.containerRepositoryName.length > 32)
             throw `Configuration Error - containerRepositoryName cannot be longer than 32 characters : ${this.containerRepositoryName} [${this.containerRepositoryName.length}]`
+
+        this.apiConnectorImageName = `${this.containerRepositoryName}.azurecr.io/apiconnector` 
 
         this.resourceGroups = new ResourceGroups({
             name:     name, 

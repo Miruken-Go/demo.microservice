@@ -6,9 +6,7 @@ const { organization } = require('./config');
 const path             = require('path')
 
 variables.require([
-    'tenantId',
     'subscriptionId',
-    'deploymentPipelineClientId',
 ])
 
 async function main() {
@@ -16,29 +14,28 @@ async function main() {
         logging.printEnvironmentVariables(variables)
         logging.printOrganization(organization)
 
-        logging.header("Deploying Organization Common Resources")
+        logging.header("Deploying Organization Instance Resources")
 
         //Resources Groups
-        //await az.createResourceGroup(organization.resourceGroups.common, organization.location)
-        //await az.createResourceGroup(organization.resourceGroups.manual, organization.location)
-        
-        //await az.createResourceGroup(organization.resourceGroups.stable, organization.location)
-        if ( variables.instance) {
-            await az.createResourceGroup(organization.resourceGroups.instance, organization.location)
-        }
+        await az.createResourceGroup(organization.resourceGroups.instance, organization.location)
 
-        logging.header("Deploying OrganizationGlobalResources Arm Template")
-        const bicepFile = path.join(__dirname, 'bicep/organizationGlobalResources.bicep')
+        const containerRepositoryPassword = await az.getAzureContainerRepositoryPassword(organization.containerRepositoryName)
+        const bicepFile                   = path.join(__dirname, 'bicep/organizationInstanceResources.bicep')
 
         await bash.json(`
             az deployment group create                                              \
                 --template-file  ${bicepFile}                                       \
                 --subscription   ${variables.subscriptionId}                        \
-                --resource-group ${organization.resourceGroups.global}              \
+                --resource-group ${organization.resourceGroups.instance}            \
                 --mode complete                                                     \
                 --parameters                                                        \
+                    prefix=${organization.resourceGroups.instance}                  \
                     containerRepositoryName=${organization.containerRepositoryName} \
                     location=${organization.location}                               \
+                    keyVaultResourceGroup=${organization.resourceGroups.common}     \
+                    keyVaultName=${organization.keyVaultName}                       \
+                    containerRepositoryPassword=${containerRepositoryPassword}      \
+                    appName=apiconnector                                            \
         `)
 
         console.log("Script completed successfully")

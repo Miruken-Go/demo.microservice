@@ -3,7 +3,6 @@ const config  = require('../config');
 const logging = require('./logging');
 
 console.log("Configuring git")
-config.requiredEnvironmentVariableSecrets(['ghToken'])
 bash.execute(`
     git config --global --add safe.directory $(pwd)
     git config --global url."https://api:$ghToken@github.com/".insteadOf "https://github.com/"
