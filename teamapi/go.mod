@@ -2,7 +2,7 @@ module github.com/miruken-go/demo.microservice/teamapi
 
 go 1.21
 
-require github.com/miruken-go/miruken v0.30.42
+require github.com/miruken-go/miruken v0.30.43
 
 require (
 	dario.cat/mergo v1.0.0 // indirect
