@@ -1,9 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
+	"github.com/miruken-go/demo.microservice/adb2c/token"
 	"github.com/miruken-go/miruken/security/password"
 	"net/http"
 	"os"
@@ -27,64 +26,6 @@ import (
 	play "github.com/miruken-go/miruken/validates/play"
 	"github.com/rs/zerolog"
 )
-
-func authzHandler(w http.ResponseWriter, r *http.Request) {
-	username := "ooYymDzee5!V&v8gk7*s"
-	password := "i**72R#PLWbx8&#$I$ok"
-	u, p, ok := r.BasicAuth()
-	if !ok || u != username || p != password {
-		w.WriteHeader(401)
-		return
-	}
-
-	type Request struct {
-		Type     string `json:"@type"`
-		Email    string
-		ObjectId string
-		Scope    string
-	}
-
-	var request Request
-	err := json.NewDecoder(r.Body).Decode(&request)
-	if err != nil {
-		w.WriteHeader(422)
-		return
-	}
-
-	fmt.Println("")
-	fmt.Println("New Request")
-	fmt.Println("@type: ", request.Type)
-	fmt.Println("email: ", request.Email)
-	fmt.Println("objectId: ", request.ObjectId)
-	fmt.Println("scope: ", request.Scope)
-
-	type Response struct {
-		Groups       []string
-		Roles        []string
-		Entitlements []string
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(Response{
-		Groups:       []string{"oncall"},
-		Roles:        []string{"admin", "coach", "player"},
-		Entitlements: []string{"createTeam", "updateTeam", "createPerson", "updatePerson"},
-	})
-	if err != nil {
-		w.WriteHeader(500)
-	}
-}
-
-type Config struct {
-	App struct {
-		Version string
-		Source  struct {
-			Url string
-		}
-		Port    string
-	}
-	OpenApi openapi.Config
-}
 
 func main() {
 	// logging
@@ -164,21 +105,26 @@ func main() {
 		os.Exit(1)
 	}
 
-	docs := openapiGen.Docs()
-
-	srv := httpsrv.Api(handler,
-		auth.WithFlowRef("Login.OAuth").Bearer(),
-	)
-
 	// configure routes
 	var mux http.ServeMux
-	mux.Handle("/process", srv)
-	mux.Handle("/process/", srv)
-	mux.Handle("/publish", srv)
-	mux.Handle("/publish/", srv)
+
+	// Polymorphic miruken endpoints
+	poly := httpsrv.Api(handler,
+		auth.WithFlowRef("Login.OAuth").Bearer(),
+	)
+	mux.Handle("/process", poly)
+	mux.Handle("/process/", poly)
+	mux.Handle("/publish", poly)
+	mux.Handle("/publish/", poly)
+
+	// OpenAPI document and swagger endpoints
+	docs := openapiGen.Docs()
 	mux.Handle("/openapi", openapi.Handler(docs, true))
 	mux.Handle("/", ui.Handler("", docs, appConfig.OpenApi))
-	mux.HandleFunc("/authz/", authzHandler)
+
+	// ADB2C Api-Connector enrich claims endpoint
+	mux.Handle("/enrich/", httpsrv.DispatchTo[*token.EnrichHandler](handler,
+		auth.WithFlowRef("Login.Adb2c").Basic().Required()))
 
 	// start http server
 	port := appConfig.App.Port

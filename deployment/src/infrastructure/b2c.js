@@ -20,7 +20,7 @@ async function configureCustomPolicies () {
     const appUrl = await az.getContainerAppUrl(config.prefix)
     if(!appUrl) throw new Error(`authorizationServiceUrl could not be calculated. The AppUrl for ${config.prefix} container app was not found. The default application environment instance needs to be deployed before common configuration can run.`)
 
-    const authorizationServiceUrl = `https://${appUrl}/authz/`
+    const authorizationServiceUrl = `https://${appUrl}/enrich/`
 
     //https://learn.microsoft.com/en-us/azure/active-directory-b2c/deploy-custom-policies-devops
     const customPoliciesDirectory = path.resolve(__dirname, '../custom-policies')

@@ -23,10 +23,12 @@ async function main() {
         logging.header(`Deploying ${applicationName}`)
 
         const openIdConfig    = await b2c.getWellKnownOpenIdConfiguration()
+        const teamsrv         = await b2cAppRegistration.getApplicationByName('teamsrv')
         const teamsrv_openapi = await b2cAppRegistration.getApplicationByName('teamsrv_openapi')
 
         const envVars = [
             `Login__OAuth__0__Module="login.jwt"`,
+            `Login__OAuth__0__Options__Audience="${teamsrv.appId}"`,
             `Login__OAuth__0__Options__JWKS__Uri="${openIdConfig.jwks_uri}"`,
             `Login__Basic__0__Module="login.pwd"`,
             `Login__Basic__0__Options__Credentials__0__Username="${config.authorizationServiceUsername}"`,
