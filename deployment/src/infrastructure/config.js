@@ -55,7 +55,8 @@ class Application {
     domain
     api
     ui
-    scopes = []
+    scopes  = []
+    secrets = []
 
     constructor (opts) {
         if (!opts.name)         throw new Error("name required")
@@ -80,6 +81,13 @@ class Application {
         this.ui           = opts.ui  || false
         this.imageName    = `${organization.containerRepositoryName}.azurecr.io/${name}` 
         this.scopes       = opts.scopes || ['Groups', 'Roles', 'Entitlements']
+        this.secrets      = opts.secrets
+        this.containerAppName = (instance)
+            ? `${name}-${env}-${instance}`
+            : `${name}-${env}`
+
+        if (this.containerAppName.length > 32)
+            throw `Configuration Error - containerAppName cannot be longer than 32 characters : ${this.containerAppName} [${this.containerAppName.length}]`
     }
 
     // get containerAppEnvironmentName () {

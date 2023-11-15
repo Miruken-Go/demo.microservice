@@ -14,7 +14,10 @@ const org = new Organization({
         {
             name: 'adb2c-auth-srv', 
             ui:   true, 
-            api:  true
+            api:  true,
+            secrets: [
+                'authorizationServicePassword'
+            ]
         },
     ],
     domains: [

@@ -22,7 +22,22 @@ async function main() {
         const containerRepositoryPassword = await az.getAzureContainerRepositoryPassword(organization.containerRepositoryName)
         const bicepFile                   = path.join(__dirname, 'bicep/organizationInstanceResources.bicep')
 
-        await bash.json(`
+        const params = JSON.stringify({ 
+            prefix:                      organization.resourceGroups.instance,
+            containerRepositoryName:     organization.containerRepositoryName,
+            location:                    organization.location,
+            keyVaultResourceGroup:       organization.resourceGroups.common,
+            keyVaultName:                organization.keyVaultName,
+            containerRepositoryPassword: containerRepositoryPassword,
+            // applications: organization.applications.map(x => {
+            //     return { 
+            //         name:    x.name, 
+            //         secrets: x.secrets
+            //     }
+            // })
+        })
+
+        const results = await bash.json(`
             az deployment group create                                              \
                 --template-file  ${bicepFile}                                       \
                 --subscription   ${variables.subscriptionId}                        \
@@ -35,8 +50,10 @@ async function main() {
                     keyVaultResourceGroup=${organization.resourceGroups.common}     \
                     keyVaultName=${organization.keyVaultName}                       \
                     containerRepositoryPassword=${containerRepositoryPassword}      \
-                    appName=apiconnector                                            \
         `)
+
+        logging.header("Container App Urls")
+        console.log(results.properties.outputs.containerAppUrls.value)
 
         console.log("Script completed successfully")
     } catch (error) {
@@ -44,6 +61,10 @@ async function main() {
         console.log(error)
         console.log("Script Failed")
     }
+
+
+
+    
 }
 
 main()
