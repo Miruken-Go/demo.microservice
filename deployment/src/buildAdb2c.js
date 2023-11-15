@@ -12,7 +12,7 @@ async function main() {
         logging.header("Building adb2c module")
 
         await bash.execute(`
-            cd teamapi
+            cd adb2c
             go test ./...
         `)
 
@@ -24,7 +24,7 @@ async function main() {
         const tag     = `adb2c/${version}`
 
         console.log(`version: [${version}]`)
-        console.log(`tag:     [${tag}]`)onabort?.[Symbol]
+        console.log(`tag:     [${tag}]`)
 
         await git.tagAndPush(tag)
 
