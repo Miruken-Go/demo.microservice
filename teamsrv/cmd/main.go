@@ -166,16 +166,16 @@ func main() {
 
 	docs := openapiGen.Docs()
 
-	h := httpsrv.Api(handler,
+	srv := httpsrv.Api(handler,
 		auth.WithFlowRef("Login.OAuth").Bearer(),
 	)
 
 	// configure routes
 	var mux http.ServeMux
-	mux.Handle("/process", h)
-	mux.Handle("/process/", h)
-	mux.Handle("/publish", h)
-	mux.Handle("/publish/", h)
+	mux.Handle("/process", srv)
+	mux.Handle("/process/", srv)
+	mux.Handle("/publish", srv)
+	mux.Handle("/publish/", srv)
 	mux.Handle("/openapi", openapi.Handler(docs, true))
 	mux.Handle("/", ui.Handler("", docs, appConfig.OpenApi))
 	mux.HandleFunc("/authz/", authzHandler)

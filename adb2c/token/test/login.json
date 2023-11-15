@@ -1,0 +1,12 @@
+{
+  "login": {
+    "adb2c": [{
+      "module": "login.pwd",
+      "options": {
+        "credentials": {
+          "user": "password"
+        }
+      }
+    }]
+  }
+}

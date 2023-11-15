@@ -18,24 +18,15 @@ type (
 
 	// EnrichRequest is the request body sent to the Api Connector.
 	// It receives a set et of InputClaims and returns a set of OutputClaims.
-	// This enrichment support groups, roles and entitlements.
 	EnrichRequest struct {
 		Email    string
 		ObjectId string
 		Scope    string
 	}
-
-	// EnrichResponse is the response body returned from the Api Connector.
-	// It contains the enriched groups, roles and entitlement OutputClaims.
-	EnrichResponse struct {
-		Groups       []string
-		Roles        []string
-		Entitlements []string
-	}
 )
 
 func (e EnrichHandler) Constructor(
-	_ *struct{ args.Optional }, logger logr.Logger,
+	_ *struct{args.Optional}, logger logr.Logger,
 ) {
 	if logger == e.logger {
 		e.logger = logr.Discard()
@@ -61,14 +52,14 @@ func (e EnrichHandler) ServeHTTP(
 		"ObjectId", request.ObjectId,
 		"Scope", request.Scope)
 
-	response := EnrichResponse{
-		Groups:       []string{"oncall"},
-		Roles:        []string{"admin", "coach", "player"},
-		Entitlements: []string{"createTeam", "updateTeam", "createPerson", "updatePerson"},
+	claims := map[string]any{
+		"Groups":       []string{"oncall"},
+		"Roles":        []string{"admin", "coach", "player"},
+		"Entitlements": []string{"createTeam", "updateTeam", "createPerson", "updatePerson"},
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(response)
+	err = json.NewEncoder(w).Encode(claims)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
