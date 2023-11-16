@@ -7,9 +7,13 @@ function header (text) {
     console.log(separator)
 }
 
-function printOrganization (object) {
-    header("Organization Configuration")
+function printObject (text, object) {
+    header(text)
     console.log(inspect(object, { depth: null }))
+}
+
+function printOrganization (object) {
+    printObject("Organization Configuration", object)
 }
 
 function printEnvironmentVariables (config) {
@@ -43,6 +47,7 @@ function printEnvironmentSecrets(config) {
 
 module.exports = {
     header,
+    printObject,
     printOrganization,
     printEnvironmentVariables,
     printEnvironmentSecrets,

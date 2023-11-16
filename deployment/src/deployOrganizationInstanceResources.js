@@ -16,44 +16,43 @@ async function main() {
 
         logging.header("Deploying Organization Instance Resources")
 
+        //Clean up from any deleted resources
+        await az.deleteOrphanedApplicationSecurityPrincipals()
+
         //Resources Groups
         await az.createResourceGroup(organization.resourceGroups.instance, organization.location)
 
         const containerRepositoryPassword = await az.getAzureContainerRepositoryPassword(organization.containerRepositoryName)
         const bicepFile                   = path.join(__dirname, 'bicep/organizationInstanceResources.bicep')
 
+        const applications = organization.applications.map(a => {
+            return { 
+                name:             a.name, 
+                containerAppName: a.containerAppName, 
+                secrets:          a.secrets
+            }
+        })
+
         const params = JSON.stringify({ 
-            prefix:                      organization.resourceGroups.instance,
-            containerRepositoryName:     organization.containerRepositoryName,
-            location:                    organization.location,
-            keyVaultResourceGroup:       organization.resourceGroups.common,
-            keyVaultName:                organization.keyVaultName,
-            containerRepositoryPassword: containerRepositoryPassword,
-            // applications: organization.applications.map(x => {
-            //     return { 
-            //         name:    x.name, 
-            //         secrets: x.secrets
-            //     }
-            // })
+            prefix:                      { value: organization.resourceGroups.instance },
+            containerRepositoryName:     { value: organization.containerRepositoryName },
+            location:                    { value: organization.location },
+            keyVaultResourceGroup:       { value: organization.resourceGroups.common },
+            keyVaultName:                { value: organization.keyVaultName },
+            containerRepositoryPassword: { value: containerRepositoryPassword },
+            applications:                { value: applications },
         })
 
         const results = await bash.json(`
-            az deployment group create                                              \
-                --template-file  ${bicepFile}                                       \
-                --subscription   ${variables.subscriptionId}                        \
-                --resource-group ${organization.resourceGroups.instance}            \
-                --mode complete                                                     \
-                --parameters                                                        \
-                    prefix=${organization.resourceGroups.instance}                  \
-                    containerRepositoryName=${organization.containerRepositoryName} \
-                    location=${organization.location}                               \
-                    keyVaultResourceGroup=${organization.resourceGroups.common}     \
-                    keyVaultName=${organization.keyVaultName}                       \
-                    containerRepositoryPassword=${containerRepositoryPassword}      \
+            az deployment group create                                   \
+                --template-file  ${bicepFile}                            \
+                --subscription   ${variables.subscriptionId}             \
+                --resource-group ${organization.resourceGroups.instance} \
+                --mode           complete                                \
+                --parameters     '${params}'                             \
         `)
 
-        logging.header("Container App Urls")
-        console.log(results.properties.outputs.containerAppUrls.value)
+        logging.printObject("Bicep Outputs", results.properties.outputs)
 
         console.log("Script completed successfully")
     } catch (error) {
@@ -61,10 +60,6 @@ async function main() {
         console.log(error)
         console.log("Script Failed")
     }
-
-
-
-    
 }
 
 main()

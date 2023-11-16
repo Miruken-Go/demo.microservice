@@ -83,6 +83,22 @@ async function getContainerAppUrl(name) {
     return result.properties.configuration.ingress.fqdn
 }
 
+
+async function deleteOrphanedApplicationSecurityPrincipals(name) {
+    await login()
+    const ids = await bash.json(`
+        az role assignment list --all --query "[?principalName==''].id"    
+    `)
+
+    if (ids.length) {
+        await bash.json(`
+            az role assignment delete --ids ${ids.join(' ')}
+        `)
+
+        console.log(`Deleted ${ids.length} orphaned application security principals`)
+    }
+}
+
 module.exports = {
     login,
     loginToACR,
@@ -91,4 +107,5 @@ module.exports = {
     getAzureContainerRepositoryPassword,
     getKeyVaultSecret,
     getContainerAppUrl,
+    deleteOrphanedApplicationSecurityPrincipals
 }

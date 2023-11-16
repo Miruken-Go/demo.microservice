@@ -10,13 +10,7 @@ param applications {
     name:             string 
     containerAppName: string 
     secrets:          string[]
-}[] = [
-  {
-    name:             'adb2c-auth-srv'
-    containerAppName: 'adb2c-auth-srv-dev'
-    secrets:          []
-  }
-]
+}[]
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Container Apps

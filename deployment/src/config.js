@@ -16,7 +16,7 @@ const org = new Organization({
             ui:   true, 
             api:  true,
             secrets: [
-                'authorizationServicePassword'
+                'authorization-service-password'
             ]
         },
     ],
