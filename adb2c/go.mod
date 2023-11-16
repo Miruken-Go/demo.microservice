@@ -2,12 +2,10 @@ module github.com/miruken-go/demo.microservice/adb2c
 
 go 1.21
 
-toolchain go1.21.3
-
 require (
 	github.com/go-logr/logr v1.3.0
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/miruken v0.30.44
+	github.com/miruken-go/miruken v0.30.45
 	github.com/stretchr/testify v1.8.4
 )
 

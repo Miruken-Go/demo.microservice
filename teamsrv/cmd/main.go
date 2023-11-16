@@ -122,8 +122,8 @@ func main() {
 	mux.Handle("/openapi", openapi.Handler(docs, true))
 	mux.Handle("/", ui.Handler("", docs, appConfig.OpenApi))
 
-	// ADB2C Api-Connector enrich claims endpoint
-	mux.Handle("/enrich/", httpsrv.DispatchTo[*token.EnrichHandler](handler,
+	// AD B2C Api-Connector enrich claims endpoint
+	mux.Handle("/enrich/", httpsrv.Resolve[*token.EnrichHandler](handler,
 		auth.WithFlowRef("Login.Adb2c").Basic().Required()))
 
 	// start http server

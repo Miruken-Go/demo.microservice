@@ -50,7 +50,7 @@ func (suite *ADB2CTestSuite) SetupTest() {
 		Handler()
 
 	suite.srv = httptest.NewServer(
-		httpsrv.DispatchTo[*token.EnrichHandler](handler,
+		httpsrv.Resolve[*token.EnrichHandler](handler,
 			auth.WithFlowRef("login.adb2c").Basic().Required()),
 	)
 }

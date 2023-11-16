@@ -2,12 +2,11 @@ module github.com/miruken-go/demo.microservice/teamsrv
 
 go 1.21
 
-toolchain go1.21.3
-
 require (
 	github.com/getkin/kin-openapi v0.120.0
 	github.com/go-logr/zerologr v1.2.3
 	github.com/knadh/koanf v1.5.0
+	github.com/miruken-go/demo.microservice/adb2c v0.1.0
 	github.com/miruken-go/demo.microservice/team v0.2.37
 	github.com/miruken-go/miruken v0.30.45
 	github.com/rs/zerolog v1.31.0
@@ -25,7 +24,6 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.16.0 // indirect
 	github.com/golang-jwt/jwt/v5 v5.1.0 // indirect
-	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/invopop/yaml v0.2.0 // indirect
@@ -46,7 +44,5 @@ require (
 	golang.org/x/net v0.18.0 // indirect
 	golang.org/x/sys v0.14.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
