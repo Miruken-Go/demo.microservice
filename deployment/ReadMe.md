@@ -11,7 +11,12 @@ https://learn.microsoft.com/en-us/azure/active-directory/develop/howto-create-se
     Name it DeploymentPipeline
     Certificates&Secrets > New Client Secret
 
-Give DeploymentPipeline permissions
+Give DeploymentPipeline Graph Api permissions
+    Azure AD > App Registrations > API permissions
+        Add a permission > Microsoft Graph 
+            Directory.Raed.All
+
+Give DeploymentPipeline permissions on the subscription where the app will create resources
 
     Subscriptions > Access control (IAM)
     Add > Add role assignement > Owner
