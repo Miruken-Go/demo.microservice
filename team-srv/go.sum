@@ -214,6 +214,8 @@ github.com/miekg/dns v1.1.26/go.mod h1:bPDLeHnStXmXAq1m/Ch/hvfNHr14JKNPMBo3VZKju
 github.com/miekg/dns v1.1.41/go.mod h1:p6aan82bvRIyn+zDIv9xYNUpwa73JcSh9BKwknJysuI=
 github.com/miruken-go/demo.microservice/adb2c v0.1.0 h1:L4ybXB3NMC/I3jTaAlzfW/nAtIRuqqc/pTEwms6yLyA=
 github.com/miruken-go/demo.microservice/adb2c v0.1.0/go.mod h1:5tqj8i9Fif0v93SfWDroZ5cvObT0OvmwVWB4SiJo1nk=
+github.com/miruken-go/demo.microservice/adb2c v0.1.1 h1:GifHJK5nuCHeBPuthsWqiOB2Ct+atlwp7oqOjA0e5Ds=
+github.com/miruken-go/demo.microservice/adb2c v0.1.1/go.mod h1:cLih7o6C2lXTBzotp1LfHZrnx7CLwVz/yFZpVSBpnWc=
 github.com/miruken-go/demo.microservice/team v0.2.40 h1:rOqiWQJL8khNbapFhc4PblpaFH2WBJxGsL49I/H3oUM=
 github.com/miruken-go/demo.microservice/team v0.2.40/go.mod h1:0h1JOfQPYo603JmUJllE3JUaOy60/uEtx086RkaMKMU=
 github.com/miruken-go/demo.microservice/team v0.2.43 h1:IYYLrV4NsY7PdA5Wfc/RlRcv2Cb/kv8VJY6Hmvjucsc=
