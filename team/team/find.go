@@ -1,8 +1,8 @@
 package team
 
 import (
-	"github.com/miruken-go/demo.microservice/teamapi/data"
-	"github.com/miruken-go/demo.microservice/teamapi/queries"
+	"github.com/miruken-go/demo.microservice/team-api/data"
+	"github.com/miruken-go/demo.microservice/team-api/queries"
 	"github.com/miruken-go/miruken/handles"
 )
 
