@@ -36,7 +36,7 @@ async function main() {
         console.log(`teamApiVersion: [${teamApiVersion}]`)
       
         await bash.execute(`
-            gh workflow run update-teamsrv-dependencies.yml \
+            gh workflow run update-team-srv-dependencies.yml \
                 -f mirukenVersion=${mirukenVersion}         \
                 -f teamapiVersion=${teamApiVersion}         \
                 -f teamVersion=${version}                   \
