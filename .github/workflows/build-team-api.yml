@@ -1,4 +1,4 @@
-name: build teamapi
+name: build team-api
 
 on:
   workflow_dispatch:

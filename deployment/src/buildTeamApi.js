@@ -10,7 +10,7 @@ async function main() {
         config.requiredEnvironmentVariableNonSecrets(['repositoryPath'])
         logging.printConfiguration(config)
 
-        logging.header("Building teamapi")
+        logging.header("Building team-api")
 
         await bash.execute(`
             cd team-api
@@ -22,14 +22,14 @@ async function main() {
         `)
 
         const version = `v${rawVersion}`
-        const tag     = `teamapi/${version}`
+        const tag     = `team-api/${version}`
 
         console.log(`version: [${version}]`)
         console.log(`tag:     [${tag}]`)
 
         await git.tagAndPush(tag)
 
-        const mirukenVersion = await go.getModuleVersion('teamapi', 'github.com/miruken-go/miruken')
+        const mirukenVersion = await go.getModuleVersion('team-api', 'github.com/miruken-go/miruken')
         console.log(`mirukenVersion: [${mirukenVersion}]`)
       
         await bash.execute(`

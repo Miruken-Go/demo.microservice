@@ -1,4 +1,4 @@
-name: build teamsrv
+name: build team-srv
 
 on:
   workflow_dispatch:
