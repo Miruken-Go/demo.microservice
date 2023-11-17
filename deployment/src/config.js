@@ -12,9 +12,10 @@ const org = new Organization({
     instance: instance,
     applications: [
         {
-            name: 'adb2c-auth-srv', 
-            ui:   true, 
-            api:  true,
+            name:        'adb2c-auth-srv', 
+            ui:          true, 
+            api:         true,
+            isEnrichApi: true,  
             secrets: [
                 'authorization-service-password'
             ]
@@ -47,7 +48,7 @@ const org = new Organization({
                     ui:   true
                 },
                 {
-                    name: 'team-srv',            
+                    name: 'teamsrv',            
                     ui:   true, 
                     api:  true
                 },
@@ -61,62 +62,6 @@ const org = new Organization({
     ],
 })
 
-/*
-const config = {
-    systemDescription,
-    env,
-    instance,
-    workingDirectory:                 process.cwd(),
-    nodeDirectory:                    __dirname,
-    defaultContainerImage:            'defaultContainerImage',
-    secrets: {},
-
-    requiredEnvironmentVariableSecrets: function (names) {
-        names.forEach(function(name) {
-            const variable = process.env[name]
-            if (!variable){
-                throw `Environment variable secret required: ${name}`
-            }
-            this.secrets[name] = variable.trim()
-        }.bind(this));
-    },
-    requiredEnvironmentVariableNonSecrets: function (names) {
-        names.forEach(function(name) {
-            const variable = process.env[name] || this[name]
-            if (!variable){
-                throw `Environment variable required: ${name}`
-            }
-            this[name] = variable.trim()
-        }.bind(this));
-    }, 
-    requiredEnvFileNonSecrets: function(names){
-        if (systemDescription.environments.includes(env)) {
-            const envSpecific = require(`./${env}.js`)
-            names.forEach(function(name) {
-                const variable =  envSpecific[name]
-                if (!variable){
-                    throw `Variable required from ${env}.js: ${name}`
-                }
-                this[name] = variable.trim()
-            }.bind(this));
-        }
-    }
-}
-*/
-
-
-// config.requiredEnvironmentVariableSecrets([
-//     'deploymentPipelineClientSecret',
-// ])
-
-// config.requiredEnvironmentVariableNonSecrets([
-//     'tenantId',
-//     'subscriptionId',
-//     'deploymentPipelineClientId',
-// ])
-
 module.exports = {
-    workingDirectory: process.cwd(),
-    nodeDirectory:    __dirname,
     organization: org
 }

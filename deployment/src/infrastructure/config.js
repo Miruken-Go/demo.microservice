@@ -52,18 +52,21 @@ class Application {
     instance
     location
     organization
-    domain
+    resourceGroups
     api
     ui
+    isEnrichApi
     scopes  = []
     secrets = []
+    imageName
+    containerAppName
 
     constructor (opts) {
-        if (!opts.name)         throw new Error("name required")
-        if (!opts.env)          throw new Error("env required")
-        if (!opts.location)     throw new Error("location required")
-        if (!opts.organization) throw new Error("organization required")
-        //if (!opts.domain)       throw new Error("domain required")
+        if (!opts.name)           throw new Error("name required")
+        if (!opts.env)            throw new Error("env required")
+        if (!opts.location)       throw new Error("location required")
+        if (!opts.organization)   throw new Error("organization required")
+        if (!opts.resourceGroups) throw new Error("resourceGroups required")
 
         const name         = opts.name
         const env          = opts.env
@@ -71,17 +74,18 @@ class Application {
         const location     = opts.location
         const organization = opts.organization
 
-        this.name         = name 
-        this.env          = env
-        this.instance     = instance
-        this.location     = location
-        this.organization = organization
-        //this.domain       = opts.domain
-        this.api          = opts.api || false
-        this.ui           = opts.ui  || false
-        this.imageName    = `${organization.containerRepositoryName}.azurecr.io/${name}` 
-        this.scopes       = opts.scopes || ['Groups', 'Roles', 'Entitlements']
-        this.secrets      = opts.secrets
+        this.name           = name 
+        this.env            = env
+        this.instance       = instance
+        this.location       = location
+        this.organization   = organization
+        this.resourceGroups = opts.resourceGroups
+        this.api            = opts.api         || false
+        this.ui             = opts.ui          || false
+        this.isEnrichApi    = opts.isEnrichApi || false
+        this.scopes         = opts.scopes      || ['Groups', 'Roles', 'Entitlements']
+        this.secrets        = opts.secrets
+        this.imageName      = `${organization.containerRepositoryName}.azurecr.io/${name}` 
         this.containerAppName = (instance)
             ? `${name}-${env}-${instance}`
             : `${name}-${env}`
@@ -89,6 +93,7 @@ class Application {
         if (this.containerAppName.length > 32)
             throw `Configuration Error - containerAppName cannot be longer than 32 characters : ${this.containerAppName} [${this.containerAppName.length}]`
     }
+
 
     // get containerAppEnvironmentName () {
     //     return `${domain.instancePrefix}-cae`
@@ -134,11 +139,12 @@ class Domain {
                 this.applications.push((application instanceof Application)
                     ? application
                     : new Application({
-                        domain:       this,
-                        organization: this.organization,
-                        env:          env, 
-                        instance:     instance,
-                        location:     location,
+                        domain:         this,
+                        organization:   this.organization,
+                        env:            env, 
+                        instance:       instance,
+                        location:       location,
+                        resourceGroups: this.resourceGroups,
                         ...application,
                     }))
             }
@@ -214,10 +220,11 @@ class Organization {
                 this.applications.push((application instanceof Application)
                     ? application
                     : new Application({
-                        organization: this,
-                        env:          env, 
-                        instance:     instance,
-                        location:     location,
+                        organization:   this,
+                        env:            env, 
+                        instance:       instance,
+                        location:       location,
+                        resourceGroups: this.resourceGroups,
                         ...application,
                     }))
             }
@@ -236,6 +243,25 @@ class Organization {
                     }))
             }
         }
+    }
+
+    get enrichApiApplication () {
+        let application  = this.applications.find(a => a.isEnrichApi)
+        if (application) return application
+
+        throw new Error(`No application defined in organization where isEnrichApi = true`)
+    }
+
+    getApplicationByName(name) {
+        let application = this.applications.find(a => a.name === name)
+        if (application) return application
+
+        for (const domain of this.domains) {
+            application = domain.applications.find(a => a.name === name)
+            if (application) return application
+        }
+
+        throw new Error(`Application with name ${name} not found`)
     }
 }
 

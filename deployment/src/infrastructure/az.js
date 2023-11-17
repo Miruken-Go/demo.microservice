@@ -3,7 +3,7 @@ const { header }     = require('./logging')
 const { variables }  = require('./envVariables')
 const { secrets }    = require('./envSecrets')
 
-variables.require([
+variables.requireEnvVariables([
     'tenantId',
     'subscriptionId',
     'deploymentPipelineClientId',
@@ -75,11 +75,14 @@ async function getKeyVaultSecret(secretName, keyVaultName) {
     }
 }
 
-async function getContainerAppUrl(name) {
+async function getContainerAppUrl(name, resourceGroup) {
     await login()
     const result = await bash.json(`
-        az containerapp show -n ${name} --resource-group ${config.environmentInstanceResourceGroup}
+        az containerapp show -n ${name} --resource-group ${resourceGroup}
     `)
+
+    if (!result) throw new Error(`ContainerApp ${name} not found in ${resourceGroup}`)
+    
     return result.properties.configuration.ingress.fqdn
 }
 

@@ -5,7 +5,7 @@ const { variables }    = require('./infrastructure/envVariables')
 const { organization } = require('./config');
 const path             = require('path')
 
-variables.require([
+variables.requireEnvVariables([
     'subscriptionId',
 ])
 
