@@ -221,7 +221,7 @@ describe('Application', function () {
 
 describe('Instantiating Organization', function () {
     const org = new Organization({
-        name:     'MajorLeageMiruken',
+        name:     'MajorLeagueMiruken',
         location: 'CentralUs',
         env:      'dev',
         instance: 'ci',

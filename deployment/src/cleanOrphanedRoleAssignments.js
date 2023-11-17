@@ -10,7 +10,7 @@ async function main() {
         `)
 
         if (ids.length) {
-            console.log(`az role assignment delete --ids "${ids.join(' ')}"`)
+            //console.log(`az role assignment delete --ids "${ids.join(' ')}"`)
             // await bash.execute(`
             //     az role assignment delete --ids "${ids.join(' ')}"
             // `)

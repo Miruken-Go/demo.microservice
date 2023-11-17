@@ -6,7 +6,7 @@ if (!env) throw "Environment variable required: [env]"
 const instance = process.env.instance
 
 const org = new Organization({
-    name:     'MajorLeageMiruken',
+    name:     'MajorLeagueMiruken',
     location: 'CentralUs',
     env:      env,
     instance: instance,

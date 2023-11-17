@@ -2,7 +2,7 @@ const az = require('./az')
 
 const secrets = {
     async requireSecrets (names, keyVaultName) {
-        names.forEach(async function(name) {
+        for(const name of names) {
             if (this[name]) return 
 
             const secret = await az.getKeyVaultSecret(name, keyVaultName)
@@ -10,7 +10,7 @@ const secrets = {
                 throw `KeyVault secret required: ${name}`
             }
             this[name] = secret.trim()
-        }.bind(this));
+        }
     }
 }
 

@@ -140,85 +140,93 @@ class B2C {
                     ]
                 }
             ],
-            identifierUris: [ `https://${this.organization.b2c.name}.onmicrosoft.com/${app.name}` ],
-            api: {
-                requestedAccessTokenVersion: 2,
-                oauth2PermissionScopes: [
-                    {
-                        id:                      GROUPS_ID, 
-                        adminConsentDescription: 'Groups to which the user belongs.',
-                        adminConsentDisplayName: 'Groups',
-                        isEnabled:               true,
-                        type:                    'Admin',
-                        value:                   'Groups',
-                    },
-                    {
-                        id:                      ROLES_ID, 
-                        adminConsentDescription: 'Roles to which a user belongs',
-                        adminConsentDisplayName: 'Roles',
-                        isEnabled:               true,
-                        type:                    'Admin',
-                        value:                   'Roles',
-                    },
-                    {
-                        id:                      ENTITLEMENTS_ID, 
-                        adminConsentDescription: 'Entitlements which belong to the user',
-                        adminConsentDisplayName: 'Entitlements',
-                        isEnabled:               true,
-                        type:                    'Admin',
-                        value:                   'Entitlements',
-                    },
-                ],
-            },
-            web: {
-                implicitGrantSettings: {
-                    enableAccessTokenIssuance: true,
-                    enableIdTokenIssuance:     true,
-                }
-            },
-            spa: {
-                redirectUris: redirectUris
-            },
         })
         console.log(appRegistration)
 
-
-        const updatedAppRegistration = await createOrUpdateApplication({
-            displayName: app.name,
-            requiredResourceAccess: [
-                {
-                    resourceAppId: appRegistration.appId, 
-                    resourceAccess: [
+        if (app.api) {
+            const apiRegistration = await createOrUpdateApplication({
+                displayName:    app.name,
+                identifierUris: [ `https://${this.organization.b2c.name}.onmicrosoft.com/${app.name}` ],
+                api: {
+                    requestedAccessTokenVersion: 2,
+                    oauth2PermissionScopes: [
                         {
-                            id:   GROUPS_ID,
-                            type: 'Scope',
+                            id:                      GROUPS_ID, 
+                            adminConsentDescription: 'Groups to which the user belongs.',
+                            adminConsentDisplayName: 'Groups',
+                            isEnabled:               true,
+                            type:                    'Admin',
+                            value:                   'Groups',
                         },
                         {
-                            id:   ROLES_ID,
-                            type: 'Scope',
+                            id:                      ROLES_ID, 
+                            adminConsentDescription: 'Roles to which a user belongs',
+                            adminConsentDisplayName: 'Roles',
+                            isEnabled:               true,
+                            type:                    'Admin',
+                            value:                   'Roles',
                         },
                         {
-                            id:   ENTITLEMENTS_ID,
-                            type: 'Scope',
+                            id:                      ENTITLEMENTS_ID, 
+                            adminConsentDescription: 'Entitlements which belong to the user',
+                            adminConsentDisplayName: 'Entitlements',
+                            isEnabled:               true,
+                            type:                    'Admin',
+                            value:                   'Entitlements',
                         },
                     ],
                 },
-                {
-                    resourceAppId: '00000003-0000-0000-c000-000000000000',
-                    resourceAccess: [
-                        {
-                            'id':   '37f7f235-527c-4136-accd-4a02d197296e',
-                            'type': 'Scope'
-                        },
-                        {
-                            'id':   '7427e0e9-2fba-42fe-b0c0-848c9e6a8182',
-                            'type': 'Scope'
-                        }
-                    ]
-                }
-            ],
-        })
-        console.log(updatedAppRegistration)
+            })
+            console.log(apiRegistration)
+        }
+
+        if (app.ui) {
+            const uiRegistration = await createOrUpdateApplication({
+                displayName: app.name,
+                web: {
+                    implicitGrantSettings: {
+                        enableAccessTokenIssuance: true,
+                        enableIdTokenIssuance:     true,
+                    }
+                },
+                spa: {
+                    redirectUris: redirectUris
+                },
+                requiredResourceAccess: [
+                    {
+                        resourceAppId: appRegistration.appId, 
+                        resourceAccess: [
+                            {
+                                id:   GROUPS_ID,
+                                type: 'Scope',
+                            },
+                            {
+                                id:   ROLES_ID,
+                                type: 'Scope',
+                            },
+                            {
+                                id:   ENTITLEMENTS_ID,
+                                type: 'Scope',
+                            },
+                        ],
+                    },
+                    {
+                        resourceAppId: '00000003-0000-0000-c000-000000000000',
+                        resourceAccess: [
+                            {
+                                'id':   '37f7f235-527c-4136-accd-4a02d197296e',
+                                'type': 'Scope'
+                            },
+                            {
+                                'id':   '7427e0e9-2fba-42fe-b0c0-848c9e6a8182',
+                                'type': 'Scope'
+                            }
+                        ]
+                    }
+                ],
+            })
+            console.log(uiRegistration)
+        }
     }
 
     async configureCustomPolicies () {

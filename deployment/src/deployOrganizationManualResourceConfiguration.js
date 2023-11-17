@@ -9,7 +9,6 @@ variables.requireEnvVariables([
 
 async function main() {
     try {
-
         logging.printEnvironmentVariables(variables)
         logging.printOrganization(organization)
 

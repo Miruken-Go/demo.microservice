@@ -37,10 +37,10 @@ class B2C {
         const profile  = opts.profile || 'B2C_1A_SIGNUP_SIGNIN'
         const name     = opts.name.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
         const env      = opts.env
-        const b2cName  = `${name}identity${env}`.toLowerCase()
+        const b2cName  = `${name}auth${env}`.toLowerCase()
 
         this.name                   = b2cName
-        this.displayName            = `${name} identity ${env}`.toLowerCase()
+        this.displayName            = `${name} auth ${env}`.toLowerCase()
         this.domainName             = `${b2cName}.onmicrosoft.com`
         this.openIdConfigurationUrl = `https://${b2cName}.b2clogin.com/${b2cName}.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${profile}`
     }

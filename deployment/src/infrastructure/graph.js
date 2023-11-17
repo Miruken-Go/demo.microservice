@@ -1,4 +1,5 @@
-const { secrets }      = require('./keyvault');
+const logging       = require('./logging');
+const { secrets }   = require('./keyvault');
 const { variables } = require('./envVariables')
 const querystring   = require('querystring');
 const axios         = require('axios').default;
@@ -23,6 +24,8 @@ class Graph {
         await secrets.requireSecrets([
             'b2cDeploymentPipelineClientSecret',
         ], this.organization.keyVaultName)
+
+        logging.printEnvironmentSecrets(secrets)
 
         const uri=`https://login.microsoftonline.com/${this.organization.b2c.domainName}/oauth2/v2.0/token`
         const result = await axios.post(uri, querystring.stringify({
