@@ -20,38 +20,38 @@
 
 ### Run the docker container
 
-    cd teamsrv
+    cd team-srv
     docker run -it --rm -p 8080:8080 -v $(pwd):/go/src/app -w /go/src/app golang:1.21.3-alpine3.18
 
 ### Build the application
 
-    env GOOS=linux CGO_ENABLED=0 go build -o /go/bin/teamsrv ./cmd
+    env GOOS=linux CGO_ENABLED=0 go build -o /go/bin/team-srv ./cmd
 
 ### Execute tests
 
     go test ./...
 
-### Run the teamsrv web app
+### Run the team-srv web app
 
-    /go/bin/teamsrv
+    /go/bin/team-srv
     http://localhost:8080
 
 ## Build and run the container localy
 
 ### Build Docker Image
 
-    cd teamsrv
-    docker build -t -e APPLICATION_VERSION=local teamsrv:local .
+    cd team-srv
+    docker build -t -e APPLICATION_VERSION=local team-srv:local .
     
 ### Run Docker container locally
 
-    docker run -it --rm -p 8080:8080 teamsrv:local
+    docker run -it --rm -p 8080:8080 team-srv:local
 
 ## Build and Push Docker Image to Azure Container Repo
 
-    cd teamsrv
+    cd team-srv
     TAG=$(date +%s); echo $TAG
-    IMAGE_NAME="teamsrvdevmichael.azurecr.io/teamsrv:$TAG"; echo $IMAGE_NAME
+    IMAGE_NAME="teamsrvdevmichael.azurecr.io/team-srv:$TAG"; echo $IMAGE_NAME
     docker build --build-arg application_version=$TAG -t $IMAGE_NAME .
     az login
     az acr login -n teamsrvdevmichael   
@@ -61,7 +61,7 @@
 
 ### Running a named image detached
 
-    cd teamsrv
+    cd team-srv
     docker run -itd -p 8080:8080 -v $(pwd):/go/src/app -w /go/src/app golang:1.21.3-alpine3.18
     docker exec -it go_server sh
     docker rm -f go_server

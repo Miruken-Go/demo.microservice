@@ -14,7 +14,7 @@
 # }
 
 echo "Building the app"
-env GOOS=linux CGO_ENABLED=0 go build -o /go/bin/teamsrv ./cmd
+env GOOS=linux CGO_ENABLED=0 go build -o /go/bin/team-srv ./cmd
 
 echo "Setting env variables"
 #These are set in the container at build time
@@ -40,4 +40,4 @@ export OpenApi__Scopes__2__Name="https://teamsrvidentitydev.onmicrosoft.com/team
 export OpenApi__Scopes__2__Description="Entitlements the user has."
 
 echo "Starting the app: localhost:8080"
-/go/bin/teamsrv
+/go/bin/team-srv

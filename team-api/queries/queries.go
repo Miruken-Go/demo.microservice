@@ -1,6 +1,6 @@
 package queries
 
-import "github.com/miruken-go/demo.microservice/teamapi/data"
+import "github.com/miruken-go/demo.microservice/team-api/data"
 
 type (
 	FindPeople struct {

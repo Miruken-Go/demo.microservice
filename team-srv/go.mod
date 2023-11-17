@@ -1,4 +1,4 @@
-module github.com/miruken-go/demo.microservice/teamsrv
+module github.com/miruken-go/demo.microservice/team-srv
 
 go 1.21
 

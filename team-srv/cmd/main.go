@@ -63,7 +63,7 @@ func main() {
 			},
 		},
 		ExternalDocs: &openapi3.ExternalDocs{
-			Description: "teamsrv/" + appConfig.App.Version,
+			Description: "team-srv/" + appConfig.App.Version,
 			URL:         appConfig.App.Source.Url,
 		},
 		Components: &openapi3.Components{

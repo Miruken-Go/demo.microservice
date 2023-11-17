@@ -13,12 +13,12 @@ async function main() {
         logging.header("Building teamapi")
 
         await bash.execute(`
-            cd teamapi
+            cd team-api
             go test ./...
         `)
 
         const rawVersion = await bash.execute(`
-            docker run --rm -v "${config.repositoryPath}:/repo" gittools/gitversion:5.12.0-alpine.3.14-6.0 /repo /showvariable SemVer /overrideconfig tag-prefix=teamapi/v
+            docker run --rm -v "${config.repositoryPath}:/repo" gittools/gitversion:5.12.0-alpine.3.14-6.0 /repo /showvariable SemVer /overrideconfig tag-prefix=team-api/v
         `)
 
         const version = `v${rawVersion}`

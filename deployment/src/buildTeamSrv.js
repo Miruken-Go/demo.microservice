@@ -9,7 +9,7 @@ async function main() {
         config.requiredEnvironmentVariableSecrets(['ghToken'])
         logging.printConfiguration(config)
 
-        logging.header("Building teamsrv")
+        logging.header("Building team-srv")
 
         const version      = `v${Math.floor(Date.now()/1000)}`.trim()
         const imageName    = `${config.imageName}:${version}`
@@ -26,7 +26,7 @@ async function main() {
                 --build-arg app_source_url=${appSourceUrl} \
                 --build-arg app_version=${version}         \
                 -t ${imageName}                            \
-                teamsrv                                    \
+                team-srv                                    \
         `)
 
         await az.loginToACR()
@@ -38,7 +38,7 @@ async function main() {
         await git.tagAndPush(tag)
 
         await bash.execute(`
-            gh workflow run deploy-teamsrv.yml \
+            gh workflow run deploy-team-srv.yml \
                 -f env=dev                     \
                 -f instance=ci                 \
                 -f tag=${version}              \
