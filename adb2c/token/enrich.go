@@ -26,7 +26,7 @@ type (
 )
 
 func (e EnrichHandler) Constructor(
-	_ *struct{args.Optional}, logger logr.Logger,
+	_*struct{args.Optional}, logger logr.Logger,
 ) {
 	if logger == e.logger {
 		e.logger = logr.Discard()

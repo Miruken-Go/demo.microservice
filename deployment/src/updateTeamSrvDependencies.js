@@ -9,7 +9,7 @@ async function main() {
         config.requiredEnvironmentVariableNonSecrets(['mirukenVersion', 'teamapiVersion', 'teamVersion'])
         logging.printConfiguration(config)
 
-        logging.header("Updating teamsrv dependencies")
+        logging.header("Updating teams-rv dependencies")
 
         await bash.execute(`
             cd team-srv
