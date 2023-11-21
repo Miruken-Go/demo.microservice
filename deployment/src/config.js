@@ -4,14 +4,14 @@ const env = process.env.env
 if (!env) throw "Environment variable required: [env]"
 
 const systemDescription = {
-    systemName: 'teamsrv',
+    systemName: 'team-srv',
     applications: [
         {
-            name: 'teamsrv',
+            name: 'team-srv',
             type: ApplicationType.apiWithOpenApiUI
         }
     ],
-    appName:    'teamsrv',
+    appName:    'team-srv',
     repository: 'https://github.com/Miruken-Go/demo.microservice',
     location:   'CentralUs',
     environments: [

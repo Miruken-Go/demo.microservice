@@ -9,7 +9,7 @@ require (
 	github.com/go-playground/validator/v10 v10.16.0
 	github.com/knadh/koanf v1.5.0
 	github.com/miruken-go/demo.microservice/team-api v0.1.0
-	github.com/miruken-go/miruken v0.30.45
+	github.com/miruken-go/miruken v0.30.47
 	github.com/rs/zerolog v1.31.0
 	golang.org/x/net v0.18.0
 )

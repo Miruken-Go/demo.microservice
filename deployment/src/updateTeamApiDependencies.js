@@ -21,7 +21,7 @@ async function main() {
             await git.push();
 
             await bash.execute(`
-                gh workflow run build-teamapi.yml
+                gh workflow run build-team-api.yml
             `)
         }
 
