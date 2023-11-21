@@ -56,13 +56,14 @@ class Graph {
                 Authorization: `Bearer ${await this.getToken()}`
             }
         };
-        var result = await axios.get(uri, options)
-            .catch(function (error) {
-                console.log(`Failed to Get: ${uri}`)  
-                this.logError(error)
-                throw error
-            });
-        return result
+
+        try {
+            return await axios.get(uri, options)
+        } catch (error) {
+            console.log(`Failed to Get: ${uri}`)  
+            this.logError(error)
+            throw error
+        }
     }
 
     async post(endpoint, json, version) {
@@ -76,13 +77,14 @@ class Graph {
                 "Content-Type": "application/json"
             }
         };
-        var result = await axios.post(uri, json, options)
-            .catch(function (error) {
-                console.log(`Failed to Post: ${uri}`)  
-                this.logError(error)
-                throw error
-            });
-        return result
+
+        try {
+            return await axios.post(uri, json, options)
+        } catch (error) {
+            console.log(`Failed to Post: ${uri}`)  
+            this.logError(error)
+            throw error
+        }
     }
 
     async patch(endpoint, json, version) {
@@ -96,14 +98,14 @@ class Graph {
                 "Content-Type": "application/json"
             }
         };
-        var result = await axios.patch(uri, json, options)
-            .catch(function (error) {
-                console.log(`Failed to Patch: ${uri}`)  
-                this.logError(error)
-                throw error
-            });
 
-        return result;
+        try {
+            return await axios.patch(uri, json, options)
+        } catch (error) {
+            console.log(`Failed to Patch: ${uri}`)  
+            this.logError(error)
+            throw error
+        }
     }
 
     //https://learn.microsoft.com/en-us/graph/api/trustframework-put-trustframeworkpolicy?view=graph-rest-beta
@@ -117,16 +119,16 @@ class Graph {
                 "Content-Type": "application/xml"
             }
         };
-        var result = await axios.put(uri, xml, options)
-            .catch(function (error) {
-                console.log(`Failed to Update: ${uri}`)  
-                this.logError(error)
-                throw error
-            });
 
-        console.log(result.status)
-
-        return result;
+        try {
+            var result = await axios.put(uri, xml, options)
+            console.log(result.status)
+            return result;
+        } catch (error) {
+            console.log(`Failed to Update: ${uri}`)  
+            this.logError(error)
+            throw error
+        }
     }
 }
 

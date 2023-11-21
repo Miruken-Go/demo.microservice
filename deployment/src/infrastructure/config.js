@@ -53,9 +53,9 @@ class Application {
     location
     organization
     resourceGroups
-    api
-    ui
-    isEnrichApi
+    implicitFlow
+    spa
+    enrichApi
     scopes  = []
     secrets = []
     imageName
@@ -80,10 +80,10 @@ class Application {
         this.location       = location
         this.organization   = organization
         this.resourceGroups = opts.resourceGroups
-        this.api            = opts.api         || false
-        this.ui             = opts.ui          || false
-        this.isEnrichApi    = opts.isEnrichApi || false
-        this.scopes         = opts.scopes      || ['Groups', 'Roles', 'Entitlements']
+        this.implicitFlow   = opts.implicitFlow || false
+        this.spa            = opts.spa          || false
+        this.enrichApi      = opts.enrichApi    || false
+        this.scopes         = opts.scopes       || ['Groups', 'Roles', 'Entitlements']
         this.secrets        = opts.secrets
         this.imageName      = `${organization.containerRepositoryName}.azurecr.io/${name}` 
         this.containerAppName = (instance)
@@ -246,10 +246,10 @@ class Organization {
     }
 
     get enrichApiApplication () {
-        let application  = this.applications.find(a => a.isEnrichApi)
+        let application  = this.applications.find(a => a.enrichApi)
         if (application) return application
 
-        throw new Error(`No application defined in organization where isEnrichApi = true`)
+        throw new Error(`No application defined in organization where enrichApi = true`)
     }
 
     getApplicationByName(name) {

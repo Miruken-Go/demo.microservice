@@ -12,10 +12,10 @@ const org = new Organization({
     instance: instance,
     applications: [
         {
-            name:        'adb2c-auth-srv', 
-            ui:          true, 
-            api:         true,
-            isEnrichApi: true,  
+            name:         'adb2c-auth-srv', 
+            implicitFlow: true,
+            spa:          true,
+            enrichApi:    true,  
             secrets: [
                 'authorization-service-password'
             ]
@@ -26,13 +26,9 @@ const org = new Organization({
             name: 'billing', 
             applications: [
                 {
-                    name: 'billing-ui',  
-                    ui:   true
-                },
-                {
-                    name: 'billing-srv', 
-                    ui:   true, 
-                    api:  true
+                    name:         'billing-srv', 
+                    implicitFlow: true,
+                    spa:          true,
                 },
             ]
         },
@@ -40,22 +36,24 @@ const org = new Organization({
             name: 'league', 
             applications: [
                 {
-                    name: 'major-league-miruken-ui', 
-                    ui:   true
+                    name: 'league-srv', 
+                    implicitFlow: true,
+                    spa:          true,
                 },
                 {
-                    name: 'tournaments-ui',
-                    ui:   true
+                    name: 'tournaments-srv',
+                    implicitFlow: true,
+                    spa:          true,
                 },
                 {
-                    name: 'teamsrv',            
-                    ui:   true, 
-                    api:  true
+                    name: 'team-srv',            
+                    implicitFlow: true,
+                    spa:          true,
                 },
                 {
                     name: 'schedule-srv',        
-                    ui:   true, 
-                    api:  true
+                    implicitFlow: true,
+                    spa:          true,
                 },
             ]
         },

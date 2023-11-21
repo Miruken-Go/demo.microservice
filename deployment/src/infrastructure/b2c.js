@@ -55,16 +55,16 @@ class B2C {
     async updateApplication(id, manifest) {
         console.log(`Updating existing application appId [${id}]`)
         await this.graph.patch(`/applications/${id}`, manifest)
-        return await getApplicationById(id)
+        return await this.getApplicationById(id)
     }
 
     async createOrUpdateApplication(manifest) {
         const displayName = manifest.displayName
-        const existing = await getApplicationByName(displayName)
+        const existing = await this.getApplicationByName(displayName)
 
         let application = undefined
         if (existing) {
-            application = await updateApplication(existing.id, manifest)
+            application = await this.updateApplication(existing.id, manifest)
         } else {
             console.log(`Creating application: ${displayName}`)
             application = (await this.graph.post("/applications", manifest)).data
@@ -76,55 +76,71 @@ class B2C {
     }
 
     async addRedirectUris(id, uris) {
-        const app = await getApplicationById(id)
+        const app = await this.getApplicationById(id)
         const redirectUris = [...app.spa.redirectUris]
         for (const uri of uris) {
             if (!redirectUris.includes(uri)) {
                 redirectUris.push(uri)
             }
         }
-        await updateApplication(id, {
+        await this.updateApplication(id, {
             spa: {
                 redirectUris: redirectUris
             }
         })
-        return await getApplicationById(id)
+        return await this.getApplicationById(id)
     }
 
     async configureAppRegistrations() { 
-        for (const app of this.organization.applications) {
-            this.configureAppRegistration(app)
-        }
+        await this.configureAppRegistration(this.organization)
         for (const domain of this.organization.domains) {
-            for (const app of domain.applications) {
-                this.configureAppRegistration(app)
-            }
+            await this.configureAppRegistration(domain)
         }
     }
 
-    async configureAppRegistration(app) {
+    async configureAppRegistration(domain) {
         const GROUPS_ID       = 'db580dbb-797c-4334-bf09-db802106accd'
         const ROLES_ID        = '0ba8756b-c67c-4fd3-9d70-488fc8da3b55'
         const ENTITLEMENTS_ID = 'd748b2c9-a76b-47b2-8c7b-fa348fbb474d'
         
-        const appUrl = await az.getContainerAppUrl(app.containerAppName, this.organization.resourceGroups.instance)
-        if(!appUrl) throw new Error(`default application redirectUri could not be lookedup. The AppUrl for ${app.containerAppName} container app was not found. The default application environment instance needs to be deployed before common configuration can run.`)
-        const appRedirectUri = `https://${appUrl}/oauth2-redirect.html`
-        
-        const redirectUris = (['dev', 'qa'].includes(variables.env))
-            ? [
-                appRedirectUri,
-                'https://jwt.ms/',
-                'http://localhost:8080/oauth2-redirect.html',
-            ] 
-            : [
-
-                appRedirectUri,
-            ]
-
-        const appRegistration = await createOrUpdateApplication({
-            displayName:    app.name,
+        const appRegistration = await this.createOrUpdateApplication({
+            displayName:    domain.name,
             signInAudience: 'AzureADandPersonalMicrosoftAccount',
+            identifierUris: [ `https://${this.organization.b2c.name}.onmicrosoft.com/${domain.name}` ],
+            api: {
+                requestedAccessTokenVersion: 2,
+                oauth2PermissionScopes: [
+                    {
+                        id:                      GROUPS_ID, 
+                        adminConsentDescription: 'Groups to which the user belongs.',
+                        adminConsentDisplayName: 'Groups',
+                        isEnabled:               true,
+                        type:                    'Admin',
+                        value:                   'Groups',
+                    },
+                    {
+                        id:                      ROLES_ID, 
+                        adminConsentDescription: 'Roles to which a user belongs',
+                        adminConsentDisplayName: 'Roles',
+                        isEnabled:               true,
+                        type:                    'Admin',
+                        value:                   'Roles',
+                    },
+                    {
+                        id:                      ENTITLEMENTS_ID, 
+                        adminConsentDescription: 'Entitlements which belong to the user',
+                        adminConsentDisplayName: 'Entitlements',
+                        isEnabled:               true,
+                        type:                    'Admin',
+                        value:                   'Entitlements',
+                    },
+                ],
+            },
+        })
+        console.log(appRegistration)
+
+        const requiredResourceAccess = await this.createOrUpdateApplication({
+            displayName: domain.name,
             requiredResourceAccess: [
                 {
                     resourceAppId: '00000003-0000-0000-c000-000000000000',
@@ -138,94 +154,57 @@ class B2C {
                             'type': 'Scope'
                         }
                     ]
-                }
-            ],
-        })
-        console.log(appRegistration)
-
-        if (app.api) {
-            const apiRegistration = await createOrUpdateApplication({
-                displayName:    app.name,
-                identifierUris: [ `https://${this.organization.b2c.name}.onmicrosoft.com/${app.name}` ],
-                api: {
-                    requestedAccessTokenVersion: 2,
-                    oauth2PermissionScopes: [
+                },
+                {
+                    resourceAppId: appRegistration.appId, 
+                    resourceAccess: [
                         {
-                            id:                      GROUPS_ID, 
-                            adminConsentDescription: 'Groups to which the user belongs.',
-                            adminConsentDisplayName: 'Groups',
-                            isEnabled:               true,
-                            type:                    'Admin',
-                            value:                   'Groups',
+                            id:   GROUPS_ID,
+                            type: 'Scope',
                         },
                         {
-                            id:                      ROLES_ID, 
-                            adminConsentDescription: 'Roles to which a user belongs',
-                            adminConsentDisplayName: 'Roles',
-                            isEnabled:               true,
-                            type:                    'Admin',
-                            value:                   'Roles',
+                            id:   ROLES_ID,
+                            type: 'Scope',
                         },
                         {
-                            id:                      ENTITLEMENTS_ID, 
-                            adminConsentDescription: 'Entitlements which belong to the user',
-                            adminConsentDisplayName: 'Entitlements',
-                            isEnabled:               true,
-                            type:                    'Admin',
-                            value:                   'Entitlements',
+                            id:   ENTITLEMENTS_ID,
+                            type: 'Scope',
                         },
                     ],
                 },
-            })
-            console.log(apiRegistration)
-        }
+            ],
+        })
+        console.log(requiredResourceAccess)
 
-        if (app.ui) {
-            const uiRegistration = await createOrUpdateApplication({
-                displayName: app.name,
+        if (domain.applications.some(a => a.implicitFlow)) {
+            console.log('Configure implicit flow')
+            const implicicteGrant = await this.createOrUpdateApplication({
+                displayName: domain.name,
                 web: {
                     implicitGrantSettings: {
                         enableAccessTokenIssuance: true,
                         enableIdTokenIssuance:     true,
                     }
-                },
+                }
+            })
+            console.log(implicicteGrant)
+        }
+
+        if (domain.applications.some(a => a.spa)) {
+            console.log('Configure spa')
+            const redirectUris = (['dev', 'qa'].includes(variables.env))
+                ? [
+                    'https://jwt.ms/',
+                    'http://localhost:8080/oauth2-redirect.html',
+                ] 
+                : []
+            const spa = await this.createOrUpdateApplication({
+                displayName: domain.name,
                 spa: {
                     redirectUris: redirectUris
                 },
-                requiredResourceAccess: [
-                    {
-                        resourceAppId: appRegistration.appId, 
-                        resourceAccess: [
-                            {
-                                id:   GROUPS_ID,
-                                type: 'Scope',
-                            },
-                            {
-                                id:   ROLES_ID,
-                                type: 'Scope',
-                            },
-                            {
-                                id:   ENTITLEMENTS_ID,
-                                type: 'Scope',
-                            },
-                        ],
-                    },
-                    {
-                        resourceAppId: '00000003-0000-0000-c000-000000000000',
-                        resourceAccess: [
-                            {
-                                'id':   '37f7f235-527c-4136-accd-4a02d197296e',
-                                'type': 'Scope'
-                            },
-                            {
-                                'id':   '7427e0e9-2fba-42fe-b0c0-848c9e6a8182',
-                                'type': 'Scope'
-                            }
-                        ]
-                    }
-                ],
             })
-            console.log(uiRegistration)
+            console.log(spa)
         }
     }
 

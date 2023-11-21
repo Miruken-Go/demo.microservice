@@ -16,8 +16,8 @@ async function main() {
 
         const b2c = new B2C(organization)
 
-        await b2c.configureCustomPolicies()
         await b2c.configureAppRegistrations()
+        await b2c.configureCustomPolicies()
 
         console.log("Script completed successfully")
     } catch (error) {
