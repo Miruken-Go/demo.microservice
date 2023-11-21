@@ -9,10 +9,10 @@ async function main() {
         config.requiredEnvironmentVariableNonSecrets(['mirukenVersion'])
         logging.printConfiguration(config)
 
-        logging.header("Updating teamapi dependencies")
+        logging.header("Updating team-api dependencies")
 
         await bash.execute(`
-            cd teamapi
+            cd team-api
             go get github.com/miruken-go/miruken@${config.mirukenVersion}
         `)
 
@@ -21,7 +21,7 @@ async function main() {
             await git.push();
 
             await bash.execute(`
-                gh workflow run build-teamapi.yml
+                gh workflow run build-team-api.yml
             `)
         }
 

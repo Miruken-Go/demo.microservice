@@ -1,10 +1,10 @@
-name: Deploy teamsrv
+name: Deploy team-srv
 
 on: 
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Docker image tag of the teamsrv'
+        description: 'Docker image tag of the team-srv'
         required: true
         type: string
       env:
@@ -23,7 +23,7 @@ on:
         type: string
 
 jobs:
-  deploy-teamsrv:
+  deploy-team-srv:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/miruken-go/demo.microservice.build:1699298856

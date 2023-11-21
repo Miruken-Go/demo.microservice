@@ -2,17 +2,14 @@ module github.com/miruken-go/demo.microservice/team
 
 go 1.21
 
-toolchain go1.21.3
-
 require (
 	github.com/getkin/kin-openapi v0.120.0
 	github.com/go-logr/zerologr v1.2.3
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.16.0
-	github.com/golang/mock v1.1.1
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/demo.microservice/teamapi v0.10.32
-	github.com/miruken-go/miruken v0.30.40
+	github.com/miruken-go/demo.microservice/team-api v0.1.0
+	github.com/miruken-go/miruken v0.30.47
 	github.com/rs/zerolog v1.31.0
 	golang.org/x/net v0.18.0
 )

@@ -20,7 +20,6 @@ class B2C {
         this.graph        = new Graph(organization)
     }
 
-
     async getWellKnownOpenIdConfiguration() {
         const uri = this.organization.b2c.openIdConfigurationUrl
         console.log(`Getting: ${uri}`)

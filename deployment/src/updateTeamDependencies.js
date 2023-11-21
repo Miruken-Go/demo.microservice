@@ -13,11 +13,11 @@ async function main() {
 
         await bash.execute(`
             cd team
-            go get github.com/miruken-go/miruken@${config.mirukenVersion} github.com/miruken-go/demo.microservice/teamapi@${config.teamapiVersion}
+            go get github.com/miruken-go/miruken@${config.mirukenVersion} github.com/miruken-go/demo.microservice/team-api@${config.teamapiVersion}
         `)
 
         if (await git.anyChanges()) {
-            await git.commitAll(`Updated miruken to ${config.mirukenVersion} and teamapi to ${config.teamapiVersion}`)
+            await git.commitAll(`Updated miruken to ${config.mirukenVersion} and team-api to ${config.teamapiVersion}`)
             await git.push();
 
             await bash.execute(`

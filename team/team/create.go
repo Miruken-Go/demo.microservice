@@ -3,8 +3,8 @@ package team
 import (
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
-	"github.com/miruken-go/demo.microservice/teamapi/commands"
-	"github.com/miruken-go/demo.microservice/teamapi/data"
+	"github.com/miruken-go/demo.microservice/team-api/commands"
+	"github.com/miruken-go/demo.microservice/team-api/data"
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/args"

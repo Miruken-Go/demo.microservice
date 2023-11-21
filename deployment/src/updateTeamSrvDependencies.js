@@ -9,11 +9,11 @@ async function main() {
         config.requiredEnvironmentVariableNonSecrets(['mirukenVersion', 'teamapiVersion', 'teamVersion'])
         logging.printConfiguration(config)
 
-        logging.header("Updating teamsrv dependencies")
+        logging.header("Updating teams-rv dependencies")
 
         await bash.execute(`
-            cd teamsrv
-            go get github.com/miruken-go/miruken@${config.mirukenVersion} github.com/miruken-go/demo.microservice/teamapi@${config.teamapiVersion} 	github.com/miruken-go/demo.microservice/team@${config.teamVersion}
+            cd team-srv
+            go get github.com/miruken-go/miruken@${config.mirukenVersion} github.com/miruken-go/demo.microservice/team-api@${config.teamapiVersion} 	github.com/miruken-go/demo.microservice/team@${config.teamVersion}
         `)
 
         if (await git.anyChanges()) {
@@ -21,7 +21,7 @@ async function main() {
             await git.push();
 
             await bash.execute(`
-                gh workflow run build-teamsrv.yml
+                gh workflow run build-team-srv.yml
             `)
         }
 

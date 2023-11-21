@@ -1,12 +1,15 @@
-name: update teamapi dependencies
+name: build team-srv
 
 on:
   workflow_dispatch:
-    inputs:
-      mirukenVersion:
-        description: 'version of miruken'
-        required: true
-        type: string
+  push:
+    branches: [ "main", "develop"]
+    paths:
+    - 'team-srv/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+    - 'team-srv/**'
 
 permissions:
   contents: write
@@ -24,10 +27,9 @@ jobs:
         env:                            notused
         ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
         GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
-        mirukenVersion:                 ${{ inputs.mirukenVersion }}
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Run updateTeamApiDependencies.js
-      run:  node ./deployment/src/updateTeamApiDependencies.js 
+    - name: Run buildTeamSrv.j
+      run:  node ./deployment/src/buildTeamSrv.js 

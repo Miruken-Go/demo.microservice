@@ -30,13 +30,13 @@ async function main() {
         await git.tagAndPush(tag)
 
         const mirukenVersion = await go.getModuleVersion('team', 'github.com/miruken-go/miruken')
-        const teamApiVersion = await go.getModuleVersion('team', 'github.com/miruken-go/demo.microservice/teamapi')
+        const teamApiVersion = await go.getModuleVersion('team', 'github.com/miruken-go/demo.microservice/team-api')
 
         console.log(`mirukenVersion: [${mirukenVersion}]`)
         console.log(`teamApiVersion: [${teamApiVersion}]`)
       
         await bash.execute(`
-            gh workflow run update-teamsrv-dependencies.yml \
+            gh workflow run update-team-srv-dependencies.yml \
                 -f mirukenVersion=${mirukenVersion}         \
                 -f teamapiVersion=${teamApiVersion}         \
                 -f teamVersion=${version}                   \

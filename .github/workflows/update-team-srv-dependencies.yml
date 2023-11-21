@@ -1,4 +1,4 @@
-name: update teamsrv dependencies
+name: update team-srv dependencies
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       teamapiVersion:
-        description: 'version of teamapi'
+        description: 'version of team-api'
         required: true
         type: string
       teamVersion:

@@ -19,7 +19,6 @@ import (
 	koanfp "github.com/miruken-go/miruken/config/koanf"
 	"github.com/miruken-go/miruken/logs"
 	"github.com/miruken-go/miruken/security/jwt"
-	"github.com/miruken-go/miruken/security/jwt/jwks"
 	play "github.com/miruken-go/miruken/validates/play"
 	"github.com/rs/zerolog"
 	"golang.org/x/net/context"
@@ -92,7 +91,7 @@ func main() {
 
 	// initialize miruken
 	handler, err := miruken.Setup(
-		team.Feature, jwt.Feature(), jwks.Feature(),
+		team.Feature, jwt.Feature(),
 		auth.Feature(), play.Feature(),
 		config.Feature(koanfp.P(k)), stdjson.Feature(),
 		logs.Feature(logger), openapiGen).
@@ -107,7 +106,7 @@ func main() {
 
 	docs := openapiGen.Docs()
 
-	h := httpsrv.Pipeline(handler,
+	h := httpsrv.Api(handler,
 		auth.WithFlowRef("login.oauth").Bearer(),
 	)
 

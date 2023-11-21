@@ -1,7 +1,7 @@
 package person
 
 import (
-	"github.com/miruken-go/demo.microservice/teamapi/commands"
+	"github.com/miruken-go/demo.microservice/team-api/commands"
 	"github.com/miruken-go/miruken/handles"
 )
 

@@ -2,6 +2,7 @@ login:
   oauth:
     - module: login.jwt
       options:
+        audience: 07574dda-f3b0-4fed-aa9a-2e041b6ad3d1
         jwks:
           uri: https://teamsrvidentitydev.b2clogin.com/teamsrvidentitydev.onmicrosoft.com/discovery/v2.0/keys?p=b2c_1a_signup_signin
 

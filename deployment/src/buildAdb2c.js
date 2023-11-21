@@ -1,7 +1,6 @@
 const bash    = require('./infrastructure/bash')
 const logging = require('./infrastructure/logging');
 const git     = require('./infrastructure/git');
-const go      = require('./infrastructure/go');
 const config  = require('./config');
 
 async function main() {
@@ -10,33 +9,24 @@ async function main() {
         config.requiredEnvironmentVariableNonSecrets(['repositoryPath'])
         logging.printConfiguration(config)
 
-        logging.header("Building team-api")
+        logging.header("Building adb2c module")
 
         await bash.execute(`
-            cd team-api
+            cd adb2c
             go test ./...
         `)
 
         const rawVersion = await bash.execute(`
-            docker run --rm -v "${config.repositoryPath}:/repo" gittools/gitversion:5.12.0-alpine.3.14-6.0 /repo /showvariable SemVer /overrideconfig tag-prefix=team-api/v
+            docker run --rm -v "${config.repositoryPath}:/repo" gittools/gitversion:5.12.0-alpine.3.14-6.0 /repo /showvariable SemVer /overrideconfig tag-prefix=adb2c/v
         `)
 
         const version = `v${rawVersion}`
-        const tag     = `team-api/${version}`
+        const tag     = `adb2c/${version}`
 
         console.log(`version: [${version}]`)
         console.log(`tag:     [${tag}]`)
 
         await git.tagAndPush(tag)
-
-        const mirukenVersion = await go.getModuleVersion('team-api', 'github.com/miruken-go/miruken')
-        console.log(`mirukenVersion: [${mirukenVersion}]`)
-      
-        await bash.execute(`
-            gh workflow run update-team-dependencies.yml \
-                -f mirukenVersion=${mirukenVersion}      \
-                -f teamapiVersion=${version}             \
-        `)
 
         console.log("Script completed successfully")
     } catch (error) {

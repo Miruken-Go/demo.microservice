@@ -1,9 +1,9 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
+	"github.com/miruken-go/demo.microservice/adb2c/token"
+	"github.com/miruken-go/miruken/security/password"
 	"net/http"
 	"os"
 
@@ -23,80 +23,9 @@ import (
 	koanfp "github.com/miruken-go/miruken/config/koanf"
 	"github.com/miruken-go/miruken/logs"
 	"github.com/miruken-go/miruken/security/jwt"
-	"github.com/miruken-go/miruken/security/jwt/jwks"
 	play "github.com/miruken-go/miruken/validates/play"
 	"github.com/rs/zerolog"
 )
-
-func authzHandler(w http.ResponseWriter, r *http.Request) {
-	username := "ooYymDzee5!V&v8gk7*s"
-	password := "i**72R#PLWbx8&#$I$ok"
-	u, p, ok := r.BasicAuth()
-	if !ok || u != username || p != password {
-		w.WriteHeader(401)
-		return
-	}
-
-	type Request struct {
-		Type     string `json:"@type"`
-		Email    string
-		ObjectId string
-		Scope    string
-	}
-
-	var request Request
-	err := json.NewDecoder(r.Body).Decode(&request)
-	if err != nil {
-		w.WriteHeader(422)
-		return
-	}
-
-	fmt.Println("")
-	fmt.Println("New Request")
-	fmt.Println("@type: ", request.Type)
-	fmt.Println("email: ", request.Email)
-	fmt.Println("objectId: ", request.ObjectId)
-	fmt.Println("scope: ", request.Scope)
-
-	type Response struct {
-		Groups       []string
-		Roles        []string
-		Entitlements []string
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(Response{
-		Groups:       []string{"oncall"},
-		Roles:        []string{"admin", "coach", "player"},
-		Entitlements: []string{"createTeam", "updateTeam", "createPerson", "updatePerson"},
-	})
-}
-
-type Config struct {
-	App struct {
-		Version string
-		Source  struct {
-			Url string
-		}
-	}
-	OpenApi openapi.Config
-}
-
-func (c Config) ScopesAsMap() map[string]string {
-	ret := map[string]string{}
-	for _, s := range c.OpenApi.Scopes {
-		ret[s.Name] = s.Description
-	}
-	return ret
-}
-
-func (c Config) ScopeNames() []string {
-	ret := make([]string, len(c.OpenApi.Scopes))
-	for i, s := range c.OpenApi.Scopes {
-		ret[i] = s.Name
-	}
-	return ret
-}
 
 func main() {
 	// logging
@@ -134,7 +63,7 @@ func main() {
 			},
 		},
 		ExternalDocs: &openapi3.ExternalDocs{
-			Description: "teamsrv/" + k.String("App.Version"),
+			Description: "team-srv/" + appConfig.App.Version,
 			URL:         appConfig.App.Source.Url,
 		},
 		Components: &openapi3.Components{
@@ -146,7 +75,7 @@ func main() {
 							Implicit: &openapi3.OAuthFlow{
 								AuthorizationURL: appConfig.OpenApi.AuthorizationUrl,
 								TokenURL:         appConfig.OpenApi.TokenUrl,
-								Scopes:           appConfig.ScopesAsMap(),
+								Scopes:           appConfig.OpenApi.ScopeMap(),
 							},
 						},
 						OpenIdConnectUrl: appConfig.OpenApi.OpenIdConnectUrl,
@@ -156,16 +85,17 @@ func main() {
 		},
 		Security: openapi3.SecurityRequirements{
 			{
-				"team_auth": appConfig.ScopeNames(),
+				"team_auth": appConfig.OpenApi.ScopeNames(),
 			},
 		},
 	})
 
 	// initialize miruken
 	handler, err := miruken.Setup(
-		team.Feature, jwt.Feature(), jwks.Feature(),
-		play.Feature(), config.Feature(koanfp.P(k)),
-		stdjson.Feature(), logs.Feature(logger), openapiGen).
+		team.Feature, jwt.Feature(),
+		password.Feature(), play.Feature(),
+		config.Feature(koanfp.P(k)), stdjson.Feature(),
+		logs.Feature(logger), openapiGen).
 		Specs(&api.GoPolymorphism{}).
 		Options(stdjson.CamelCase).
 		Handler()
@@ -175,22 +105,30 @@ func main() {
 		os.Exit(1)
 	}
 
-	docs := openapiGen.Docs()
-
-	h := httpsrv.Pipeline(handler, auth.WithFlowRef("Login.OAuth").Bearer())
-
 	// configure routes
 	var mux http.ServeMux
-	mux.Handle("/process", h)
-	mux.Handle("/process/", h)
-	mux.Handle("/publish", h)
-	mux.Handle("/publish/", h)
+
+	// Polymorphic miruken endpoints
+	poly := httpsrv.Api(handler,
+		auth.WithFlowRef("Login.OAuth").Bearer(),
+	)
+	mux.Handle("/process", poly)
+	mux.Handle("/process/", poly)
+	mux.Handle("/publish", poly)
+	mux.Handle("/publish/", poly)
+
+	// OpenAPI document and swagger endpoints
+	docs := openapiGen.Docs()
 	mux.Handle("/openapi", openapi.Handler(docs, true))
 	mux.Handle("/", ui.Handler("", docs, appConfig.OpenApi))
-	mux.HandleFunc("/authz/", authzHandler)
+
+	// AD B2C Api-Connector enrich claims endpoint
+	mux.Handle("/enrich/", httpsrv.Use(handler,
+		httpsrv.H[*token.EnrichHandler](),
+		auth.WithFlowRef("Login.Adb2c").Basic().Required()))
 
 	// start http server
-	port := k.String("App.Port")
+	port := appConfig.App.Port
 	if port == "" {
 		port = "8080"
 	}
