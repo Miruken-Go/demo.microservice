@@ -7,7 +7,7 @@ require (
 	github.com/go-logr/zerologr v1.2.3
 	github.com/knadh/koanf v1.5.0
 	github.com/miruken-go/demo.microservice/adb2c v0.1.1
-	github.com/miruken-go/demo.microservice/team v0.2.44
+	github.com/miruken-go/demo.microservice/team v0.2.45
 	github.com/miruken-go/miruken v0.30.47
 	github.com/rs/zerolog v1.31.0
 )
