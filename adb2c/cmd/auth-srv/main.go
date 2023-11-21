@@ -35,6 +35,11 @@ func main() {
 		token.Feature(), logs.Feature(logger),
 	).Handler()
 
+	if err != nil {
+		logger.Error(err, "setup failed")
+		os.Exit(1)
+	}
+
 	http.Handle("/enrich/", httpsrv.Use(handler,
 		httpsrv.H[*token.EnrichHandler](),
 		auth.WithFlowRef("Login.Adb2c").Basic().Required()))
