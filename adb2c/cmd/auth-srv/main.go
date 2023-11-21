@@ -11,7 +11,6 @@ import (
 	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
 	koanfp "github.com/miruken-go/miruken/config/koanf"
 	"github.com/miruken-go/miruken/logs"
-	"github.com/miruken-go/miruken/security/password"
 	"github.com/rs/zerolog"
 	"net/http"
 	"os"
@@ -33,7 +32,7 @@ func main() {
 	}
 
 	handler, err := miruken.Setup(
-		password.Feature(), logs.Feature(logger),
+		token.Feature(), logs.Feature(logger),
 	).Handler()
 
 	http.Handle("/enrich/", httpsrv.Use(handler,
