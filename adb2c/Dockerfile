@@ -11,6 +11,6 @@ ARG app_version="0.0.0.0"
 ARG app_source_url="https://github.com/Miruken-Go/demo.microservice"
 ENV App__Version=$app_version
 ENV App__Source__Url=$app_source_url
-COPY --from=build /go/bin/team-srv /app/team-srv
+COPY --from=build /go/bin/auth-srv /app/auth-srv
 EXPOSE 8080
-CMD ["/app/team-srv"]
+CMD ["/app/auth-srv"]
