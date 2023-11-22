@@ -13,13 +13,16 @@ const org = new Organization({
     repository: 'https://github.com/Miruken-Go/demo.microservice',
     applications: [
         {
-            name:         'adb2c-auth-srv', 
-            implicitFlow: true,
-            spa:          true,
-            enrichApi:    true,  
+            name:      'adb2c-api-connector-srv', 
+            enrichApi: true,  
             secrets: [
                 'authorization-service-password'
             ]
+        },
+        {
+            name:         'adb2c-auth-srv', 
+            implicitFlow: true,
+            spa:          true,
         },
     ],
     domains: [
