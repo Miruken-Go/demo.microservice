@@ -35,9 +35,9 @@ async function loginToACR(containerRepositoryName) {
     loggedInToACR = true
 }
 
-async function createResourceGroup(name, location) {
+async function createResourceGroup(name, location, tags) {
     await login()
-    await bash.execute(`az group create --location ${location} --name ${name} --subscription ${variables.subscriptionId}`)
+    await bash.execute(`az group create --location ${location} --name ${name} --subscription ${variables.subscriptionId} --tags ${tags}`)
 }
 
 //https://learn.microsoft.com/en-us/azure/azure-resource-manager/troubleshooting/error-register-resource-provider?tabs=azure-cli

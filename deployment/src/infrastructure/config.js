@@ -84,7 +84,7 @@ class Application {
         this.spa            = opts.spa          || false
         this.enrichApi      = opts.enrichApi    || false
         this.scopes         = opts.scopes       || ['Groups', 'Roles', 'Entitlements']
-        this.secrets        = opts.secrets
+        this.secrets        = opts.secrets      || []
         this.imageName      = `${organization.containerRepositoryName}.azurecr.io/${name}` 
         this.containerAppName = (instance)
             ? `${name}-${env}-${instance}`
