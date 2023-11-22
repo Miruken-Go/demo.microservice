@@ -43,7 +43,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	http.Handle("/enrich/", httpsrv.Use(handler,
+	http.Handle("/enrich", httpsrv.Use(handler,
 		httpsrv.H[*token.EnrichHandler](),
 		auth.WithFlowRef("Login.Adb2c").Basic().Required()))
 
