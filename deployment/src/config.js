@@ -1,7 +1,7 @@
 const { Organization } = require('./infrastructure/config')
 
 const env = process.env.env
-if (!env) throw "Environment variable required: [env]"
+//if (!env) throw "Environment variable required: [env]"
 
 const instance = process.env.instance
 

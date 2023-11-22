@@ -1,8 +1,8 @@
 FROM golang:1.21.3-alpine3.18 as build
 
 WORKDIR /go/src/app
-COPY ../../ .
-WORKDIR /go/src/app/cmd/auth-srv
+COPY . .
+WORKDIR /go/src/app/adb2c/cmd/auth-srv
 
 RUN env CGO_ENABLED=0 go vet .
 RUN env GOOS=linux CGO_ENABLED=0 go build -o /go/bin/auth-srv .

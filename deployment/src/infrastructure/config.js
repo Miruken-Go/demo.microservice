@@ -1,26 +1,42 @@
 
 class ResourceGroups {
-    global
-    common
-    manual
-    stable 
-    instance
 
     constructor (opts) {
         if (!opts.name) throw new Error("name required")
-        if (!opts.env)  throw new Error("env required")
 
-        const name     = opts.name.toLowerCase()
-        const env      = opts.env
-        const instance = opts.instance
+        this.name    = opts.name.toLowerCase()
+        this.env     = opts.env
+        this.envInst = opts.instance
+    }
 
-        this.global   = `${name}-global`
-        this.common   = `${name}-${env}-common`
-        this.manual   = `${name}-${env}-manual`
-        this.stable   = `${name}-${env}`
-        this.instance = (instance) 
-            ? `${name}-${env}-${instance}`
-            : `${name}-${env}`
+    requireEnv () {
+        if (!this.env) throw new Error("env required")
+    }
+
+    get global () {
+        return `${this.name}-global`
+    }
+
+    get common () {
+        this.requireEnv()
+        return `${this.name}-${this.env}-common`
+    }
+
+    get manual () {
+        this.requireEnv()
+        return `${this.name}-${this.env}-manual`
+    }
+
+    get stable () {
+        this.requireEnv()
+        return `${this.name}-${this.env}`
+    }
+
+    get instance () {
+        this.requireEnv()
+        return (this.envInst) 
+            ? `${this.name}-${this.env}-${this.envInst}`
+            : `${this.name}-${this.env}`
     }
 }
 
@@ -32,17 +48,32 @@ class B2C {
 
     constructor (opts) {
         if (!opts.name) throw new Error("name required")
-        if (!opts.env)  throw new Error("env required")
 
-        const profile  = opts.profile || 'B2C_1A_SIGNUP_SIGNIN'
-        const name     = opts.name.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
-        const env      = opts.env
-        const b2cName  = `${name}auth${env}`.toLowerCase()
+        this.cleanedName = opts.name.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
+        this.env         = opts.env
+        this.profile     = opts.profile || 'B2C_1A_SIGNUP_SIGNIN'
+    }
 
-        this.name                   = b2cName
-        this.displayName            = `${name} auth ${env}`.toLowerCase()
-        this.domainName             = `${b2cName}.onmicrosoft.com`
-        this.openIdConfigurationUrl = `https://${b2cName}.b2clogin.com/${b2cName}.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${profile}`
+    requireEnv () {
+        if (!this.env) throw new Error("env required")
+    }
+
+    get name () {
+        this.requireEnv()
+        return `${this.cleanedName}auth${this.env}`.toLowerCase()
+    }
+
+    get displayName () {
+        this.requireEnv()
+        return `${this.cleanedName} auth ${this.env}`.toLowerCase()
+    }
+
+    get domainName () {
+        return `${this.name}.onmicrosoft.com`
+    }
+
+    get openIdConfigurationUrl () {
+        return `https://${this.name}.b2clogin.com/${this.name}.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${this.profile}`
     }
 }
 
@@ -59,26 +90,21 @@ class Application {
     scopes  = []
     secrets = []
     imageName
-    containerAppName
 
     constructor (opts) {
         if (!opts.name)           throw new Error("name required")
-        if (!opts.env)            throw new Error("env required")
         if (!opts.location)       throw new Error("location required")
         if (!opts.organization)   throw new Error("organization required")
         if (!opts.resourceGroups) throw new Error("resourceGroups required")
 
         const name         = opts.name
-        const env          = opts.env
-        const instance     = opts.instance
-        const location     = opts.location
         const organization = opts.organization
 
         this.name           = name 
-        this.env            = env
-        this.instance       = instance
-        this.location       = location
         this.organization   = organization
+        this.location       = opts.location
+        this.env            = opts.env
+        this.instance       = opts.instance
         this.resourceGroups = opts.resourceGroups
         this.implicitFlow   = opts.implicitFlow || false
         this.spa            = opts.spa          || false
@@ -86,22 +112,20 @@ class Application {
         this.scopes         = opts.scopes       || ['Groups', 'Roles', 'Entitlements']
         this.secrets        = opts.secrets      || []
         this.imageName      = `${organization.containerRepositoryName}.azurecr.io/${name}` 
-        this.containerAppName = (instance)
-            ? `${name}-${env}-${instance}`
-            : `${name}-${env}`
-
-        if (this.containerAppName.length > 32)
-            throw `Configuration Error - containerAppName cannot be longer than 32 characters : ${this.containerAppName} [${this.containerAppName.length}]`
     }
 
+    get containerAppName () {
+        if (!this.env) throw new Error("env required")
 
-    // get containerAppEnvironmentName () {
-    //     return `${domain.instancePrefix}-cae`
-    // }
+        const containerAppName =  (this.instance)
+            ? `${this.name}-${this.env}-${this.instance}`
+            : `${this.name}-${this.env}`
 
-    // get containerAppName () {
-    //     return `${domain.instancePrefix}-${this.name}`
-    // }
+        if (containerAppName.length > 32)
+            throw `Configuration Error - containerAppName cannot be longer than 32 characters : ${containerAppName} [${containerAppName.length}]`
+
+        return containerAppName
+    }
 }
 
 class Domain {
@@ -113,7 +137,6 @@ class Domain {
 
     constructor (opts) {
         if (!opts.name)         throw new Error("name required")
-        if (!opts.env)          throw new Error("env  required")
         if (!opts.location)     throw new Error("location required")
         if (!opts.organization) throw new Error("organization required")
 
@@ -150,18 +173,7 @@ class Domain {
             }
         }
     }
-
-    get commonPrefix () {
-        return `${this.name}-${this.env}-common`
-    }
-    get instancePrefix () {
-        return (instance) 
-        ? `${this.name}-${this.env}-${instance}`
-        : `${this.name}-${this.env}`
-    }
-
 }
-
 
 class Organization {
     name
@@ -178,7 +190,6 @@ class Organization {
 
     constructor (opts) {
         if (!opts.name)     throw new Error("name required")
-        if (!opts.env)      throw new Error("env required")
         if (!opts.location) throw new Error("location required")
 
         const name = opts.name.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
@@ -186,7 +197,7 @@ class Organization {
             throw `Configuration Error - Organization name cannot be longer than 19 characters : ${name} [${name.length}]`
 
         const env = opts.env
-        if (env.length > 4)
+        if (env && env.length > 4)
             throw `Configuration Error - Env cannot be longer than 4 characters : ${env} [${env.length}]`
 
         const instance = opts.instance
@@ -213,9 +224,6 @@ class Organization {
             env:  env
         })
 
-        this.keyVaultName = `${name}-${env}` 
-        if (this.keyVaultName.length > 24)
-            throw `Configuration Error - keyVaultName cannot be longer than 24 characters : ${this.keyVaultName} [${this.keyVaultName.length}]`
 
         if(opts.applications) {
             for (const application of opts.applications) {
@@ -245,6 +253,20 @@ class Organization {
                     }))
             }
         }
+    }
+
+    requireEnv () {
+        if (!this.env) throw new Error("env required")
+    }
+
+    get keyVaultName () {
+        this.requireEnv()
+
+        const keyVaultName = `${this.name}-${this.env}` 
+        if (keyVaultName.length > 24)
+            throw `Configuration Error - keyVaultName cannot be longer than 24 characters : ${keyVaultName} [${keyVaultName.length}]`
+
+        return keyVaultName
     }
 
     get enrichApiApplication () {

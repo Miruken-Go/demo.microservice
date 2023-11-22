@@ -203,14 +203,6 @@ describe('Domain', function () {
     it('has array of applications', function () {
         expect(domain.applications.length).to.equal(1)
     })
-    
-    it('commonPrefix', function () {
-        expect(domain.commonPrefix).to.equal('billing-dev-common')
-    })
-
-    it('commonPrefix', function () {
-        expect(domain.commonPrefix).to.equal('billing-dev-common')
-    })
 })
 
 describe('Application', function () {

@@ -8,8 +8,8 @@
 
 ### Run the docker container
 
-    cd adb2c
-    docker run -it --rm -p 8080:8080 -v $(pwd):/go/src/app -w /go/src/app golang:1.21.3-alpine3.18
+    cd demo.microservice
+    docker run -it --rm -p 8080:8080 -v $(pwd):/go/src/app -w /go/src/app/adb2c golang:1.21.3-alpine3.18
 
 ### Build the application
 
@@ -32,14 +32,14 @@ set the require env variables, build, and run the app.
 
 ### Build the container
 
-    docker build -f cmd/api-connector-srv/Dockerfile -t adb2c-connector-srv:local .
+    docker build -f adb2c/cmd/api-connector-srv/Dockerfile -t adb2c-api-connector-srv:local .
 
 ## auth-srv
 
 ### Run the docker container
 
-    cd adb2c
-    docker run -it --rm -p 8080:8080 -v $(pwd):/go/src/app -w /go/src/app golang:1.21.3-alpine3.18
+    cd demo.microservice
+    docker run -it --rm -p 8080:8080 -v $(pwd):/go/src/app -w /go/src/app/adb2c golang:1.21.3-alpine3.18
 
 ### Build the application
 
@@ -62,5 +62,5 @@ set the require env variables, build, and run the app.
 
 ### Build the container
 
-    docker build -f cmd/auth-srv/Dockerfile -t adb2c-connector-srv:local .
+    docker build -f adb2c/cmd/auth-srv/Dockerfile -t adb2c-auth-srv:local .
 

@@ -16,7 +16,7 @@ async function main() {
         logging.printEnvironmentSecrets(secrets)
         logging.printOrganization(organization)
 
-        const appName = 'adb2c-auth-srv'
+        const appName = 'adb2c-api-connector-srv'
 
         logging.header(`Building ${appName}`)
 
@@ -37,7 +37,7 @@ async function main() {
                 --progress plain                           \
                 --build-arg app_source_url=${appSourceUrl} \
                 --build-arg app_version=${version}         \
-                -f adb2c/cmd/auth-srv/Dockerfile           \
+                -f adb2c/cmd/api-connector-srv/Dockerfile  \
                 -t ${imageName}                            \
                 .                                          \
         `)

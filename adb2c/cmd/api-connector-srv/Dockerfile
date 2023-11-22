@@ -1,8 +1,8 @@
 FROM golang:1.21.3-alpine3.18 as build
 
 WORKDIR /go/src/app
-COPY ../../ .
-WORKDIR /go/src/app/cmd/api-connector-srv
+COPY . .
+WORKDIR /go/src/app/adb2c/cmd/api-connector-srv
 
 RUN env CGO_ENABLED=0 go vet .
 RUN env GOOS=linux CGO_ENABLED=0 go build -o /go/bin/api-connector-srv .
