@@ -8,12 +8,12 @@
 
 ### Run the docker container
 
-    cd teamsrv
+    cd team-srv
     docker run -it --rm -p 8080:8080 -v $(pwd):/go/src/app -w /go/src/app golang:1.21.3-alpine3.18
 
 ### Build the application
 
-    env GOOS=linux CGO_ENABLED=0 go build -o /go/bin/teamsrv ./cmd
+    env GOOS=linux CGO_ENABLED=0 go build -o /go/bin/team-srv ./cmd
 
 ### Execute tests
 
@@ -21,7 +21,7 @@
 
 ### Run the teamsrv web app
 
-    /go/bin/teamsrv
+    /go/bin/team-srv
     http://localhost:8080
 
 ### Setting env variables
