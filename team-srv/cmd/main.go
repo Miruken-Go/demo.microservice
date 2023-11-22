@@ -25,6 +25,17 @@ import (
 	"github.com/rs/zerolog"
 )
 
+type Config struct {
+	App struct {
+		Version string
+		Source  struct {
+			Url string
+		}
+		Port    string
+	}
+	OpenApi openapi.Config
+}
+
 func main() {
 	// logging
 	zl := zerolog.New(os.Stderr)
