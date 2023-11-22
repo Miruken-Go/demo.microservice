@@ -9,6 +9,7 @@ import (
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
 	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
+	"github.com/miruken-go/miruken/config"
 	koanfp "github.com/miruken-go/miruken/config/koanf"
 	"github.com/miruken-go/miruken/logs"
 	"github.com/rs/zerolog"
@@ -32,7 +33,9 @@ func main() {
 	}
 
 	handler, err := miruken.Setup(
-		token.Feature(), logs.Feature(logger),
+		token.Feature(),
+		config.Feature(koanfp.P(k)),
+		logs.Feature(logger),
 	).Handler()
 
 	if err != nil {
