@@ -6,10 +6,11 @@ if (!env) throw "Environment variable required: [env]"
 const instance = process.env.instance
 
 const org = new Organization({
-    name:     'MajorLeagueMiruken',
-    location: 'CentralUs',
-    env:      env,
-    instance: instance,
+    name:       'MajorLeagueMiruken',
+    location:   'CentralUs',
+    env:        env,
+    instance:   instance,
+    repository: 'https://github.com/Miruken-Go/demo.microservice',
     applications: [
         {
             name:         'adb2c-auth-srv', 

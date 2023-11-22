@@ -168,6 +168,7 @@ class Organization {
     env
     instance
     location
+    repository
     containerRepositoryName
     resourceGroups
     b2c
@@ -191,10 +192,11 @@ class Organization {
         const instance = opts.instance
         const location = opts.location
 
-        this.name     = name
-        this.env      = env 
-        this.instance = instance
-        this.location = location
+        this.name       = name
+        this.env        = env 
+        this.instance   = instance
+        this.location   = location
+        this.repository = opts.repository
 
         this.containerRepositoryName = `${name}global`
         if (this.containerRepositoryName.length > 32)
