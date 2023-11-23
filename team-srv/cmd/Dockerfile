@@ -4,9 +4,8 @@ WORKDIR /go/src/app
 COPY . .
 WORKDIR /go/src/app/team-srv/cmd
 
-
-RUN env CGO_ENABLED=0 go vet ./cmd
-RUN env GOOS=linux CGO_ENABLED=0 go build -o /go/bin/team-srv ./cmd
+RUN env CGO_ENABLED=0 go vet .
+RUN env GOOS=linux CGO_ENABLED=0 go build -o /go/bin/team-srv .
 
 FROM alpine:3.18.0
 ARG app_version="0.0.0.0"

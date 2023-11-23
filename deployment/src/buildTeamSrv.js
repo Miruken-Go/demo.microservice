@@ -1,47 +1,60 @@
-const az      = require('./infrastructure/az');
-const bash    = require('./infrastructure/bash')
-const logging = require('./infrastructure/logging');
-const git     = require('./infrastructure/git');
-const config  = require('./config');
+const az               = require('./infrastructure/az');
+const bash             = require('./infrastructure/bash')
+const logging          = require('./infrastructure/logging');
+const git              = require('./infrastructure/git');
+const { variables }    = require('./infrastructure/envVariables')
+const { secrets }      = require('./infrastructure/envSecrets')
+const { organization } = require('./config');
+
+secrets.require([
+   'ghToken' 
+])
 
 async function main() {
     try {
-        config.requiredEnvironmentVariableSecrets(['ghToken'])
-        logging.printConfiguration(config)
+        logging.printEnvironmentVariables(variables)
+        logging.printEnvironmentSecrets(secrets)
+        logging.printOrganization(organization)
 
-        logging.header("Building team-srv")
+        const appName = 'team-srv'
+
+        logging.header(`Building ${appName}`)
+
+        const app = organization.getApplicationByName(appName)
 
         const version      = `v${Math.floor(Date.now()/1000)}`.trim()
-        const imageName    = `${config.imageName}:${version}`
-        const tag          = `${config.appName}/${version}`
-        const appSourceUrl = `${config.repository}/releases/tag/${tag}`
+        const imageName    = `${app.imageName}:${version}`
+        const gitTag       = `${app.name}/${version}`
+        const appSourceUrl = `${organization.gitRepositoryUrl}/releases/tag/${gitTag}`
 
         console.log(`version:      [${version}]`)
         console.log(`imageName:    [${imageName}]`)
-        console.log(`tag:          [${tag}]`)
+        console.log(`gitTag:       [${gitTag}]`)
         console.log(`appSourceUrl: [${appSourceUrl}]`)
 
         await bash.execute(`
             docker build                                   \
+                --progress plain                           \
                 --build-arg app_source_url=${appSourceUrl} \
                 --build-arg app_version=${version}         \
+                -f team-srv/cmd/Dockerfile                 \
                 -t ${imageName}                            \
-                team-srv                                    \
+                .                                          \
         `)
 
-        await az.loginToACR()
+        await az.loginToACR(organization.containerRepositoryName)
         
         await bash.execute(`
             docker push ${imageName}
         `)
 
-        await git.tagAndPush(tag)
+        await git.tagAndPush(gitTag)
 
         await bash.execute(`
-            gh workflow run deploy-team-srv.yml \
-                -f env=dev                     \
-                -f instance=ci                 \
-                -f tag=${version}              \
+            gh workflow run deploy-${appName}.yml \
+                -f env=dev                        \
+                -f instance=ci                    \
+                -f tag=${version}                 \
         `)
 
         console.log("Script completed successfully")

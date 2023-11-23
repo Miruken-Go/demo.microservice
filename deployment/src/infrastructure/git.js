@@ -1,5 +1,4 @@
 const bash    = require('./bash')
-const config  = require('../config');
 const logging = require('./logging');
 
 console.log("Configuring git")

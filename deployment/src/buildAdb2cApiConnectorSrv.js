@@ -25,7 +25,7 @@ async function main() {
         const version      = `v${Math.floor(Date.now()/1000)}`.trim()
         const imageName    = `${app.imageName}:${version}`
         const gitTag       = `${app.name}/${version}`
-        const appSourceUrl = `${organization.repository}/releases/tag/${gitTag}`
+        const appSourceUrl = `${organization.gitRepositoryUrl}/releases/tag/${gitTag}`
 
         console.log(`version:      [${version}]`)
         console.log(`imageName:    [${imageName}]`)
