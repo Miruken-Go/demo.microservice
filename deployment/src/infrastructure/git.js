@@ -1,12 +1,19 @@
-const bash    = require('./bash')
-const logging = require('./logging');
+const bash        = require('./bash')
+const logging     = require('./logging');
+const { secrets } = require('./envSecrets')
+
+secrets.require([
+   'ghToken' 
+])
 
 console.log("Configuring git")
 bash.execute(`
+    git config --global user.email "mirukenjs@gmail.com"
+    git config --global user.name "buildpipeline"
     git config --global --add safe.directory $(pwd)
-    git config --global url."https://api:$ghToken@github.com/".insteadOf "https://github.com/"
-    git config --global url."https://ssh:$ghToken@github.com/".insteadOf "ssh://git@github.com/"
-    git config --global url."https://git:$ghToken@github.com/".insteadOf "git@github.com:"
+    git config --global url."https://api:${secrets.ghToken}@github.com/".insteadOf "https://github.com/"
+    git config --global url."https://ssh:${secrets.ghToken}@github.com/".insteadOf "ssh://git@github.com/"
+    git config --global url."https://git:${secrets.ghToken}@github.com/".insteadOf "git@github.com:"
 `)
 
 async function tagAndPush(tag) { 
