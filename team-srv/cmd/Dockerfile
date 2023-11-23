@@ -2,6 +2,8 @@ FROM golang:1.21.3-alpine3.18 as build
 
 WORKDIR /go/src/app
 COPY . .
+WORKDIR /go/src/app/team-srv/cmd
+
 
 RUN env CGO_ENABLED=0 go vet ./cmd
 RUN env GOOS=linux CGO_ENABLED=0 go build -o /go/bin/team-srv ./cmd
