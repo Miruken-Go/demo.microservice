@@ -6,7 +6,6 @@ const config  = require('./config');
 
 async function main() {
     try {
-        config.requiredEnvironmentVariableSecrets(['ghToken'])
         config.requiredEnvironmentVariableNonSecrets(['repositoryPath'])
         logging.printConfiguration(config)
 

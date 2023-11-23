@@ -6,10 +6,6 @@ const { variables }    = require('./infrastructure/envVariables')
 const { secrets }      = require('./infrastructure/envSecrets')
 const { organization } = require('./config');
 
-secrets.require([
-   'ghToken' 
-])
-
 async function main() {
     try {
         logging.printEnvironmentVariables(variables)

@@ -6,11 +6,11 @@ const env = process.env.env
 const instance = process.env.instance
 
 const org = new Organization({
-    name:       'MajorLeagueMiruken',
-    location:   'CentralUs',
-    env:        env,
-    instance:   instance,
-    repository: 'https://github.com/Miruken-Go/demo.microservice',
+    name:             'MajorLeagueMiruken',
+    location:         'CentralUs',
+    env:              env,
+    instance:         instance,
+    gitRepositoryUrl: 'https://github.com/Miruken-Go/demo.microservice',
     applications: [
         {
             name:      'adb2c-api-connector-srv', 
