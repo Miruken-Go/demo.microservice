@@ -6,6 +6,7 @@ const { variables }    = require('./infrastructure/envVariables')
 const { secrets }      = require('./infrastructure/envSecrets')
 const { organization } = require('./config');
 
+
 async function main() {
     try {
         logging.printEnvironmentVariables(variables)
@@ -46,12 +47,18 @@ async function main() {
 
         await git.tagAndPush(gitTag)
 
-        await bash.execute(`
-            gh workflow run deploy-${appName}.yml \
-                -f env=dev                     \
-                -f instance=ci                 \
-                -f tag=${version}              \
-        `)
+        variables.optionalEnvVariables([
+            'skipGitHubAction'
+        ])
+
+        if (!variables.skipGitHubAction) {
+            await bash.execute(`
+                gh workflow run deploy-${appName}.yml \
+                    -f env=dev                     \
+                    -f instance=ci                 \
+                    -f tag=${version}              \
+            `)
+        }
 
         console.log("Script completed successfully")
     } catch (error) {

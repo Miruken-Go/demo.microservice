@@ -8,6 +8,16 @@ const variables = {
     instance,
     workingDirectory: process.cwd(),
     nodeDirectory:    __dirname,
+    optionalEnvVariables: function(names) {
+        names.forEach(function(name) {
+            if(this[name]) return
+
+            const variable = process.env[name]
+            if (variable){
+                this[name] = variable.trim()
+            }
+        }.bind(this));
+    },
     requireEnvVariables: function(names) {
         names.forEach(function(name) {
             if(this[name]) return
