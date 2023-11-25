@@ -6,6 +6,9 @@ const { variables }    = require('./infrastructure/envVariables')
 const { secrets }      = require('./infrastructure/envSecrets')
 const { organization } = require('./config');
 
+variables.optionalEnvVariables([
+    'skipGitHubAction'
+])
 
 async function main() {
     try {
@@ -47,9 +50,6 @@ async function main() {
 
         await git.tagAndPush(gitTag)
 
-        variables.optionalEnvVariables([
-            'skipGitHubAction'
-        ])
 
         if (!variables.skipGitHubAction) {
             await bash.execute(`

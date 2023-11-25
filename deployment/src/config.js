@@ -1,15 +1,10 @@
 const { Organization } = require('./infrastructure/config')
 
-const env = process.env.env
-//if (!env) throw "Environment variable required: [env]"
-
-const instance = process.env.instance
-
 const org = new Organization({
+    env:              process.env.env,
+    instance:         process.env.instance,
     name:             'MajorLeagueMiruken',
     location:         'CentralUs',
-    env:              env,
-    instance:         instance,
     gitRepositoryUrl: 'https://github.com/Miruken-Go/demo.microservice',
     applications: [
         {
