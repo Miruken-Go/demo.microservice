@@ -50,7 +50,6 @@ async function main() {
 
         await git.tagAndPush(gitTag)
 
-
         if (!variables.skipGitHubAction) {
             await bash.execute(`
                 gh workflow run deploy-${appName}.yml \

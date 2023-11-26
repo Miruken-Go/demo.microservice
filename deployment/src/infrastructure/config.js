@@ -78,6 +78,7 @@ class Application {
     env
     instance
     location
+    parent
     organization
     resourceGroups
     implicitFlow
@@ -99,6 +100,7 @@ class Application {
         this.name           = name 
         this.organization   = organization
         this.location       = opts.location
+        this.parent         = opts.parent
         this.env            = opts.env
         this.instance       = opts.instance
         this.resourceGroups = opts.resourceGroups
@@ -158,7 +160,7 @@ class Domain {
                 this.applications.push((application instanceof Application)
                     ? application
                     : new Application({
-                        domain:         this,
+                        parent:         this,
                         organization:   this.organization,
                         env:            env, 
                         instance:       instance,
@@ -225,6 +227,7 @@ class Organization {
                 this.applications.push((application instanceof Application)
                     ? application
                     : new Application({
+                        parent:         this,
                         organization:   this,
                         env:            env, 
                         instance:       instance,
