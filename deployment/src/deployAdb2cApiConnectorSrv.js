@@ -25,9 +25,9 @@ async function main() {
         const b2c = new B2C(organization)
 
         const envVars = [
-            `Login__Basic__0__Module="login.pwd"`,
-            `Login__Basic__0__Options__Credentials__0__Username="${variables.authorizationServiceUsername}"`,
-            `Login__Basic__0__Options__Credentials__0__Password=secretref:authorization-service-password`,
+            `Login__Adb2c__0__Module="login.pwd"`,
+            `Login__Adb2c__0__Options__Credentials__0__Username="${variables.authorizationServiceUsername}"`,
+            `Login__Adb2c__0__Options__Credentials__0__Password=secretref:authorization-service-password`,
         ]
 
         await az.login()
