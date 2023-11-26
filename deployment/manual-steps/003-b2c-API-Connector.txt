@@ -48,7 +48,7 @@ Create the Password:
 
             Click Create
 
-Run deployOrganizationManualResourceConfiguration.js
+Run provisionOrganizationManualResourceConfiguration.js
  
 
 

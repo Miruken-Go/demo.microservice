@@ -39,7 +39,7 @@ async function main() {
                 -n ${application.containerAppName}                \
                 -g ${application.resourceGroups.instance}         \
                 --image ${application.imageName}:${variables.tag} \
-                --container-name ${application.appName}           \
+                --container-name ${application.name}              \
                 --revision-suffix ${variables.tag}                \
                 --replace-env-vars ${envVars.join(' ')}           \
         `)
