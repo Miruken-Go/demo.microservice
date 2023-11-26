@@ -7,8 +7,7 @@ require (
 	github.com/go-logr/logr v1.3.0
 	github.com/go-logr/zerologr v1.2.3
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/demo.microservice/team v0.2.45
-	github.com/miruken-go/miruken v0.30.47
+	github.com/miruken-go/miruken v0.30.48
 	github.com/rs/zerolog v1.31.0
 	github.com/stretchr/testify v1.8.4
 )
@@ -34,7 +33,6 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/miruken-go/demo.microservice/team-api v0.1.1 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect

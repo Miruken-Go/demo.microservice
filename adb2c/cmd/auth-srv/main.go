@@ -1,6 +1,5 @@
 package main
 
-
 import (
 	"errors"
 	"net/http"
@@ -10,7 +9,6 @@ import (
 	"github.com/go-logr/zerologr"
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/providers/env"
-	"github.com/miruken-go/demo.microservice/team"
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
@@ -102,9 +100,9 @@ func main() {
 
 	// initialize miruken
 	handler, err := miruken.Setup(
-		team.Feature, jwt.Feature(),
-		play.Feature(), config.Feature(koanfp.P(k)),
-		stdjson.Feature(), logs.Feature(logger),
+		jwt.Feature(), play.Feature(),
+		config.Feature(koanfp.P(k)), stdjson.Feature(),
+		logs.Feature(logger),
 		openapiGen).
 		Specs(&api.GoPolymorphism{}).
 		Options(stdjson.CamelCase).
