@@ -41,10 +41,6 @@ class ResourceGroups {
 }
 
 class B2C {
-    name
-    displayName
-    domainName
-    openIdConfigurationUrl
 
     constructor (opts) {
         if (!opts.name) throw new Error("name required")
