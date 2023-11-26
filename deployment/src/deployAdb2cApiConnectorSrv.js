@@ -85,7 +85,7 @@ async function main() {
             }
         }
 
-        const appUrl = await az.getContainerAppUrl(application.containerAppName)
+        const appUrl = await az.getContainerAppUrl(application.containerAppName, application.resourceGroups.instance)
         await b2c.addRedirectUris(teamsrvAppRegistration.id, [`https://${appUrl}`])
 
         console.log("Script completed successfully")

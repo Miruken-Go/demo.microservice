@@ -184,7 +184,6 @@ class Organization {
     containerRepositoryName
     resourceGroups
     b2c
-    keyVaultName
     domains      = []
     applications = []
 
@@ -262,11 +261,11 @@ class Organization {
     get keyVaultName () {
         this.requireEnv()
 
-        const keyVaultName = `${this.name}-${this.env}` 
-        if (keyVaultName.length > 24)
-            throw `Configuration Error - keyVaultName cannot be longer than 24 characters : ${keyVaultName} [${keyVaultName.length}]`
+        const name = `${this.name}-${this.env}` 
+        if (name.length > 24)
+            throw new Error(`Configuration Error - keyVaultName cannot be longer than 24 characters : ${name} [${name.length}]`)
 
-        return keyVaultName
+        return name
     }
 
     get enrichApiApplication () {
