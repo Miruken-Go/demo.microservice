@@ -7,7 +7,7 @@ require (
 	github.com/go-logr/logr v1.3.0
 	github.com/go-logr/zerologr v1.2.3
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/miruken v0.30.49
+	github.com/miruken-go/miruken v0.30.50
 	github.com/rs/zerolog v1.31.0
 	github.com/stretchr/testify v1.8.4
 )

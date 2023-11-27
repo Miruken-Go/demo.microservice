@@ -22,12 +22,13 @@ async function main() {
 
         logging.header(`Deploying ${application.name}`)
 
-        const b2c = new B2C(organization)
+        const b2c             = new B2C(organization)
+        const appRegistration = await b2c.getApplicationByName(organization.name)
 
         const envVars = [
-            `Login__Adb2c__0__Module="login.pwd"`,
-            `Login__Adb2c__0__Options__Credentials__0__Username="${variables.authorizationServiceUsername}"`,
-            `Login__Adb2c__0__Options__Credentials__0__Password=secretref:authorization-service-password`,
+            `Login__Adb2c__0__Module='login.pwd'`,
+            `Login__Adb2c__0__Options__Credentials__0__Username='${variables.authorizationServiceUsername}'`,
+            `Login__Adb2c__0__Options__Credentials__0__Password='secretref:authorization-service-password'`,
         ]
 
         await az.login()
@@ -85,7 +86,6 @@ async function main() {
             }
         }
 
-        const appRegistration = await b2c.getApplicationByName(organization.name)
         const appUrl          = await az.getContainerAppUrl(application.containerAppName, application.resourceGroups.instance)
         await b2c.addRedirectUris(appRegistration.id, [`https://${appUrl}`])
 

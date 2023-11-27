@@ -18,22 +18,24 @@ async function main() {
 
         logging.header(`Deploying ${application.name}`)
 
-        const b2c = new B2C(organization)
+        const b2c             = new B2C(organization)
+        const appRegistration = await b2c.getApplicationByName(application.parent.name)
+        const openIdConfig    = await b2c.getWellKnownOpenIdConfiguration()
 
         const envVars = [
-            `Login__OAuth__0__Module="login.jwt"`,
-            `Login__OAuth__0__Options__Audience="${teamsrv.appId}"`,
-            `Login__OAuth__0__Options__JWKS__Uri="${openIdConfig.jwks_uri}"`,
-            `OpenApi__AuthorizationUrl="${openIdConfig.authorization_endpoint}"`,
-            `OpenApi__TokenUrl="${openIdConfig.token_endpoint}"`,
-            `OpenApi__ClientId="${teamsrvAppRegistration.appId}"`,
-            `OpenApi__OpenIdConnectUrl="${organization.b2c.openIdConfigurationUrl}"`,
-            `OpenApi__Scopes__0__Name="https://${organization.b2c.domainName}/teamsrv/Groups"`,
-            `OpenApi__Scopes__0__Description="Groups to which the user belongs."`,
-            `OpenApi__Scopes__1__Name="https://${organization.b2c.domainName}/teamsrv/Roles"`,
-            `OpenApi__Scopes__1__Description="Roles to which the user belongs."`,
-            `OpenApi__Scopes__2__Name="https://${organization.b2c.domainName}/teamsrv/Entitlements"`, 
-            `OpenApi__Scopes__2__Description="Entitlements the user has."`,
+            `Login__OAuth__0__Module='login.jwt'`,
+            `Login__OAuth__0__Options__Audience='${appRegistration.appId}'`,
+            `Login__OAuth__0__Options__JWKS__Uri='${openIdConfig.jwks_uri}'`,
+            `OpenApi__AuthorizationUrl='${openIdConfig.authorization_endpoint}'`,
+            `OpenApi__TokenUrl='${openIdConfig.token_endpoint}'`,
+            `OpenApi__ClientId='${appRegistration.appId}'`,
+            `OpenApi__OpenIdConnectUrl='${organization.b2c.openIdConfigurationUrl}'`,
+            `OpenApi__Scopes__0__Name='https://${organization.b2c.domainName}/${application.name}/Groups'`,
+            `OpenApi__Scopes__0__Description='Groups to which the user belongs.'`,
+            `OpenApi__Scopes__1__Name='https://${organization.b2c.domainName}/${application.name}/Roles'`,
+            `OpenApi__Scopes__1__Description='Roles to which the user belongs.'`,
+            `OpenApi__Scopes__2__Name='https://${organization.b2c.domainName}/${application.name}/Entitlements'`, 
+            `OpenApi__Scopes__2__Description='Entitlements the user has.'`,
         ]
 
         await az.login()
@@ -91,7 +93,6 @@ async function main() {
             }
         }
 
-        const appRegistration = await b2c.getApplicationByName(application.parent.name)
         const appUrl          = await az.getContainerAppUrl(application.containerAppName, application.resourceGroups.instance)
         await b2c.addRedirectUris(appRegistration.id, [`https://${appUrl}`])
 
