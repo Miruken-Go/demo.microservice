@@ -1,9 +1,11 @@
 package data
 
 type (
+	Scope string
+
 	User struct {
 		Id         string
-		Principals map[string][]Principal
+		Principals map[Scope][]Principal
 	}
 
 	Principal struct {

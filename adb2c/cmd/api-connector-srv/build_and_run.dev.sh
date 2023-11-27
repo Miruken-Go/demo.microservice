@@ -8,8 +8,10 @@ export App__Source__Url="https://github.com/Miruken-Go/demo.microservice"
 
 #These are set at deployment time
 export Login__Adb2c__0__Module="login.pwd"
-export Login__Adb2c__0__Options__Credentials__0__Username="ooYymDzee5!V&v8gk7*s"
-export Login__Adb2c__0__Options__Credentials__0__Password="i**72R#PLWbx8&#$I$ok"
+export Login__Adb2c__0__Options__Credentials__0__Username='ooYymDzee5!V&v8gk7*s'
+export Login__Adb2c__0__Options__Credentials__0__Password='i**72R#PLWbx8&#$I$ok'
+
+env
 
 echo "Starting the app: localhost:8080"
 /go/bin/api-connector-srv
