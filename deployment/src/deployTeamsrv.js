@@ -44,14 +44,17 @@ async function main() {
 
         //https://learn.microsoft.com/en-us/cli/azure/containerapp?view=azure-cli-latest#az-containerapp-update
         //Create the new revision
-        const now = `${Math.floor(Date.now()/1000)}`.trim()
+        //We have to add the current time to the revision suffix to make it unique
+        //otherwise we would never be able to redeploy the same container tag
+        const now            = `${Math.floor(Date.now()/1000)}`.trim()
+        const revisionSuffix = `${variables.tag}-${now}`
         await bash.execute(`
             az containerapp update                                \
                 -n ${application.containerAppName}                \
                 -g ${application.resourceGroups.instance}         \
                 --image ${application.imageName}:${variables.tag} \
                 --container-name ${application.name}              \
-                --revision-suffix ${variables.tag}-${now}         \
+                --revision-suffix ${revisionSuffix}               \
                 --replace-env-vars ${envVars.join(' ')}           \
         `)
 
@@ -61,8 +64,8 @@ async function main() {
                 -g ${application.resourceGroups.instance} \
         `)
 
-        const revisionsToActivate   = revisions.filter(r => r.name.includes(variables.tag))
-        const revisionsToDeactivate = revisions.filter(r => !r.name.includes(variables.tag))
+        const revisionsToActivate   = revisions.filter(r => r.name.includes(revisionSuffix))
+        const revisionsToDeactivate = revisions.filter(r => !r.name.includes(revisionSuffix))
 
         //You must have an active revision before deactivating the rest
         for (const revision of revisionsToActivate) {
