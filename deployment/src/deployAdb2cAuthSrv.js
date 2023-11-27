@@ -30,25 +30,28 @@ async function main() {
             `OpenApi__TokenUrl='${openIdConfig.token_endpoint}'`,
             `OpenApi__ClientId='${appRegistration.appId}'`,
             `OpenApi__OpenIdConnectUrl='${organization.b2c.openIdConfigurationUrl}'`,
-            `OpenApi__Scopes__0__Name='https://${organization.b2c.domainName}/${application.name}/Groups'`,
-            `OpenApi__Scopes__0__Description='Groups to which the user belongs.'`,
-            `OpenApi__Scopes__1__Name='https://${organization.b2c.domainName}/${application.name}/Roles'`,
-            `OpenApi__Scopes__1__Description='Roles to which the user belongs.'`,
-            `OpenApi__Scopes__2__Name='https://${organization.b2c.domainName}/${application.name}/Entitlements'`, 
-            `OpenApi__Scopes__2__Description='Entitlements the user has.'`,
         ]
+
+        const identifierUri = appRegistration.identifierUris[0]
+        const scopes        = appRegistration.api.oauth2PermissionScopes
+        for (let i = 0; i < scopes.length; i++) {
+            const scope = scopes[i]
+            envVars.push(`OpenApi__Scopes__${i}__Name='${identifierUri}/${scope.value}'`)
+            envVars.push(`OpenApi__Scopes__${i}__Description='${scope.adminConsentDescription}'`)
+        }
 
         await az.login()
 
         //https://learn.microsoft.com/en-us/cli/azure/containerapp?view=azure-cli-latest#az-containerapp-update
         //Create the new revision
+        const now = `${Math.floor(Date.now()/1000)}`.trim()
         await bash.execute(`
             az containerapp update                                \
                 -n ${application.containerAppName}                \
                 -g ${application.resourceGroups.instance}         \
                 --image ${application.imageName}:${variables.tag} \
                 --container-name ${application.name}              \
-                --revision-suffix ${variables.tag}                \
+                --revision-suffix ${variables.tag}-${now}         \
                 --replace-env-vars ${envVars.join(' ')}           \
         `)
 
@@ -93,8 +96,8 @@ async function main() {
             }
         }
 
-        const appUrl          = await az.getContainerAppUrl(application.containerAppName, application.resourceGroups.instance)
-        await b2c.addRedirectUris(appRegistration.id, [`https://${appUrl}`])
+        const appUrl = await az.getContainerAppUrl(application.containerAppName, application.resourceGroups.instance)
+        await b2c.addRedirectUris(appRegistration.id, [`https://${appUrl}/oauth2-redirect.html`])
 
         console.log("Script completed successfully")
     } catch (error) {

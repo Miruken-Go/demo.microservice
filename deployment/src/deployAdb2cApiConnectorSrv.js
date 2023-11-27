@@ -1,7 +1,6 @@
 const logging            = require('./infrastructure/logging');
 const az                 = require('./infrastructure/az');
 const bash               = require('./infrastructure/bash')
-const { B2C }            = require('./infrastructure/b2c')
 const { variables }      = require('./infrastructure/envVariables')
 const { organization }   = require('./config');
 
@@ -22,9 +21,6 @@ async function main() {
 
         logging.header(`Deploying ${application.name}`)
 
-        const b2c             = new B2C(organization)
-        const appRegistration = await b2c.getApplicationByName(organization.name)
-
         const envVars = [
             `Login__Adb2c__0__Module='login.pwd'`,
             `Login__Adb2c__0__Options__Credentials__0__Username='${variables.authorizationServiceUsername}'`,
@@ -35,13 +31,14 @@ async function main() {
 
         //https://learn.microsoft.com/en-us/cli/azure/containerapp?view=azure-cli-latest#az-containerapp-update
         //Create the new revision
+        const now = `${Math.floor(Date.now()/1000)}`.trim()
         await bash.execute(`
             az containerapp update                                \
                 -n ${application.containerAppName}                \
                 -g ${application.resourceGroups.instance}         \
                 --image ${application.imageName}:${variables.tag} \
                 --container-name ${application.name}              \
-                --revision-suffix ${variables.tag}                \
+                --revision-suffix ${variables.tag}-${now}         \
                 --replace-env-vars ${envVars.join(' ')}           \
         `)
 
@@ -85,9 +82,6 @@ async function main() {
                 `)
             }
         }
-
-        const appUrl          = await az.getContainerAppUrl(application.containerAppName, application.resourceGroups.instance)
-        await b2c.addRedirectUris(appRegistration.id, [`https://${appUrl}`])
 
         console.log("Script completed successfully")
     } catch (error) {
