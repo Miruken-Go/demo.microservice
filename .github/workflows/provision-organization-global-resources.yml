@@ -1,4 +1,4 @@
-name: Deploy Global Resources 
+name: provision organization global resources
 
 on: workflow_dispatch
 
@@ -15,5 +15,5 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Run deployGlobalResources.js
-      run:  node ./deployment/src/deployGlobalResources.js 
+    - name: Run provisionOrganizationGlobalResources.js
+      run:  node ./deployment/src/provisionOrganizationGlobalResources.js 
