@@ -19,7 +19,6 @@ type (
 	// EnrichRequest is the request body sent to the Api Connector.
 	// It receives a set et of InputClaims and returns a set of OutputClaims.
 	EnrichRequest struct {
-		Email    string
 		ObjectId string
 		Scope    string
 	}
@@ -48,7 +47,6 @@ func (e EnrichHandler) ServeHTTP(
 	}
 
 	e.logger.Info("Enrich token",
-		"Email", request.Email,
 		"ObjectId", request.ObjectId,
 		"Scope", request.Scope)
 

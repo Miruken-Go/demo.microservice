@@ -1,22 +1,27 @@
-package data
+package api
 
 type (
-	Scope string
+	Tag struct {
+		Id          string
+		Name        string
+		Description string
+	}
 
-	User struct {
+	Subject struct {
 		Id         string
-		Principals map[Scope][]Principal
+		Principals []Principal
 	}
 
 	Principal struct {
 		Id           string
-		Type         string
 		Name         string
+		Tags         []Tag
 		Entitlements []Entitlement
 	}
 
 	Entitlement struct {
 		Id   string
 		Name string
+		Tags []Tag
 	}
 )

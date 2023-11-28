@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	auth2 "github.com/miruken-go/demo.microservice/adb2c/auth"
 	"net/http"
 	"os"
 
@@ -100,7 +101,7 @@ func main() {
 
 	// initialize miruken
 	handler, err := miruken.Setup(
-		jwt.Feature(), play.Feature(),
+		auth2.Feature, jwt.Feature(), play.Feature(),
 		config.Feature(koanfp.P(k)), stdjson.Feature(),
 		logs.Feature(logger),
 		openapiGen).
