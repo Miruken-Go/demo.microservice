@@ -41,9 +41,7 @@ flowchart LR
 
     B(Provision Domain Environment Instance Resources </br></br> league-dev </br> league-dev-ci </br>league-dev-feature </br></br> Container Apps Environment </br> Container App)
 
-    C(Deploy Domain Environment Applications</br></br> team-srv)
-    
-    A --> B --> C
+    A --> B
 ```
 
 ## Deploy application
@@ -53,7 +51,9 @@ After the environment is fully deployed, deploy the desired version of the appli
 ```mermaid
 
 flowchart LR
-    A(Deploy teamsrv)
+    A(Deploy adb2c-api-connector-srv)
+    B(Deploy adb2c-auth-srv)
+    C(Deploy team-srv)
 
 ```
 
