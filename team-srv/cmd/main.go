@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"github.com/miruken-go/miruken/context"
 	"net/http"
 	"os"
 
@@ -114,11 +115,14 @@ func main() {
 		os.Exit(1)
 	}
 
+	ctx := context.New(handler)
+	defer ctx.End(nil)
+
 	// configure routes
 	var mux http.ServeMux
 
 	// Polymorphic miruken endpoints
-	poly := httpsrv.Api(handler,
+	poly := httpsrv.Api(ctx,
 		auth.WithFlowRef("Login.OAuth").Bearer(),
 	)
 	mux.Handle("/process", poly)

@@ -17,6 +17,7 @@ import (
 	"github.com/miruken-go/miruken/api/json/stdjson"
 	"github.com/miruken-go/miruken/config"
 	koanfp "github.com/miruken-go/miruken/config/koanf"
+	context2 "github.com/miruken-go/miruken/context"
 	"github.com/miruken-go/miruken/logs"
 	"github.com/miruken-go/miruken/security/jwt"
 	play "github.com/miruken-go/miruken/validates/play"
@@ -104,9 +105,12 @@ func main() {
 		os.Exit(1)
 	}
 
+	ctx := context2.New(handler)
+	defer ctx.End(nil)
+
 	docs := openapiGen.Docs()
 
-	h := httpsrv.Api(handler,
+	h := httpsrv.Api(ctx,
 		auth.WithFlowRef("login.oauth").Bearer(),
 	)
 
