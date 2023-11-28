@@ -12,7 +12,6 @@ jobs:
         subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
         deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
-        env:                            global
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3

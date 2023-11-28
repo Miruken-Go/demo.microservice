@@ -23,7 +23,7 @@ on:
         type: string
 
 jobs:
-  deploy-team-srv:
+  containerized_job:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/miruken-go/demo.microservice.build:1699298856

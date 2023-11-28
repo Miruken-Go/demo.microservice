@@ -9,19 +9,19 @@ Global resources are shared across all environments. There will not be many of t
 ```mermaid
 
 flowchart LR
-    A(Deploy Organization Global Resources </br></br> majorleaguemiruken-global </br></br> Container Repository)
+    A(Provision Organization Global Resources </br></br> majorleaguemiruken-global </br></br> Container Repository)
     
     B(Build Default Container Images </br></br> For all applications </br>Push to Global Container Repository)
 
-    C(Deploy Organization Environment Common Resources </br></br> majorleaguemiruken-dev-common </br></br> keyVault </br> cosmosdb)
+    C(Provision Organization Environment Common Resources </br></br> majorleaguemiruken-dev-common </br></br> keyVault </br> cosmosdb)
 
-    D(Deploy Organization Environment Instance Resources </br></br> majorleaguemiruken-dev </br> majorleaguemiruken-dev-ci </br> majorleaguemiruken-dev-feature </br></br> Container Apps Environment </br> Container App )
+    D(Provision Organization Environment Instance Resources </br></br> majorleaguemiruken-dev </br> majorleaguemiruken-dev-ci </br> majorleaguemiruken-dev-feature </br></br> Container Apps Environment </br> Container App )
 
-    E[[Create Organization Environment Manual Resources </br></br> majorleaguemiruken-dev-manual </br></br> B2C]]
+    E[[Manual Steps </br></br> majorleaguemiruken-dev-manual </br></br> B2C]]
 
     F(Configure Organization Environment Manual Resources </br></br> B2C App Registrations)
 
-    G(Deploy Organization Environment Applications</br></br> azb2c-auth-srv)
+    G(Deploy Organization Environment Applications</br></br> azb2c-api-connector-srv </br> azb2c-auth-srv)
 
     A --> B --> C --> D
     E --> F --> G
@@ -39,11 +39,11 @@ Manual resources are created by hand.  In an ideal world there would be no resou
 ```mermaid
 
 flowchart LR
-    A(Deploy Domain Environment Common Resources </br></br> billing-dev-common </br></br> cosmosdb)
+    A(Provision Domain Environment Common Resources </br></br> league-dev-common </br></br> cosmosdb)
 
-    B(Deploy Domain Environment Instance Resources </br></br> billing-dev </br> billing-dev-ci </br>billing-dev-feature </br></br> Container Apps Environment </br> Container App)
+    B(Provision Domain Environment Instance Resources </br></br> league-dev </br> league-dev-ci </br>league-dev-feature </br></br> Container Apps Environment </br> Container App)
 
-    C(Deploy Domain Environment Applications</br></br> azb2c-auth-srv)
+    C(Deploy Domain Environment Applications</br></br> team-srv)
     
     A --> B --> C
 ```

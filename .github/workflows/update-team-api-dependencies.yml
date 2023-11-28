@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 jobs:
-  build-pipeline:
+  containerized_job:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/miruken-go/demo.microservice.build:1699298856
