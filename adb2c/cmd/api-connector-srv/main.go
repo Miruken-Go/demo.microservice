@@ -11,6 +11,7 @@ import (
 	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
 	"github.com/miruken-go/miruken/config"
 	koanfp "github.com/miruken-go/miruken/config/koanf"
+	"github.com/miruken-go/miruken/context"
 	"github.com/miruken-go/miruken/logs"
 	"github.com/rs/zerolog"
 	"net/http"
@@ -43,7 +44,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	http.Handle("/enrich", httpsrv.Use(handler,
+	ctx := context.New(handler)
+	defer ctx.End(nil)
+
+	http.Handle("/enrich", httpsrv.Use(ctx,
 		httpsrv.H[*token.EnrichHandler](),
 		auth.WithFlowRef("Login.Adb2c").Basic().Required()))
 

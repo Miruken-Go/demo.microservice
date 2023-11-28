@@ -6,15 +6,6 @@ import (
 	"github.com/miruken-go/miruken/security/authorizes"
 )
 
-//go:generate $GOPATH/bin/miruken -tests
-
-type (
-	Handler struct {
-
-	}
-)
-
-
 func (h *Handler) CreateSubject(
 	_*struct {
 		handles.It
