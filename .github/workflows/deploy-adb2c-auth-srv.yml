@@ -1,4 +1,4 @@
-name: Deploy adb2c-auth-srv
+name: deploy adb2c-auth-srv
 
 on: 
   workflow_dispatch:

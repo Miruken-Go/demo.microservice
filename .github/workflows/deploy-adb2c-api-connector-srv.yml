@@ -1,4 +1,4 @@
-name: Deploy adb2c-api-connector-srv
+name: deploy adb2c-api-connector-srv
 
 on: 
   workflow_dispatch:

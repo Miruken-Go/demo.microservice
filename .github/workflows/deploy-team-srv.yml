@@ -1,4 +1,4 @@
-name: Deploy team-srv
+name: deploy team-srv
 
 on: 
   workflow_dispatch:
