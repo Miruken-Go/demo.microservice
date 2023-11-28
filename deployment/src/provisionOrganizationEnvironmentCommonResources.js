@@ -20,7 +20,7 @@ async function main() {
         await az.createResourceGroup(organization.resourceGroups.common, organization.location)
         await az.createResourceGroup(organization.resourceGroups.manual, organization.location)
 
-        const bicepFile = path.join(__dirname, 'bicep/organizationCommonResources.bicep')
+        const bicepFile = path.join(__dirname, 'bicep/organizationEnvironmentCommonResources.bicep')
 
         await bash.json(`
             az deployment group create                                 \
