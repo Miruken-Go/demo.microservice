@@ -19,12 +19,10 @@ flowchart LR
 
     E[[Manual Steps </br></br> majorleaguemiruken-dev-manual </br></br> B2C]]
 
-    F(Configure Organization Environment Manual Resources </br></br> B2C App Registrations)
-
-    G(Deploy Organization Environment Applications</br></br> azb2c-api-connector-srv </br> azb2c-auth-srv)
+    F(Provision Organization Environment Manual Resource Configuration </br></br> B2C App Registrations)
 
     A --> B --> C --> D
-    E --> F --> G
+    E --> F 
 ```
 
 ## Domain Deployment Flow

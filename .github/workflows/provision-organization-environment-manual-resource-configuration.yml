@@ -1,4 +1,4 @@
-name: Deploy Manual Resource Configuration
+name: provision organization environment manual resource configuration
 
 on: 
   workflow_dispatch:
@@ -31,5 +31,5 @@ jobs:
     - name: npm ci
       working-directory: ./deployment/src
       run: npm ci
-    - name: Run deployManualResourceConfiguration.js
-      run: node ./deployment/src/deployManualResourceConfiguration.js
+    - name: Run provisionOrganizationEnvironmentManualResourceConfiguration.js
+      run: node ./deployment/src/provisionOrganizationEnvironmentManualResourceConfiguration.js

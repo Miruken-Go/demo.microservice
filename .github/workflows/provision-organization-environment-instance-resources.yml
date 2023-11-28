@@ -1,4 +1,4 @@
-name: provision organization instance resources
+name: provision organization environment instance resources
 
 on: 
   workflow_dispatch:
@@ -37,5 +37,5 @@ jobs:
     - name: npm ci
       working-directory: ./deployment/src
       run: npm ci
-    - name: Run provisionOrganizationInstanceResources.js 
-      run: node ./deployment/src/provisionOrganizationInstanceResources.js
+    - name: Run provisionOrganizationEnvironmentInstanceResources.js 
+      run: node ./deployment/src/provisionOrganizationEnvironmentInstanceResources.js
