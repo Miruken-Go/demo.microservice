@@ -4,10 +4,6 @@ const git           = require('./infrastructure/git');
 const go            = require('./infrastructure/go');
 const { variables } = require('./infrastructure/envVariables')
 
-variables.requireEnvVariables([
-    'repositoryPath'
-])
-
 variables.optionalEnvVariables([
     'skipGitHubAction'
 ])
@@ -24,9 +20,9 @@ async function main() {
         `)
 
         const rawVersion = await bash.execute(`
-            docker run                                     \ 
+            docker run                                     \
                 --rm                                       \
-                -v "${variables.repositoryPath}:/repo"        \
+                -v "$(pwd):/repo"                          \
                 gittools/gitversion:5.12.0-alpine.3.14-6.0 \
                     /repo                                  \
                     /showvariable SemVer                   \
