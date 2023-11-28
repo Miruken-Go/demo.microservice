@@ -1,13 +1,20 @@
-const bash    = require('./infrastructure/bash')
-const logging = require('./infrastructure/logging');
-const git     = require('./infrastructure/git');
-const go      = require('./infrastructure/go');
-const config  = require('./config');
+const bash          = require('./infrastructure/bash')
+const logging       = require('./infrastructure/logging');
+const git           = require('./infrastructure/git');
+const go            = require('./infrastructure/go');
+const { variables } = require('./infrastructure/envVariables')
+
+variables.requireEnvVariables([
+    'repositoryPath'
+])
+
+variables.optionalEnvVariables([
+    'skipGitHubAction'
+])
 
 async function main() {
     try {
-        config.requiredEnvironmentVariableNonSecrets(['repositoryPath'])
-        logging.printConfiguration(config)
+        logging.printEnvironmentVariables(variables)
 
         logging.header("Building team")
 
@@ -17,7 +24,13 @@ async function main() {
         `)
 
         const rawVersion = await bash.execute(`
-            docker run --rm -v "${config.repositoryPath}:/repo" gittools/gitversion:5.12.0-alpine.3.14-6.0 /repo /showvariable SemVer /overrideconfig tag-prefix=team/v
+            docker run                                     \ 
+                --rm                                       \
+                -v "${variables.repositoryPath}:/repo"        \
+                gittools/gitversion:5.12.0-alpine.3.14-6.0 \
+                    /repo                                  \
+                    /showvariable SemVer                   \
+                    /overrideconfig tag-prefix=team/v      \
         `)
 
         const version = `v${rawVersion}`
@@ -34,12 +47,14 @@ async function main() {
         console.log(`mirukenVersion: [${mirukenVersion}]`)
         console.log(`teamApiVersion: [${teamApiVersion}]`)
       
-        await bash.execute(`
-            gh workflow run update-team-srv-dependencies.yml \
-                -f mirukenVersion=${mirukenVersion}         \
-                -f teamapiVersion=${teamApiVersion}         \
-                -f teamVersion=${version}                   \
-        `)
+        if (!variables.skipGitHubAction) {
+            await bash.execute(`
+                gh workflow run update-team-srv-dependencies.yml \
+                    -f mirukenVersion=${mirukenVersion}         \
+                    -f teamapiVersion=${teamApiVersion}         \
+                    -f teamVersion=${version}                   \
+            `)
+        }
 
         console.log("Script completed successfully")
     } catch (error) {
