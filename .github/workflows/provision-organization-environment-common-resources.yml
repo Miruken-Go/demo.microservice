@@ -1,4 +1,4 @@
-name: Deploy Common Environment Resources
+name: provision organization common resources
 
 on: 
   workflow_dispatch:
@@ -28,5 +28,5 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Run deployCommonEnvironmentResources.js
-      run:  node ./deployment/src/deployCommonEnvironmentResources.js 
+    - name: Run provisionOrganizationCommonResources.js 
+      run:  node ./deployment/src/provisionOrganizationCommonResources.js
