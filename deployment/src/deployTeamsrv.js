@@ -1,90 +1,89 @@
-const config             = require('./config');
 const logging            = require('./infrastructure/logging');
 const az                 = require('./infrastructure/az');
 const bash               = require('./infrastructure/bash')
-const b2c                = require('./infrastructure/b2c')
-const keyvault           = require('./infrastructure/keyvault')
-const b2cAppRegistration = require('./infrastructure/b2cAppRegistration')
+const { B2C }            = require('./infrastructure/b2c')
+const { variables }      = require('./infrastructure/envVariables')
+const { organization }   = require('./config');
+
+variables.requireEnvVariables([
+    'tag'
+])
 
 async function main() {
     try {
-        config.requiredEnvironmentVariableNonSecrets(['tag'])
-        config.requiredEnvFileNonSecrets([
-            'b2cDeploymentPipelineClientId',
-            'authorizationServiceUsername',
-        ])
-        await keyvault.requireSecrets([
-            'b2cDeploymentPipelineClientSecret',
-        ])
-        logging.printConfiguration(config)
+        logging.printEnvironmentVariables(variables)
+        logging.printOrganization(organization)
 
-        const applicationName = config.prefix
+        const application = organization.getApplicationByName("team-srv")
 
-        logging.header(`Deploying ${applicationName}`)
+        logging.header(`Deploying ${application.name}`)
 
+        const b2c             = new B2C(organization)
+        const appRegistration = await b2c.getApplicationByName(application.parent.name)
         const openIdConfig    = await b2c.getWellKnownOpenIdConfiguration()
-        const teamsrv         = await b2cAppRegistration.getApplicationByName('teamsrv')
-        const teamsrv_openapi = await b2cAppRegistration.getApplicationByName('teamsrv_openapi')
 
         const envVars = [
             `Login__OAuth__0__Module="login.jwt"`,
-            `Login__OAuth__0__Options__Audience="${teamsrv.appId}"`,
+            `Login__OAuth__0__Options__Audience="${appRegistration.appId}"`,
             `Login__OAuth__0__Options__JWKS__Uri="${openIdConfig.jwks_uri}"`,
-            `Login__Basic__0__Module="login.pwd"`,
-            `Login__Basic__0__Options__Credentials__0__Username="${config.authorizationServiceUsername}"`,
-            `Login__Basic__0__Options__Credentials__0__Password=secretref:authorization-service-password`,
             `OpenApi__AuthorizationUrl="${openIdConfig.authorization_endpoint}"`,
             `OpenApi__TokenUrl="${openIdConfig.token_endpoint}"`,
-            `OpenApi__ClientId="${teamsrv_openapi.appId}"`,
-            `OpenApi__OpenIdConnectUrl="${config.wellKnownOpenIdConfigurationUrl}"`,
-            `OpenApi__Scopes__0__Name="https://${config.b2cDomainName}/teamsrv/Groups"`,
-            `OpenApi__Scopes__0__Description="Groups to which the user belongs."`,
-            `OpenApi__Scopes__1__Name="https://${config.b2cDomainName}/teamsrv/Roles"`,
-            `OpenApi__Scopes__1__Description="Roles to which the user belongs."`,
-            `OpenApi__Scopes__2__Name="https://${config.b2cDomainName}/teamsrv/Entitlements"`, 
-            `OpenApi__Scopes__2__Description="Entitlements the user has."`,
+            `OpenApi__ClientId="${appRegistration.appId}"`,
+            `OpenApi__OpenIdConnectUrl="${organization.b2c.openIdConfigurationUrl}"`,
         ]
+
+        const identifierUri = appRegistration.identifierUris[0]
+        const scopes        = appRegistration.api.oauth2PermissionScopes
+        for (let i = 0; i < scopes.length; i++) {
+            const scope = scopes[i]
+            envVars.push(`OpenApi__Scopes__${i}__Name='${identifierUri}/${scope.value}'`)
+            envVars.push(`OpenApi__Scopes__${i}__Description='${scope.adminConsentDescription}'`)
+        }
 
         await az.login()
 
         //https://learn.microsoft.com/en-us/cli/azure/containerapp?view=azure-cli-latest#az-containerapp-update
         //Create the new revision
+        //We have to add the current time to the revision suffix to make it unique
+        //otherwise we would never be able to redeploy the same container tag
+        const now            = `${Math.floor(Date.now()/1000)}`.trim()
+        const revisionSuffix = `${variables.tag}-${now}`
         await bash.execute(`
-            az containerapp update                            \
-                -n ${applicationName}                         \
-                -g ${config.environmentInstanceResourceGroup} \
-                --image ${config.imageName}:${config.tag}     \
-                --container-name ${config.appName}            \
-                --revision-suffix ${config.tag}               \
-                --replace-env-vars ${envVars.join(' ')}       \
+            az containerapp update                                \
+                -n ${application.containerAppName}                \
+                -g ${application.resourceGroups.instance}         \
+                --image ${application.imageName}:${variables.tag} \
+                --container-name ${application.name}              \
+                --revision-suffix ${revisionSuffix}               \
+                --replace-env-vars ${envVars.join(' ')}           \
         `)
 
         const revisions = await bash.json(`
-            az containerapp revision list  \
-                -n ${config.prefix}        \
-                -g ${config.environmentInstanceResourceGroup} \
+            az containerapp revision list                 \
+                -n ${application.containerAppName}        \
+                -g ${application.resourceGroups.instance} \
         `)
 
-        const revisionsToActivate   = revisions.filter(r => r.name.includes(config.tag))
-        const revisionsToDeactivate = revisions.filter(r => !r.name.includes(config.tag))
+        const revisionsToActivate   = revisions.filter(r => r.name.includes(revisionSuffix))
+        const revisionsToDeactivate = revisions.filter(r => !r.name.includes(revisionSuffix))
 
         //You must have an active revision before deactivating the rest
         for (const revision of revisionsToActivate) {
             if (revision.properties.active !== true) {
                 console.log(`Activating: ${revision.name}`)
                 await bash.execute(`
-                    az containerapp revision activate \
-                        -n ${config.prefix}           \
-                        -g ${config.environmentInstanceResourceGroup}    \
-                        --revision ${revision.name}   \
+                    az containerapp revision activate             \
+                        -n ${application.containerAppName}        \
+                        -g ${application.resourceGroups.instance} \
+                        --revision ${revision.name}               \
                 `)
             }
 
             await bash.execute(`
-                az containerapp ingress traffic set \
-                    -n ${config.prefix}           \
-                    -g ${config.environmentInstanceResourceGroup}    \
-                    --revision-weight ${revision.name}=100
+                az containerapp ingress traffic set           \
+                    -n ${application.containerAppName}        \
+                    -g ${application.resourceGroups.instance} \
+                    --revision-weight ${revision.name}=100    \
             `)
         }
 
@@ -92,16 +91,16 @@ async function main() {
             if (revision.properties.active === true) {
                 console.log(`Dectivate: ${revision.name}`)
                 await bash.execute(`
-                    az containerapp revision deactivate \
-                        -n ${config.prefix}           \
-                        -g ${config.environmentInstanceResourceGroup}    \
-                        --revision ${revision.name}   \
+                    az containerapp revision deactivate           \
+                        -n ${application.containerAppName}        \
+                        -g ${application.resourceGroups.instance} \
+                        --revision ${revision.name}               \
                 `)
             }
         }
 
-        const appUrl = await az.getContainerAppUrl(applicationName)
-        await b2cAppRegistration.addRedirectUris(teamsrv_openapi.id, [`https://${appUrl}`])
+        const appUrl = await az.getContainerAppUrl(application.containerAppName, application.resourceGroups.instance)
+        await b2c.addRedirectUris(appRegistration.id, [`https://${appUrl}/oauth2-redirect.html`])
 
         console.log("Script completed successfully")
     } catch (error) {

@@ -1,18 +1,36 @@
-## Global Resources Deployment Flow
+# Azure Resources Deployment Flow
 
-Global resources are shared across all environments.   There will not be many of these types of resources because in general you want strict environment seperation.   The container repository is an example of one such resource.  It is shared across all the environments because we want the exact same bits that were compiled and tested to be deployed to production.  This minimizes the risk of hidden and unintended changes from creaping in after testing.  An example of hidden and unintended changes would be new versions of code dependencies being pulled in during a package restore.
+## Organization Resources
+
+An organization contains one or more domains. Authentication would be at the domain level enable single sign on for all the contained domains.
+
+Global resources are shared across all environments. There will not be many of these types of resources because in general you want strict environment seperation.   The container repository is an example of one such resource.  It is shared across all the environments because we want the exact same bits that were compiled and tested to be deployed to production.  This minimizes the risk of hidden and unintended changes from creaping in after testing.  An example of hidden and unintended changes would be new versions of code dependencies being pulled in during a package restore.
 
 ```mermaid
 
 flowchart LR
-    A(Deploy Global Resources)
+    A(Deploy Organization Global Resources </br></br> majorleaguemiruken-global </br></br> Container Repository)
     
-    B(Build Default Container Image)
+    B(Build Default Container Images </br></br> For all applications </br>Push to Global Container Repository)
 
-    A --> B
+    C(Deploy Organization Environment Common Resources </br></br> majorleaguemiruken-dev-common </br></br> keyVault </br> cosmosdb)
+
+    D(Deploy Organization Environment Instance Resources </br></br> majorleaguemiruken-dev </br> majorleaguemiruken-dev-ci </br> majorleaguemiruken-dev-feature </br></br> Container Apps Environment </br> Container App )
+
+    E[[Create Organization Environment Manual Resources </br></br> majorleaguemiruken-dev-manual </br></br> B2C]]
+
+    F(Configure Organization Environment Manual Resources </br></br> B2C App Registrations)
+
+    G(Deploy Organization Environment Applications</br></br> azb2c-auth-srv)
+
+    A --> B --> C --> D
+    E --> F --> G
 ```
 
-## Environment Deployment Flow
+## Domain Deployment Flow
+
+A domain can be thought of as a microservice.  It is one or more applications that implement buisness functionality.  
+Domains share a database and user permissions.
 
 Common environment resources are resources that are shared by all the invironment instances.  For example you may decide to share a database to reduce maintainence and mock data creation.  You may also want to share a single key store per environment.  These are long lasting resources that will be recreated less frequently.
 
@@ -21,15 +39,13 @@ Manual resources are created by hand.  In an ideal world there would be no resou
 ```mermaid
 
 flowchart LR
-    A(Deploy Common Environment Resources)
+    A(Deploy Domain Environment Common Resources </br></br> billing-dev-common </br></br> cosmosdb)
 
-    B(Deploy Environment Instance Resources </br></br> teamsrv-dev </br> teamsrv-dev-ci)
+    B(Deploy Domain Environment Instance Resources </br></br> billing-dev </br> billing-dev-ci </br>billing-dev-feature </br></br> Container Apps Environment </br> Container App)
+
+    C(Deploy Domain Environment Applications</br></br> azb2c-auth-srv)
     
-    C[[Create Manual Environment Resources </br></br> B2C]]
-
-    D(Configure Manual Resources)
-
-    A --> B --> C --> D
+    A --> B --> C
 ```
 
 ## Deploy application
@@ -210,3 +226,83 @@ Domain 2
             Container App: domain2-env-instance-ui
             Container App: domain2-env-instance-api1
             Container App: domain2-env-instance-api2
+
+## Organization Resources
+
+```mermaid
+
+flowchart
+
+    G(majorleaguemiruken-global</br></br> Container Repository) 
+        G --- DevC(       majorleaguemiruken-dev-common  </br></br> Key Vault)
+     DevC --- DevM(       majorleaguemiruken-dev-manual  </br></br> B2C Tenant)
+     DevM --- DevInst1(   majorleaguemiruken-dev         </br></br> Container Apps Environment </br> Container Apps)
+     DevM --- DevInst2(   majorleaguemiruken-dev-ci      </br></br> Container Apps Environment </br> Container Apps)
+
+        G --- QaC(        majorleaguemiruken-qa-common   </br></br> Key Vault)
+      QaC --- QaM(        majorleaguemiruken-qa-manual   </br></br> B2C Tenant)
+      QaM --- QAInst1(    majorleaguemiruken-qa          </br></br> Container Apps Environment </br> Container Apps)
+
+        G --- ProdC(      majorleaguemiruken-prod-common </br></br> Key Vault)
+    ProdC --- ProdM(      majorleaguemiruken-prod-manual </br></br> B2C Tenant)
+    ProdM --- ProdInst1(  majorleaguemiruken-qa          </br></br> Container Apps Environment </br> Container Apps)
+    
+```
+
+# Billing Domain Resources
+```mermaid
+
+flowchart
+
+    G(majorleaguemiruken-global</br></br> Container Repository) 
+
+    G --- Dom2(Billing Domain)
+
+    Dom2 --- Dom2DevCommon( billing-dev-common  </br></br> CosmosDB)
+    Dom2 --- Dom2QACommon(  billing-qa-common   </br></br> CosmosDB)
+    Dom2 --- Dom2ProdCommon(billing-prod-common </br></br> CosmosDB)
+
+    Dom2DevCommon --- Dom2DevInst1(billing-dev           </br></br> Stable Dev            </br> Container Apps Environment </br> Container Apps)
+    Dom2DevCommon --- Dom2DevInst2(billing-dev-ci        </br></br> CI/CD                 </br> Container Apps Environment </br> Container Apps)
+    Dom2DevCommon --- Dom2DevInst3(billing-dev-developerA</br></br> Isolated Feature Work </br> Container Apps Environment </br> Container Apps)
+
+    Dom2QACommon --- Dom2QAInst1(  billing-qa-1</br></br> Container Apps Environment</br> Container Apps)
+    Dom2QACommon --- Dom2QAInst2(  billing-qa-2</br></br> Container Apps Environment</br> Container Apps)
+
+    Dom2ProdCommon --- Dom2ProdInst1(billing-prod    </br></br> Production        </br> Container Apps Environment </br> Container Apps)
+    Dom2ProdCommon --- Dom2ProdInst2(billing-prod-dr </br></br> Disaster Recovery </br> Container Apps Environment </br> Container Apps)
+
+```
+
+# League Domain Resources
+```mermaid
+
+flowchart
+
+    G(majorleaguemiruken-global</br></br> Container Repository) 
+    
+    G --- Dom3(League Domain)
+
+    Dom3 --- Dom3DevCommon(  league-dev-common  </br></br> CosmosDB)
+    Dom3 --- Dom3QACommon(   league-qa-common   </br></br> CosmosDB)
+    Dom3 --- Dom3UATCommon(  league-uat-common  </br></br> CosmosDB)
+    Dom3 --- Dom3DemoCommon( league-demo-common </br></br> CosmosDB)
+    Dom3 --- Dom3ProdCommon( league-prod-common </br></br> CosmosDB)
+    Dom3 --- Dom3DRCommon(   league-dr-common   </br></br> CosmosDB)
+
+     Dom3DevCommon --- Dom3DevInst1(  league-dev            </br></br> Stable Dev                </br> Container Apps Environment </br> Container Apps)
+     Dom3DevCommon --- Dom3DevInst2(  league-dev-ci         </br></br> CI/CD                     </br> Container Apps Environment </br> Container Apps)
+     Dom3DevCommon --- Dom3DevInst3(  league-dev-developerA </br></br> Isolated Feature Work     </br> Container Apps Environment </br> Container Apps)
+
+      Dom3QACommon --- Dom3QAInst1(   league-qa-1           </br></br> Stable QA Env             </br> Container Apps Environment </br> Container Apps)
+      Dom3QACommon --- Dom3QAInst2(   league-qa-2           </br></br> New Feature Work          </br> Container Apps Environment </br> Container Apps)
+      
+     Dom3UATCommon --- Dom3UATInst2(  league-uat            </br></br> User Acceptance           </br> Container Apps Environment </br> Container Apps)
+
+    Dom3DemoCommon --- Dom3DemoInst2( league-demo           </br></br> New Customer Demos        </br> Container Apps Environment </br> Container Apps)
+
+    Dom3ProdCommon --- Dom3ProdInst1( league-prod           </br></br> Production                </br> Container Apps Environment </br> Container Apps)
+
+    Dom3DRCommon   --- Dom3ProdInst2( league-dr             </br></br> Disaster Recovery         </br> Container Apps Environment </br> Container Apps)
+
+```

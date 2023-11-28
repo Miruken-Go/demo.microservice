@@ -1,21 +1,19 @@
-const az     = require('./az')
-const config = require('../config')
+const az = require('./az')
 
-const secrets = {}
+const secrets = {
+    async requireSecrets (names, keyVaultName) {
+        for(const name of names) {
+            if (this[name]) return 
 
-async function requireSecrets(names) {
-    for (const name of names) {
-        if (secrets[name]) continue 
-
-        const secret = await az.getKeyVaultSecret(name, config.keyVaultName)
-        if (!secret){
-            throw `KeyVault secret required: ${name}`
+            const secret = await az.getKeyVaultSecret(name, keyVaultName)
+            if (!secret){
+                throw `KeyVault secret required: ${name}`
+            }
+            this[name] = secret.trim()
         }
-        secrets[name] = secret.trim()
     }
 }
 
 module.exports = {
-    requireSecrets,
     secrets
 }

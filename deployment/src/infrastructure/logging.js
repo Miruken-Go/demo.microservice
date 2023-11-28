@@ -1,3 +1,5 @@
+const { inspect } = require('node:util');
+
 function header (text) {
     const separator = "*********************************************************************"
     console.log(separator)
@@ -5,22 +7,21 @@ function header (text) {
     console.log(separator)
 }
 
-function printConfiguration (config) {
-    header('Configuration')
+function printObject (text, object) {
+    header(text)
+    console.log(inspect(object, { depth: null }))
+}
 
-    const ignore = [
-        'requiredSecrets',
-        'requiredEnvironmentVariableNonSecrets'
-    ]
+function printOrganization (object) {
+    printObject("Organization Configuration", object)
+}
+
+function printEnvironmentVariables (config) {
+    header('Environment Variables')
 
     for (const [key, value] of Object.entries(config)) {
         if (typeof value === 'function') {
             //ignore
-        } else if (key == 'secrets') {
-            console.log(`    ${key}:`);
-            for (const [secretkey, secretvalue] of Object.entries(config.secrets)) {
-                console.log(`        ${secretkey}: length ${secretvalue.length}`);
-            }
         } else if (Array.isArray(value)) {
             console.log(`    ${key}:`);
             for (const [_, arrayValue] of Object.entries(value)) {
@@ -32,7 +33,22 @@ function printConfiguration (config) {
     }
 }
 
+function printEnvironmentSecrets(config) {
+    header('Environment Secrets')
+
+    for (const [key, value] of Object.entries(config)) {
+        if (typeof value === 'function') {
+            //ignore
+        } else {
+            console.log(`    ${key}: length ${value.length}`);
+        }
+    }
+}
+
 module.exports = {
     header,
-    printConfiguration 
+    printObject,
+    printOrganization,
+    printEnvironmentVariables,
+    printEnvironmentSecrets,
 }

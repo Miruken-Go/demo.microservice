@@ -34,7 +34,7 @@ Create the Password:
     Generate a 20 character random string for the Password
     Add the password to the common keyvault: <systemName>-<env>-keyvault
 
-        authorizationServicePassword
+        authorization-service-password
 
     Create a policy key for the Username
 
@@ -48,6 +48,7 @@ Create the Password:
 
             Click Create
 
+Run provisionOrganizationManualResourceConfiguration.js
  
 
 

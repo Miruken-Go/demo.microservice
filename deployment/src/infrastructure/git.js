@@ -1,14 +1,19 @@
-const bash    = require('./bash')
-const config  = require('../config');
-const logging = require('./logging');
+const bash        = require('./bash')
+const logging     = require('./logging');
+const { secrets } = require('./envSecrets')
+
+secrets.require([
+   'ghToken' 
+])
 
 console.log("Configuring git")
-config.requiredEnvironmentVariableSecrets(['ghToken'])
 bash.execute(`
     git config --global --add safe.directory $(pwd)
-    git config --global url."https://api:$ghToken@github.com/".insteadOf "https://github.com/"
-    git config --global url."https://ssh:$ghToken@github.com/".insteadOf "ssh://git@github.com/"
-    git config --global url."https://git:$ghToken@github.com/".insteadOf "git@github.com:"
+    git config --global user.email "mirukenjs@gmail.com"
+    git config --global user.name "buildpipeline"
+    git config --global url."https://api:${secrets.ghToken}@github.com/".insteadOf "https://github.com/"
+    git config --global url."https://ssh:${secrets.ghToken}@github.com/".insteadOf "ssh://git@github.com/"
+    git config --global url."https://git:${secrets.ghToken}@github.com/".insteadOf "git@github.com:"
 `)
 
 async function tagAndPush(tag) { 
@@ -26,8 +31,8 @@ async function tagAndPush(tag) {
     } else {
         console.log("Tagging the release")
         await bash.execute(`
-            git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" tag -a ${tag} -m "Tagged by build pipeline"
-            git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" push origin ${tag}
+            git tag -a ${tag} -m "Tagged by build pipeline"
+            git push origin ${tag}
         `)
     }
 }
@@ -49,14 +54,14 @@ async function commitAll(message) {
     logging.header("Commiting Changes")
 
     await bash.execute(`
-        git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" commit -am "${message}"
+        git commit -am "${message}"
     `)
 }
 
 async function push() { 
     logging.header("Pushing branch")
     await bash.execute(`
-        git -c "user.name=buildpipeline" -c "user.email=mirukenjs@gmail.com" push origin
+        git push origin
     `)
 }
 

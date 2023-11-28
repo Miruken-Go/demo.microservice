@@ -2,8 +2,6 @@ package main
 
 import (
 	"errors"
-	"github.com/miruken-go/demo.microservice/adb2c/token"
-	"github.com/miruken-go/miruken/security/password"
 	"net/http"
 	"os"
 
@@ -26,6 +24,17 @@ import (
 	play "github.com/miruken-go/miruken/validates/play"
 	"github.com/rs/zerolog"
 )
+
+type Config struct {
+	App struct {
+		Version string
+		Source  struct {
+			Url string
+		}
+		Port    string
+	}
+	OpenApi openapi.Config
+}
 
 func main() {
 	// logging
@@ -93,9 +102,9 @@ func main() {
 	// initialize miruken
 	handler, err := miruken.Setup(
 		team.Feature, jwt.Feature(),
-		password.Feature(), play.Feature(),
-		config.Feature(koanfp.P(k)), stdjson.Feature(),
-		logs.Feature(logger), openapiGen).
+		play.Feature(), config.Feature(koanfp.P(k)),
+		stdjson.Feature(), logs.Feature(logger),
+		openapiGen).
 		Specs(&api.GoPolymorphism{}).
 		Options(stdjson.CamelCase).
 		Handler()
@@ -121,11 +130,6 @@ func main() {
 	docs := openapiGen.Docs()
 	mux.Handle("/openapi", openapi.Handler(docs, true))
 	mux.Handle("/", ui.Handler("", docs, appConfig.OpenApi))
-
-	// AD B2C Api-Connector enrich claims endpoint
-	mux.Handle("/enrich/", httpsrv.Use(handler,
-		httpsrv.H[*token.EnrichHandler](),
-		auth.WithFlowRef("Login.Adb2c").Basic().Required()))
 
 	// start http server
 	port := appConfig.App.Port

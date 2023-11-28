@@ -1,9 +1,9 @@
 For dev, qa, prod and any other desired environments, do the following:
 
 B2C Directory Creation
-    create the b2c instance in the environments manual resource group
-        Organization                 Domain
-        <systemName> identity <env>  <systemName>identity<env>
+    create the b2c instance in the organization's manual resource group
+        Organization                       Domain
+        <organizationname> auth <env>  <organizationname>auth<env>
 
     Switch to the b2c directory using "Switch directory" in the upper right hand corner of the azure portal
         Search for Azure AD B2C
@@ -17,7 +17,7 @@ B2C Directory Creation
         Add the DeploymentPipeline client id  to the <env>.js file
 
             module.exports = {
-                b2cDeploymentPipelineClientId: "<Application (cloient) ID>",
+                b2cDeploymentPipelineClientId: "<Application (client) ID>",
             }
 
         Give DeployPipeline permissions to Microsoft Graph

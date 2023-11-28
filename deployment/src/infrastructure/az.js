@@ -1,6 +1,17 @@
-const bash       = require('./bash')
-const config     = require('../config')
-const { header } = require('./logging')
+const bash           = require('./bash')
+const { header }     = require('./logging')
+const { variables }  = require('./envVariables')
+const { secrets }    = require('./envSecrets')
+
+variables.requireEnvVariables([
+    'tenantId',
+    'subscriptionId',
+    'deploymentPipelineClientId',
+])
+
+secrets.require([
+    'deploymentPipelineClientSecret',
+])
 
 let loggedInToAZ  = false 
 let loggedInToACR = false 
@@ -9,24 +20,24 @@ async function login() {
     if (loggedInToAZ) return 
 
     header('Logging into az')
-    await bash.execute(`az login --service-principal --username ${config.deploymentPipelineClientId} --password ${config.secrets.deploymentPipelineClientSecret} --tenant ${config.tenantId}`);
+    await bash.execute(`az login --service-principal --username ${variables.deploymentPipelineClientId} --password ${secrets.deploymentPipelineClientSecret} --tenant ${variables.tenantId}`);
     loggedInToAZ = true 
 }
 
-async function loginToACR() {
+async function loginToACR(containerRepositoryName) {
     if (loggedInToACR) return 
 
     header('Logging into ACR')
     await login()
     await bash.execute(`
-        az acr login -n ${config.containerRepositoryName}
+        az acr login -n ${containerRepositoryName}
     `)
     loggedInToACR = true
 }
 
-async function createResourceGroup(name) {
+async function createResourceGroup(name, location, tags) {
     await login()
-    await bash.execute(`az group create --location ${config.location} --name ${name} --subscription ${config.subscriptionId}`)
+    await bash.execute(`az group create --location ${location} --name ${name} --subscription ${variables.subscriptionId} --tags ${tags}`)
 }
 
 //https://learn.microsoft.com/en-us/azure/azure-resource-manager/troubleshooting/error-register-resource-provider?tabs=azure-cli
@@ -45,7 +56,7 @@ async function registerAzureProvider(providerName) {
 
 async function getAzureContainerRepositoryPassword(name) {
     await login()
-    const result = await bash.json(`az acr credential show --name ${name} --subscription ${config.subscriptionId}`, true)
+    const result = await bash.json(`az acr credential show --name ${name} --subscription ${variables.subscriptionId}`, true)
     if (!result.passwords.length)
         throw new `Expected passwords from the Azure Container Registry: ${name}`
 
@@ -64,12 +75,31 @@ async function getKeyVaultSecret(secretName, keyVaultName) {
     }
 }
 
-async function getContainerAppUrl(name) {
+async function getContainerAppUrl(name, resourceGroup) {
     await login()
     const result = await bash.json(`
-        az containerapp show -n ${name} --resource-group ${config.environmentInstanceResourceGroup}
+        az containerapp show -n ${name} --resource-group ${resourceGroup}
     `)
+
+    if (!result) throw new Error(`ContainerApp ${name} not found in ${resourceGroup}`)
+    
     return result.properties.configuration.ingress.fqdn
+}
+
+
+async function deleteOrphanedApplicationSecurityPrincipals(name) {
+    await login()
+    const ids = await bash.json(`
+        az role assignment list --all --query "[?principalName==''].id"    
+    `)
+
+    if (ids.length) {
+        await bash.json(`
+            az role assignment delete --ids ${ids.join(' ')}
+        `)
+
+        console.log(`Deleted ${ids.length} orphaned application security principals`)
+    }
 }
 
 module.exports = {
@@ -80,4 +110,5 @@ module.exports = {
     getAzureContainerRepositoryPassword,
     getKeyVaultSecret,
     getContainerAppUrl,
+    deleteOrphanedApplicationSecurityPrincipals
 }

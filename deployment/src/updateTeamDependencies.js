@@ -6,7 +6,6 @@ const config  = require('./config');
 async function main() {
     try {
         config.requiredEnvironmentVariableNonSecrets(['mirukenVersion', 'teamapiVersion'])
-        config.requiredEnvironmentVariableSecrets(['ghToken'])
         logging.printConfiguration(config)
 
         logging.header("Updating team dependencies")

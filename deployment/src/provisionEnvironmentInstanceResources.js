@@ -1,7 +1,6 @@
 const az       = require('./infrastructure/az');
 const arm      = require('./infrastructure/arm');
 const logging  = require('./infrastructure/logging');
-const keyvault = require('./infrastructure/keyvault')
 const config   = require('./config');
 
 async function main() {

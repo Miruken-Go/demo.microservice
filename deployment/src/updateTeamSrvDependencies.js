@@ -5,7 +5,6 @@ const config  = require('./config');
 
 async function main() {
     try {
-        config.requiredEnvironmentVariableSecrets(['ghToken'])
         config.requiredEnvironmentVariableNonSecrets(['mirukenVersion', 'teamapiVersion', 'teamVersion'])
         logging.printConfiguration(config)
 
