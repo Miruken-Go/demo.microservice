@@ -1,0 +1,32 @@
+name: provision domain environment common resources
+
+on: 
+  workflow_dispatch:
+    inputs:
+      env:
+        type: choice
+        description: Environment
+        options: 
+        - dev 
+        - qa
+        - uat
+        - demo
+        - prod
+        - dr
+
+jobs:
+  containerized_job:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/miruken-go/demo.microservice.build:1699298856
+      env:
+        tenantId:                       ${{ vars.TENANT_ID }}
+        subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
+        deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
+        deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
+        env:                            ${{ inputs.env }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Run provisionDomainEnvironmentCommonResources.js 
+      run:  node ./deployment/src/provisionDomainEnvironmentCommonResources.js

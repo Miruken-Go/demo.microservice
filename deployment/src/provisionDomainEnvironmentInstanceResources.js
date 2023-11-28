@@ -56,7 +56,6 @@ async function main() {
             `)
 
             logging.printObject("Bicep Outputs", results.properties.outputs)
-
         }
 
         console.log("Script completed successfully")

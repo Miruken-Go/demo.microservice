@@ -23,16 +23,17 @@ async function main() {
 
             const bicepFile = path.join(__dirname, 'bicep/domainEnvironmentCommonResources.bicep')
 
-            await bash.json(`
+            const results = await bash.json(`
                 az deployment group create                                 \
                     --template-file  ${bicepFile}                          \
                     --subscription   ${variables.subscriptionId}           \
-                    --resource-group ${domain.resourceGroups.common} \
+                    --resource-group ${domain.resourceGroups.common}       \
                     --mode complete                                        \
                     --parameters                                           \
-                        keyVaultName=${domain.keyVaultName}          \
                         location=${domain.location}                  \
             `)
+                
+            logging.printObject("Bicep Outputs", results.properties.outputs)
         }
 
         console.log("Script completed successfully")
