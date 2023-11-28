@@ -1,4 +1,4 @@
-name: build adb2c
+name: build adb2c auth srv
 
 on:
   workflow_dispatch:
@@ -24,9 +24,7 @@ jobs:
         subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
         deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
-        env:                            notused
         ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
-        GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
         repositoryPath:                 ${{ github.workspace }}
 
     steps:
@@ -34,5 +32,5 @@ jobs:
       uses: actions/checkout@v3
       with: 
         fetch-depth: 0
-    - name: Run buildAdb2c.js
-      run:  node ./deployment/src/buildAdb2c.js 
+    - name: Run buildAdb2cAuthSrv.js
+      run:  node ./deployment/src/buildAdb2cAuthSrv.js 
