@@ -67,25 +67,25 @@ func main() {
 						Type: "oauth2",
 						Flows: &openapi3.OAuthFlows{
 							Implicit: &openapi3.OAuthFlow{
-								AuthorizationURL: "https://teamsrvidentitydev.b2clogin.com/teamsrvidentitydev.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1a_signup_signin",
-								TokenURL:         "https://teamsrvidentitydev.b2clogin.com/teamsrvidentitydev.onmicrosoft.com/oauth2/v2.0/token?p=b2c_1a_signup_signin",
+								AuthorizationURL: "https://majorleaguemirukenauthdev.b2clogin.com/majorleaguemirukenauthdev.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1a_signup_signin",
+								TokenURL:         "https://majorleaguemirukenauthdev.b2clogin.com/majorleaguemirukenauthdev.onmicrosoft.com/oauth2/v2.0/token?p=b2c_1a_signup_signin",
 								Scopes: map[string]string{
-									"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Groups": "Groups to which the user belongs.",
-									"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Roles":  "Roles to which the user belongs.",
-									"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Entitlements":  "Entitlements the user has.",
+									"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Groups": "Groups to which the user belongs.",
+									"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Roles":  "Roles to which the user belongs.",
+									"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Entitlements":  "Entitlements the user has.",
 								},
 							},
 						},
-						OpenIdConnectUrl: "https://teamsrvidentitydev.b2clogin.com/teamsrvidentitydev.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_SIGNUP_SIGNIN",
+						OpenIdConnectUrl: "https://majorleaguemirukenauthdev.b2clogin.com/majorleaguemirukenauthdev.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_SIGNUP_SIGNIN",
 					},
 				},
 			},
 		},
 		Security: openapi3.SecurityRequirements{
 			{"team_auth": []string{
-				"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Groups",
-				"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Roles",
-				"https://teamsrvidentitydev.onmicrosoft.com/teamsrv/Roles",
+				"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Groups",
+				"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Roles",
+				"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Entitlements",
 			}},
 		},
 	})
@@ -122,7 +122,7 @@ func main() {
 	mux.Handle("/publish/", h)
 	mux.Handle("/openapi", openapi.Handler(docs, true))
 	mux.Handle("/", ui.Handler("", docs, openapi.Config{
-		ClientId: "3d8bd886-f1a7-42be-9319-acdf39a7673b",
+		ClientId: "35aacb63-777d-4320-9905-92a106af4558",
 	}))
 
 	// Register pprof handlers

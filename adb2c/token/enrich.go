@@ -24,7 +24,7 @@ type (
 	}
 )
 
-func (e EnrichHandler) Constructor(
+func (e *EnrichHandler) Constructor(
 	_*struct{args.Optional}, logger logr.Logger,
 ) {
 	if logger == e.logger {
@@ -34,7 +34,7 @@ func (e EnrichHandler) Constructor(
 	}
 }
 
-func (e EnrichHandler) ServeHTTP(
+func (e *EnrichHandler) ServeHTTP(
 	w http.ResponseWriter,
 	r *http.Request,
 	h miruken.Handler,
