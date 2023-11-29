@@ -20,7 +20,7 @@ import (
 
 func main() {
 	// logging
-	zl := zerolog.New(os.Stderr)
+	zl := zerolog.New(os.Stdout)
 	zl = zl.With().Timestamp().Logger()
 	logger := zerologr.New(&zl)
 
