@@ -94,9 +94,7 @@ func main() {
 			},
 		},
 		Security: openapi3.SecurityRequirements{
-			{
-				"team_auth": appConfig.OpenApi.ScopeNames(),
-			},
+			{"team_auth": appConfig.OpenApi.ScopeNames()},
 		},
 	})
 

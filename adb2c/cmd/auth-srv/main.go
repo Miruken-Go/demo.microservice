@@ -94,9 +94,7 @@ func main() {
 			},
 		},
 		Security: openapi3.SecurityRequirements{
-			{
-				"adb2c_auth": appConfig.OpenApi.ScopeNames(),
-			},
+			{"adb2c_auth": appConfig.OpenApi.ScopeNames()},
 		},
 	})
 
@@ -149,4 +147,3 @@ func main() {
 		os.Exit(1)
 	}
 }
-
