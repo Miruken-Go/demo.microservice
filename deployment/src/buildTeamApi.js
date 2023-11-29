@@ -17,6 +17,7 @@ async function main() {
         await bash.execute(`
             cd team-api
             go test ./...
+            cd ../
         `)
 
         const rawVersion = await bash.execute(`
