@@ -21,13 +21,13 @@ async function main() {
         `)
 
         const rawVersion = await bash.execute(`
-            docker run                                     \
-                --rm                                       \
-                -v "$(pwd):/repo"                          \
-                gittools/gitversion:5.12.0-alpine.3.14-6.0 \
-                    /repo                                  \
-                    /showvariable SemVer                   \
-                    /overrideconfig tag-prefix=team-api/v  \
+            docker run                                     / 
+                --rm                                       / 
+                -v "$(config.repositoryPath):/repo"        / 
+                gittools/gitversion:5.12.0-alpine.3.14-6.0 /
+                    /repo                                  / 
+                    /showvariable SemVer                   / 
+                    /overrideconfig tag-prefix=team-api/v  /
         `)
 
         const version = `v${rawVersion}`
