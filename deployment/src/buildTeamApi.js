@@ -21,7 +21,6 @@ async function main() {
         await bash.execute(`
             cd team-api
             go test ./...
-            cd ../
         `)
 
         //This docker container is running docker in docker from github actions
