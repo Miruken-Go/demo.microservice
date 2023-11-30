@@ -30,9 +30,9 @@ export const variables = {
         }.bind(this));
     },
     requireEnvFileVariables: function(directory, names){
-        const filePath = path.join(directory, `${env}.js`)
+        const filePath = path.join(directory, `${env}.json`)
         if (!fs.existsSync(filePath)) {
-            throw new Error(`Config file does not exist: ${directory}`)
+            throw new Error(`Config file does not exist: ${filePath}`)
         }
 
         const envSpecific = JSON.parse(fs.readFileSync(filePath))

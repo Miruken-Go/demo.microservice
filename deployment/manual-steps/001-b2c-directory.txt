@@ -13,11 +13,11 @@ B2C Directory Creation
             3. Clear:  Grant admin consent to openid and offline_access permissions check box 
             4. Click: Register
 
-        Create an <env>.js file in the deployment/src directory
-        Add the DeploymentPipeline client id  to the <env>.js file
+        Create an <env>.json file in the deployment/src directory
+        Add the DeploymentPipeline client id  to the <env>.json file
 
-            module.exports = {
-                b2cDeploymentPipelineClientId: "<Application (client) ID>",
+            {
+                "b2cDeploymentPipelineClientId": "<Application (client) ID>",
             }
 
         Give DeployPipeline permissions to Microsoft Graph
@@ -34,5 +34,5 @@ B2C Directory Creation
             Certificates & secrets > New client secret
                 Description: DeploymentPipeline
                 Expires: 24 month expiration
-            Copy secret immediatly and put secret in the common keyvault: <systemName>-<env>-keyvault
+            Copy secret immediatly and put secret in the organization common keyvault: <organization>-<env>
                 name: b2cDeploymentPipelineClientSecret

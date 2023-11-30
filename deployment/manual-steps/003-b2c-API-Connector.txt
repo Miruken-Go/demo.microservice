@@ -33,6 +33,7 @@ Create the Password:
 
     Generate a 20 character random string for the Password
     Add the password to the common keyvault: <systemName>-<env>-keyvault
+            the organization common keyvault: <organization>-<env>
 
         authorization-service-password
 
