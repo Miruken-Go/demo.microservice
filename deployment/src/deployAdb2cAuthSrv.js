@@ -22,8 +22,6 @@ async function main() {
         logging.printEnvironmentVariables(variables)
         logging.printOrganization(organization)
 
-        throw new Error('stop')
-
         const application = organization.getApplicationByName("adb2c-auth-srv")
 
         logging.header(`Deploying ${application.name}`)
