@@ -1,7 +1,7 @@
-const bash          = require('./infrastructure/bash')
-const logging       = require('./infrastructure/logging');
-const git           = require('./infrastructure/git');
-const { variables } = require('./infrastructure/envVariables')
+import * as bash     from '#infrastructure/bash.js'
+import * as logging  from '#infrastructure/logging.js'
+import * as git      from '#infrastructure/git.js'
+import { variables } from '#infrastructure/envVariables.js'
 
 variables.requireEnvVariables([
     'mirukenVersion',

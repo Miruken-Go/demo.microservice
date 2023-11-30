@@ -1,4 +1,4 @@
-import * as bash from './bash.mjs'
+import * as bash from './bash.js'
 
 export async function getModuleVersion(folder, module) { 
     return await bash.execute(`

@@ -1,3 +1,7 @@
+import fs   from 'node:fs'
+import path from 'node:path'
+
+
 const env      = process.env.env
 const instance = process.env.instance
 
@@ -25,12 +29,18 @@ export const variables = {
             this[name] = variable.trim()
         }.bind(this));
     },
-    requireEnvFileVariables: function(names){
-        const envSpecific = require(`../${env}.js`)
+    requireEnvFileVariables: function(directory, names){
+        const filePath = path.join(directory, `${env}.js`)
+        if (!fs.existsSync(filePath)) {
+            throw new Error(`Config file does not exist: ${directory}`)
+        }
+
+        const envSpecific = JSON.parse(fs.readFileSync(filePath))
+
         names.forEach(function(name) {
             const variable =  envSpecific[name]
             if (!variable){
-                throw `Variable required from ${env}.js: ${name}`
+                throw `Variable required from ${filePath}: ${name}`
             }
             this[name] = variable.trim()
         }.bind(this));

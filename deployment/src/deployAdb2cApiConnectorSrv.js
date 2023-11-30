@@ -1,14 +1,18 @@
-const logging            = require('./infrastructure/logging');
-const az                 = require('./infrastructure/az');
-const bash               = require('./infrastructure/bash')
-const { variables }      = require('./infrastructure/envVariables')
-const { organization }   = require('./config');
+import * as logging  from '#infrastructure/logging.js'
+import * as az       from '#infrastructure/az.js'
+import * as bash     from '#infrastructure/bash.js'
+import { variables } from '#infrastructure/envVariables.js'
+
+import { 
+    configDirectory,
+    organization 
+} from './config.js'
 
 variables.requireEnvVariables([
     'tag'
 ])
 
-variables.requireEnvFileVariables([
+variables.requireEnvFileVariables(configDirectory, [
     'authorizationServiceUsername',
 ])
 

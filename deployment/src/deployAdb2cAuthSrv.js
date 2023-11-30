@@ -1,12 +1,20 @@
-const logging            = require('./infrastructure/logging');
-const az                 = require('./infrastructure/az');
-const bash               = require('./infrastructure/bash')
-const { B2C }            = require('./infrastructure/b2c')
-const { variables }      = require('./infrastructure/envVariables')
-const { organization }   = require('./config');
+import * as logging  from '#infrastructure/logging.js'
+import * as az       from '#infrastructure/az.js'
+import * as bash     from '#infrastructure/bash.js'
+import { B2C }       from '#infrastructure/b2c.js'
+import { variables } from '#infrastructure/envVariables.js'
+
+import { 
+    configDirectory, 
+    organization } 
+from './config.js'
 
 variables.requireEnvVariables([
     'tag'
+])
+
+variables.requireEnvFileVariables(configDirectory, [
+    'b2cDeploymentPipelineClientId'
 ])
 
 async function main() {
@@ -18,7 +26,7 @@ async function main() {
 
         logging.header(`Deploying ${application.name}`)
 
-        const b2c             = new B2C(organization)
+        const b2c             = new B2C(organization, variables.b2cDeploymentPipelineClientId)
         const appRegistration = await b2c.getApplicationByName(application.parent.name)
         const openIdConfig    = await b2c.getWellKnownOpenIdConfiguration()
 

@@ -1,8 +1,8 @@
-import * as bash     from '#infrastructure/bash.mjs'
-import * as logging  from '#infrastructure/logging.mjs'
-import * as git      from '#infrastructure/git.mjs'
-import * as go       from '#infrastructure/go.mjs'
-import { variables } from '#infrastructure/envVariables.mjs'
+import * as bash     from '#infrastructure/bash.js'
+import * as logging  from '#infrastructure/logging.js'
+import * as git      from '#infrastructure/git.js'
+import * as go       from '#infrastructure/go.js'
+import { variables } from '#infrastructure/envVariables.js'
 
 variables.requireEnvVariables([
     'repositoryPath'

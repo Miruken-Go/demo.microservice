@@ -1,5 +1,5 @@
-const logging = require('./infrastructure/logging');
-const bash    = require('./infrastructure/bash')
+import * as logging from '#infrastructure/logging.js'
+import * as bash    from '#infrastructure/bash.js'
 
 async function main() {
     try {

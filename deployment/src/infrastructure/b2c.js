@@ -1,7 +1,7 @@
-import * as logging  from './logging.mjs'
-import * as az       from './az.mjs'
-import { Graph }     from './graph.mjs'
-import { variables } from './envVariables.mjs'
+import * as logging  from './logging.js'
+import * as az       from './az.js'
+import { Graph }     from './graph.js'
+import { variables } from './envVariables.js'
 import * as fs       from 'node:fs'
 import * as path     from 'node:path'
 import * as axios    from 'axios'
@@ -11,13 +11,15 @@ variables.requireEnvVariables([
 ])
 
 export class B2C {
-
     organization
     graph
 
-    constructor (organization) {
+    constructor (organization, b2cDeploymentPipelineClientId) {
+        if (!organization)                  throw new Error('organization is required')
+        if (!b2cDeploymentPipelineClientId) throw new Error('b2cDeploymentPipelineClientId is required')
+
         this.organization = organization
-        this.graph        = new Graph(organization)
+        this.graph        = new Graph(organization, b2cDeploymentPipelineClientId)
     }
 
     async getWellKnownOpenIdConfiguration() {

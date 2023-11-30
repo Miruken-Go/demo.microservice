@@ -1,9 +1,8 @@
-const az               = require('./infrastructure/az');
-const bash             = require('./infrastructure/bash')
-const logging          = require('./infrastructure/logging');
-const { variables }    = require('./infrastructure/envVariables')
-const { organization } = require('./config');
-const path             = require('path')
+import * as az          from '#infrastructure/az.js'
+import * as bash        from '#infrastructure/bash.js'
+import * as logging     from '#infrastructure/logging.js'
+import { variables }    from '#infrastructure/envVariables.js'
+import { organization } from './config.js'
 
 variables.requireEnvVariables([
     'subscriptionId',

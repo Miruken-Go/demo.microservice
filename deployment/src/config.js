@@ -1,6 +1,10 @@
-const { Organization } = require('./infrastructure/config')
+import { fileURLToPath } from 'url';
+import { dirname }       from 'node:path'
+import { Organization }  from '#infrastructure/config.js'
 
-const org = new Organization({
+export const configDirectory = dirname(fileURLToPath(import.meta.url))
+
+export const organization = new Organization({
     env:              process.env.env,
     instance:         process.env.instance,
     name:             'MajorLeagueMiruken',
@@ -58,7 +62,3 @@ const org = new Organization({
         },
     ],
 })
-
-module.exports = {
-    organization: org
-}

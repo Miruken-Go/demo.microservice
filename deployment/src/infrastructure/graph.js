@@ -1,21 +1,21 @@
-import * as logging     from './logging.mjs'
-import { secrets }      from './keyvault.mjs'
-import { variables }    from './envVariables.mjs'
+import * as logging     from './logging.js'
+import { secrets }      from './keyvault.js'
 import * as querystring from 'node:querystring'
 import axios            from 'axios'
 
-variables.requireEnvFileVariables([
-    'b2cDeploymentPipelineClientId'
-])
-
 export class Graph {
     organization
+    b2cDeploymentPipelineClientId
     _token  = undefined
 
     static APP_ID = "00000003-0000-0000-c000-000000000000"
 
-    constructor (organization) {
-        this.organization = organization
+    constructor (organization, b2cDeploymentPipelineClientId) {
+        if (!organization)                  throw new Error('organization is required')
+        if (!b2cDeploymentPipelineClientId) throw new Error('b2cDeploymentPipelineClientId is required')
+
+        this.organization                  = organization
+        this.b2cDeploymentPipelineClientId = b2cDeploymentPipelineClientId
     }
 
     async getToken() {
@@ -29,7 +29,7 @@ export class Graph {
 
         const uri=`https://login.microsoftonline.com/${this.organization.b2c.domainName}/oauth2/v2.0/token`
         const result = await axios.post(uri, querystring.stringify({
-            client_id:     variables.b2cDeploymentPipelineClientId,
+            client_id:     this.b2cDeploymentPipelineClientId,
             scope:         'https://graph.microsoft.com/.default',
             client_secret: secrets.b2cDeploymentPipelineClientSecret,
             grant_type:    'client_credentials'

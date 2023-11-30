@@ -1,7 +1,7 @@
-import * as bash     from './bash.mjs'
-import { header }    from './logging.mjs'
-import { variables } from './envVariables.mjs'
-import { secrets }   from './envSecrets.mjs'
+import * as bash     from './bash.js'
+import { header }    from './logging.js'
+import { variables } from './envVariables.js'
+import { secrets }   from './envSecrets.js'
 
 variables.requireEnvVariables([
     'tenantId',

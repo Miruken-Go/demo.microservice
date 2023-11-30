@@ -1,8 +1,8 @@
-const az               = require('./infrastructure/az');
-const bash             = require('./infrastructure/bash')
-const logging          = require('./infrastructure/logging');
-const git              = require('./infrastructure/git');
-const { organization } = require('./config');
+import * as az          from '#infrastructure/az.js'
+import * as bash        from '#infrastructure/bash.js'
+import * as logging     from '#infrastructure/logging.js'
+import * as git         from '#infrastructure/git.js'
+import { organization } from './config.js'
 
 async function tagContainerImageAndPush(imageName, app) {
     const appImage = `${app.imageName}:default`

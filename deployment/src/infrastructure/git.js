@@ -1,6 +1,6 @@
-import * as bash    from './bash.mjs'
-import * as logging from './logging.mjs'
-import { secrets }  from './envSecrets.mjs'
+import * as bash    from './bash.js'
+import * as logging from './logging.js'
+import { secrets }  from './envSecrets.js'
 
 secrets.require([
    'ghToken' 

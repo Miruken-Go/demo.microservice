@@ -1,4 +1,4 @@
-import * as az from './az.mjs'
+import * as az from './az.js'
 
 export const secrets = {
     async requireSecrets (names, keyVaultName) {

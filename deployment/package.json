@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "deployment for demo.microservice",
   "main": "src/index.js",
+  "type": "module",
   "imports": {
     "#infrastructure/*": "./src/infrastructure/*"
   },
