@@ -24,7 +24,7 @@ async function main() {
         //Resources Groups
         await az.createResourceGroup(organization.resourceGroups.global, organization.location)
 
-        const bicepFile = path.join(__dirname, 'bicep/organizationGlobalResources.bicep')
+        const bicepFile = new URL('bicep/organizationGlobalResources.bicep', import.meta.url).pathname
 
         await bash.json(`
             az deployment group create                                              \

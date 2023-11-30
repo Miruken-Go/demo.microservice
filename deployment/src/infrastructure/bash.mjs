@@ -1,7 +1,9 @@
-const util = require('util')
-const exec = util.promisify(require('child_process').exec);
+import { promisify }      from 'node:util'
+import * as child_process from 'node:child_process'
 
-async function execute(cmd, suppressLog) { 
+const exec = promisify(child_process.exec);
+
+export async function execute(cmd, suppressLog) { 
     const { stdout, stderr } = await exec(cmd);
     if (!suppressLog) {
         console.log('bash stdout:', stdout);
@@ -12,12 +14,7 @@ async function execute(cmd, suppressLog) {
     return stdout.trim();
 }
 
-async function json(cmd, suppressLog) { 
+export async function json(cmd, suppressLog) { 
     const response = await execute(cmd, suppressLog)
     return JSON.parse(response)
-}
-
-module.exports = {
-    execute,
-    json
 }

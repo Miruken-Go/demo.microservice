@@ -1,6 +1,6 @@
-const az = require('./az')
+import * as az from './az.mjs'
 
-const secrets = {
+export const secrets = {
     async requireSecrets (names, keyVaultName) {
         for(const name of names) {
             if (this[name]) return 
@@ -12,8 +12,4 @@ const secrets = {
             this[name] = secret.trim()
         }
     }
-}
-
-module.exports = {
-    secrets
 }

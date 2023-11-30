@@ -1,22 +1,22 @@
-const { inspect } = require('node:util');
+import { inspect } from 'node:util'
 
-function header (text) {
+export function header (text) {
     const separator = "*********************************************************************"
     console.log(separator)
     console.log(text)
     console.log(separator)
 }
 
-function printObject (text, object) {
+export function printObject (text, object) {
     header(text)
     console.log(inspect(object, { depth: null }))
 }
 
-function printOrganization (object) {
+export function printOrganization (object) {
     printObject("Organization Configuration", object)
 }
 
-function printEnvironmentVariables (config) {
+export function printEnvironmentVariables (config) {
     header('Environment Variables')
 
     for (const [key, value] of Object.entries(config)) {
@@ -33,7 +33,7 @@ function printEnvironmentVariables (config) {
     }
 }
 
-function printEnvironmentSecrets(config) {
+export function printEnvironmentSecrets(config) {
     header('Environment Secrets')
 
     for (const [key, value] of Object.entries(config)) {
@@ -43,12 +43,4 @@ function printEnvironmentSecrets(config) {
             console.log(`    ${key}: length ${value.length}`);
         }
     }
-}
-
-module.exports = {
-    header,
-    printObject,
-    printOrganization,
-    printEnvironmentVariables,
-    printEnvironmentSecrets,
 }

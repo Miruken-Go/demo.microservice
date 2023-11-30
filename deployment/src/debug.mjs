@@ -1,0 +1,1 @@
+const path  = new URL('bicep/domainEnvironmentCommonResources.bicep', import.meta.url).pathname

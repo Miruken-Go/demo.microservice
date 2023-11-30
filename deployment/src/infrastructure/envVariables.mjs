@@ -1,13 +1,9 @@
-const env = process.env.env
-//if (!env) throw "Environment variable required: [env]"
-
+const env      = process.env.env
 const instance = process.env.instance
 
-const variables = {
+export const variables = {
     env,
     instance,
-    workingDirectory: process.cwd(),
-    nodeDirectory:    __dirname,
     optionalEnvVariables: function(names) {
         names.forEach(function(name) {
             if(this[name]) return
@@ -39,8 +35,4 @@ const variables = {
             this[name] = variable.trim()
         }.bind(this));
     }
-}
-
-module.exports = {
-    variables
 }

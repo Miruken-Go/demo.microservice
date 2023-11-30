@@ -1,5 +1,5 @@
 
-class ResourceGroups {
+export class ResourceGroups {
 
     constructor (opts) {
         if (!opts.name) throw new Error("name required")
@@ -40,7 +40,7 @@ class ResourceGroups {
     }
 }
 
-class B2C {
+export class B2C {
 
     constructor (opts) {
         if (!opts.name) throw new Error("name required")
@@ -73,7 +73,7 @@ class B2C {
     }
 }
 
-class Application {
+export class Application {
     name
     env
     instance
@@ -126,7 +126,7 @@ class Application {
     }
 }
 
-class Domain {
+export class Domain {
     name
     env
     instance
@@ -173,7 +173,7 @@ class Domain {
     }
 }
 
-class Organization {
+export class Organization {
     name
     env
     instance
@@ -285,12 +285,4 @@ class Organization {
 
         throw new Error(`Application with name ${name} not found`)
     }
-}
-
-module.exports = {
-    ResourceGroups,
-    B2C,
-    Organization,
-    Domain,
-    Application,
 }

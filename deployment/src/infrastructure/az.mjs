@@ -1,7 +1,7 @@
-const bash           = require('./bash')
-const { header }     = require('./logging')
-const { variables }  = require('./envVariables')
-const { secrets }    = require('./envSecrets')
+import * as bash     from './bash.mjs'
+import { header }    from './logging.mjs'
+import { variables } from './envVariables.mjs'
+import { secrets }   from './envSecrets.mjs'
 
 variables.requireEnvVariables([
     'tenantId',
@@ -16,7 +16,7 @@ secrets.require([
 let loggedInToAZ  = false 
 let loggedInToACR = false 
 
-async function login() {
+export async function login() {
     if (loggedInToAZ) return 
 
     header('Logging into az')
@@ -24,7 +24,7 @@ async function login() {
     loggedInToAZ = true 
 }
 
-async function loginToACR(containerRepositoryName) {
+export async function loginToACR(containerRepositoryName) {
     if (loggedInToACR) return 
 
     header('Logging into ACR')
@@ -35,13 +35,13 @@ async function loginToACR(containerRepositoryName) {
     loggedInToACR = true
 }
 
-async function createResourceGroup(name, location, tags) {
+export async function createResourceGroup(name, location, tags) {
     await login()
     await bash.execute(`az group create --location ${location} --name ${name} --subscription ${variables.subscriptionId} --tags ${tags}`)
 }
 
 //https://learn.microsoft.com/en-us/azure/azure-resource-manager/troubleshooting/error-register-resource-provider?tabs=azure-cli
-async function registerAzureProvider(providerName) { 
+export async function registerAzureProvider(providerName) { 
     await login()
     header(`Checking ${providerName} Provider Registration`)
     const providers = await bash.json(`az provider list --query "[?namespace=='${providerName}']" --output json`)
@@ -54,7 +54,7 @@ async function registerAzureProvider(providerName) {
     }
 }
 
-async function getAzureContainerRepositoryPassword(name) {
+export async function getAzureContainerRepositoryPassword(name) {
     await login()
     const result = await bash.json(`az acr credential show --name ${name} --subscription ${variables.subscriptionId}`, true)
     if (!result.passwords.length)
@@ -63,7 +63,7 @@ async function getAzureContainerRepositoryPassword(name) {
     return result.passwords[0].value
 }
 
-async function getKeyVaultSecret(secretName, keyVaultName) {
+export async function getKeyVaultSecret(secretName, keyVaultName) {
     await login()
     try {
         const result = await bash.json(`az keyvault secret show --name ${secretName} --vault-name ${keyVaultName}`, true)
@@ -75,7 +75,7 @@ async function getKeyVaultSecret(secretName, keyVaultName) {
     }
 }
 
-async function getContainerAppUrl(name, resourceGroup) {
+export async function getContainerAppUrl(name, resourceGroup) {
     await login()
     const result = await bash.json(`
         az containerapp show -n ${name} --resource-group ${resourceGroup}
@@ -87,7 +87,7 @@ async function getContainerAppUrl(name, resourceGroup) {
 }
 
 
-async function deleteOrphanedApplicationSecurityPrincipals(name) {
+export async function deleteOrphanedApplicationSecurityPrincipals(name) {
     await login()
     const ids = await bash.json(`
         az role assignment list --all --query "[?principalName==''].id"    
@@ -100,15 +100,4 @@ async function deleteOrphanedApplicationSecurityPrincipals(name) {
 
         console.log(`Deleted ${ids.length} orphaned application security principals`)
     }
-}
-
-module.exports = {
-    login,
-    loginToACR,
-    createResourceGroup,
-    registerAzureProvider,
-    getAzureContainerRepositoryPassword,
-    getKeyVaultSecret,
-    getContainerAppUrl,
-    deleteOrphanedApplicationSecurityPrincipals
 }

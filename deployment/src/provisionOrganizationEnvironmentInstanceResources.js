@@ -23,7 +23,7 @@ async function main() {
         await az.createResourceGroup(organization.resourceGroups.instance, organization.location)
 
         const containerRepositoryPassword = await az.getAzureContainerRepositoryPassword(organization.containerRepositoryName)
-        const bicepFile                   = path.join(__dirname, 'bicep/organizationEnvironmentInstanceResources.bicep')
+        const bicepFile                   = new URL('bicep/organizationEnvironmentInstanceResources.bicep', import.meta.url).pathname
 
         const applications = organization.applications.map(a => {
             return { 

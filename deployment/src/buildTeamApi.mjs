@@ -1,8 +1,8 @@
-const bash          = require('./infrastructure/bash')
-const logging       = require('./infrastructure/logging');
-const git           = require('./infrastructure/git');
-const go            = require('./infrastructure/go');
-const { variables } = require('./infrastructure/envVariables')
+import * as bash     from '#infrastructure/bash.mjs'
+import * as logging  from '#infrastructure/logging.mjs'
+import * as git      from '#infrastructure/git.mjs'
+import * as go       from '#infrastructure/go.mjs'
+import { variables } from '#infrastructure/envVariables.mjs'
 
 variables.requireEnvVariables([
     'repositoryPath'

@@ -1,14 +1,14 @@
-const logging       = require('./logging');
-const { secrets }   = require('./keyvault');
-const { variables } = require('./envVariables')
-const querystring   = require('querystring');
-const axios         = require('axios').default;
+import * as logging     from './logging.mjs'
+import { secrets }      from './keyvault.mjs'
+import { variables }    from './envVariables.mjs'
+import * as querystring from 'node:querystring'
+import axios            from 'axios'
 
 variables.requireEnvFileVariables([
     'b2cDeploymentPipelineClientId'
 ])
 
-class Graph {
+export class Graph {
     organization
     _token  = undefined
 
@@ -130,8 +130,4 @@ class Graph {
             throw error
         }
     }
-}
-
-module.exports = {
-    Graph
 }

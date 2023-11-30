@@ -1,0 +1,38 @@
+name: update adb2c dependencies
+
+on:
+  workflow_dispatch:
+    inputs:
+      mirukenVersion:
+        description: 'version of miruken'
+        required: true
+        type: string
+  repository_dispatch:
+    inputs:
+      mirukenVersion:
+        description: 'version of miruken'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  containerized_job:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/miruken-go/demo.microservice.build:1699298856
+      env:
+        tenantId:                       ${{ vars.TENANT_ID }}
+        subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
+        deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
+        deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
+        ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
+        GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
+        mirukenVersion:                 ${{ inputs.mirukenVersion }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Run updateTeamApiDependencies.js
+      run:  node ./deployment/src/updateTeamApiDependencies.js 

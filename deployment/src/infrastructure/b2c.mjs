@@ -1,16 +1,16 @@
-const logging       = require('./logging');
-const az            = require('./az');
-const { Graph }     = require('./graph');
-const { variables } = require('./envVariables')
-const fs            = require('fs')
-const path          = require('path')
-const axios         = require('axios')
+import * as logging  from './logging.mjs'
+import * as az       from './az.mjs'
+import { Graph }     from './graph.mjs'
+import { variables } from './envVariables.mjs'
+import * as fs       from 'node:fs'
+import * as path     from 'node:path'
+import * as axios    from 'axios'
 
 variables.requireEnvVariables([
     'env',
 ])
 
-class B2C {
+export class B2C {
 
     organization
     graph
@@ -224,7 +224,7 @@ class B2C {
         const authorizationServiceUrl = `https://${appUrl}/enrich`
 
         //https://learn.microsoft.com/en-us/azure/active-directory-b2c/deploy-custom-policies-devops
-        const customPoliciesDirectory = path.resolve(__dirname, '../custom-policies')
+        const customPoliciesDirectory = new URL('../custom-policies', import.meta.url).pathname
         const customPoliciesFileOrder = [
             'TrustFrameworkBase.xml',
             'TrustFrameworkLocalization.xml',
@@ -246,8 +246,4 @@ class B2C {
                 await this.graph.updateTrustFrameworkPolicy(policyId, xml)
         };
     }
-}
-
-module.exports = {
-    B2C
 }

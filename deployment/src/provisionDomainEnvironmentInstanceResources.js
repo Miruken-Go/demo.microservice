@@ -20,7 +20,7 @@ async function main() {
         await az.deleteOrphanedApplicationSecurityPrincipals()
 
         const containerRepositoryPassword = await az.getAzureContainerRepositoryPassword(organization.containerRepositoryName)
-        const bicepFile                   = path.join(__dirname, 'bicep/domainEnvironmentInstanceResources.bicep')
+        const bicepFile                   = new URL('bicep/domainEnvironmentInstanceResources.bicep', import.meta.url).pathname
         const tags                        = `organization=${organization.name}`
 
         for (const domain of organization.domains) {

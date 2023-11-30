@@ -1,6 +1,6 @@
-const bash        = require('./bash')
-const logging     = require('./logging');
-const { secrets } = require('./envSecrets')
+import * as bash    from './bash.mjs'
+import * as logging from './logging.mjs'
+import { secrets }  from './envSecrets.mjs'
 
 secrets.require([
    'ghToken' 
@@ -16,7 +16,7 @@ bash.execute(`
     git config --global url."https://git:${secrets.ghToken}@github.com/".insteadOf "git@github.com:"
 `)
 
-async function tagAndPush(tag) { 
+export async function tagAndPush(tag) { 
     logging.header("Tagging the commit")
 
     const existingTag = await bash.execute(`
@@ -37,7 +37,7 @@ async function tagAndPush(tag) {
     }
 }
 
-async function anyChanges() { 
+export async function anyChanges() { 
     const status = await bash.execute(`
         git status
     `)
@@ -50,7 +50,7 @@ async function anyChanges() {
     return foundChanges
 }
 
-async function commitAll(message) { 
+export async function commitAll(message) { 
     logging.header("Commiting Changes")
 
     await bash.execute(`
@@ -58,16 +58,9 @@ async function commitAll(message) {
     `)
 }
 
-async function push() { 
+export async function push() { 
     logging.header("Pushing branch")
     await bash.execute(`
         git push origin
     `)
-}
-
-module.exports = {
-    anyChanges,
-    commitAll,
-    push,
-    tagAndPush
 }

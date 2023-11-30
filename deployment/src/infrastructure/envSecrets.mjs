@@ -1,4 +1,4 @@
-const secrets = {
+export const secrets = {
     require: function (names) {
         names.forEach(function(name) {
             if(this[name]) return
@@ -10,8 +10,4 @@ const secrets = {
             this[name] = secret.trim()
         }.bind(this));
     }
-}
-
-module.exports = {
-    secrets
 }
