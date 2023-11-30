@@ -4,7 +4,7 @@ import { Graph }     from './graph.js'
 import { variables } from './envVariables.js'
 import * as fs       from 'node:fs'
 import * as path     from 'node:path'
-import * as axios    from 'axios'
+import axios         from 'axios'
 
 variables.requireEnvVariables([
     'env',
