@@ -8,11 +8,7 @@ on:
         required: true
         type: string
   repository_dispatch:
-    inputs:
-      mirukenVersion:
-        description: 'version of miruken'
-        required: true
-        type: string
+    types: [miruken-version-created]
 
 permissions:
   contents: write
@@ -29,7 +25,7 @@ jobs:
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
         ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
         GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
-        mirukenVersion:                 ${{ inputs.mirukenVersion }}
+        mirukenVersion:                 ${{ coalesce(inputs.mirukenVersion, github.event.client_payload.version) }}
 
     steps:
     - name: Checkout repository
