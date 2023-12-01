@@ -21,6 +21,8 @@ on:
         default: ''
         required: false
         type: string
+  repository_dispatch:
+    types: [built-team-srv]
 
 jobs:
   containerized_job:
@@ -32,9 +34,11 @@ jobs:
         subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
         deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
-        env:                            ${{ inputs.env }}
-        instance:                       ${{ inputs.instance }}
-        tag:                            ${{ inputs.tag }}
+        env:                            ${{ inputs.env      || 'dev' }}
+        instance:                       ${{ inputs.instance || 'ci'  }}
+        tag:                            ${{ inputs.tag      || github.event.client_payload.tag }}
+        repository:                     ${{ github.repository }}
+        repositoryOwner:                ${{ github.repositoryOwner }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
