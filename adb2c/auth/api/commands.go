@@ -1,5 +1,7 @@
 package api
 
+import "github.com/google/uuid"
+
 type (
 	// CreateSubject creates a new subject.
 	CreateSubject struct {
@@ -8,17 +10,17 @@ type (
 	}
 
 	AssignPrincipals struct {
-		SubjectId    string
-		PrincipalIds []string
+		SubjectId  uuid.UUID
+		Principals []Principal
 	}
 
 	RevokePrincipals struct {
-		SubjectId    string
-		PrincipalIds []string
+		SubjectId  uuid.UUID
+		Principals []Principal
 	}
 
 	RemoveSubjects struct {
-		SubjectIds []string
+		Subjects []Subject
 	}
 
 
@@ -30,27 +32,27 @@ type (
 	}
 
 	TagPrincipal struct {
-		PrincipalId string
-		TagIds      []string
+		PrincipalId uuid.UUID
+		Tags        []Tag
 	}
 
 	UntagPrincipal struct {
-		PrincipalId string
-		TagIds      []string
+		PrincipalId uuid.UUID
+		Tags        []Tag
 	}
 
 	AssignEntitlements struct {
-		PrincipalId    string
-		EntitlementIds []string
+		PrincipalId  uuid.UUID
+		Entitlements []Entitlement
 	}
 
 	RevokeEntitlements struct {
-		PrincipalId    string
-		EntitlementIds []string
+		PrincipalId  uuid.UUID
+		Entitlements []Entitlement
 	}
 
 	RemovePrincipals struct {
-		PrincipalIds []string
+		Principals []Principal
 	}
 
 
@@ -61,17 +63,17 @@ type (
 	}
 
 	TagEntitlement struct {
-		EntitlementId string
-		TagIds        []string
+		EntitlementId uuid.UUID
+		Tags          []Tag
 	}
 
 	UntagEntitlement struct {
-		EntitlementId string
-		TagIds        []string
+		EntitlementId uuid.UUID
+		Tags          []Tag
 	}
 
 	RemoveEntitlements struct {
-		EntitlementIds []string
+		Entitlements []Entitlement
 	}
 
 
@@ -81,7 +83,7 @@ type (
 	}
 
 	RemoveTags struct {
-		TagIds []string
+		Tags []Tag
 	}
 )
 
