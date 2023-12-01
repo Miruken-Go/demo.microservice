@@ -2,6 +2,10 @@
 
 ## Local Development
 
+Clone with the -recursive flag to pull down git submodules
+
+    git clone git@github.com:Miruken-Go/demo.microservice.git —recursive
+
 ### Updating golang version
 
 * Search and replace the golang docker image `golang:1.21.3-alpine3.18` with the new version
