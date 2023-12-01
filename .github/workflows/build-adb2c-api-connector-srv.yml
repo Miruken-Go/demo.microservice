@@ -32,5 +32,6 @@ jobs:
       uses: actions/checkout@v3
       with: 
         fetch-depth: 0
+        submodules: 'recursive'
     - name: Run buildAdb2cApiConnectorSrv.js
       run:  node ./deployment/src/buildAdb2cApiConnectorSrv.js 

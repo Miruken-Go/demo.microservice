@@ -15,5 +15,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
     - name: Run provisionOrganizationGlobalResources.js
       run:  node ./deployment/src/provisionOrganizationGlobalResources.js 
