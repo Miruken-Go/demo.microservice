@@ -38,7 +38,7 @@ jobs:
         instance:                       ${{ inputs.instance || 'ci'  }}
         tag:                            ${{ inputs.tag      || github.event.client_payload.tag }}
         repository:                     ${{ github.repository }}
-        repositoryOwner:                ${{ github.repositoryOwner }}
+        repositoryOwner:                ${{ github.repository_owner }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
