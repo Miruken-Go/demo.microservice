@@ -1,39 +1,43 @@
 package internal
 
-import "time"
+import (
+	"github.com/google/uuid"
+	"time"
+)
 
 type (
 	Subject struct {
-		ID         string    `bson:"_id,omitempty"`
+		ID         uuid.UUID `bson:"_id,omitempty"`
+		Name       string    `bson:"name"`
 		CreatedAt  time.Time `bson:"created_at"`
 		ModifiedAt time.Time `bson:"modified_at"`
 	}
 
 	Principal struct {
-		ID      string  `bson:"_id,omitempty"`
-		Name    string  `bson:"name"`
-		TagIDs []string `bson:"tags"`
+		ID      uuid.UUID  `bson:"_id,omitempty"`
+		Name    string     `bson:"name"`
+		TagIDs []uuid.UUID `bson:"tags"`
 	}
 
 	Entitlement struct {
-		ID     string   `bson:"_id,omitempty"`
-		Name   string   `bson:"name"`
-		TagIDs []string `bson:"tags"`
+		ID     uuid.UUID  `bson:"_id,omitempty"`
+		Name   string      `bson:"name"`
+		TagIDs []uuid.UUID `bson:"tags"`
 	}
 
 	SubjectPrincipal struct {
-		SubjectID   string `bson:"subject_id"`
-		PrincipalID string `bson:"principal_id"`
+		SubjectID   uuid.UUID `bson:"subject_id"`
+		PrincipalID uuid.UUID `bson:"principal_id"`
 	}
 
 	PrincipalEntitlement struct {
-		PrincipalID   string `bson:"principal_id"`
-		EntitlementID string `bson:"entitlement_id"`
+		PrincipalID   uuid.UUID `bson:"principal_id"`
+		EntitlementID uuid.UUID `bson:"entitlement_id"`
 	}
 
 	Tag struct {
-		ID          string `bson:"_id"`
-		Name        string `bson:"name"`
-		Description string `bson:"description"`
+		ID          uuid.UUID `bson:"_id"`
+		Name        string    `bson:"name"`
+		Description string    `bson:"description"`
 	}
 )

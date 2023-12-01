@@ -11,7 +11,7 @@ type (
 )
 
 func (h *Handler) Constructor(
-	mongoClient *mongo.Client,
+	client *mongo.Client,
 ) {
-	h.database = mongoClient.Database("adb2c")
+	h.database = client.Database("adb2c")
 }

@@ -1,9 +1,14 @@
 package handle
 
 import (
+	"github.com/google/uuid"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
+	"github.com/miruken-go/demo.microservice/adb2c/auth/internal"
+	"github.com/miruken-go/miruken/args"
 	"github.com/miruken-go/miruken/handles"
 	"github.com/miruken-go/miruken/security/authorizes"
+	"golang.org/x/net/context"
+	"time"
 )
 
 func (h *Handler) CreateSubject(
@@ -11,9 +16,23 @@ func (h *Handler) CreateSubject(
 		handles.It
 		authorizes.Required
 	  }, create api.CreateSubject,
+	_*struct{args.Optional}, ctx context.Context,
 ) (api.Subject, error) {
-	var subject api.Subject
-	return subject, nil
+	now := time.Now().UTC()
+	subject := internal.Subject{
+		ID:         uuid.New(),
+		Name:       create.Name,
+		CreatedAt:  now,
+		ModifiedAt: now,
+	}
+	if _, err := h.database.Collection("subject").InsertOne(ctx, subject); err != nil {
+		return api.Subject{}, err
+	} else {
+		return api.Subject{
+			Id:   subject.ID,
+			Name: subject.Name,
+		}, nil
+	}
 }
 
 func (h *Handler) AssignPrincipals(
