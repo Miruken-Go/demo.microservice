@@ -102,8 +102,7 @@ func main() {
 	handler, err := miruken.Setup(
 		team.Feature, jwt.Feature(),
 		play.Feature(), config.Feature(koanfp.P(k)),
-		stdjson.Feature(), logs.Feature(logger),
-		openapiGen).
+		stdjson.Feature(), logs.Feature(logger), openapiGen).
 		Specs(&api.GoPolymorphism{}).
 		Options(stdjson.CamelCase).
 		Handler()

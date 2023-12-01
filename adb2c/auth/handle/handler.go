@@ -6,6 +6,12 @@ import "go.mongodb.org/mongo-driver/mongo"
 
 type (
 	Handler struct {
-		Database *mongo.Database
+		database *mongo.Database
 	}
 )
+
+func (h *Handler) Constructor(
+	mongoClient *mongo.Client,
+) {
+	h.database = mongoClient.Database("adb2c")
+}

@@ -1,7 +1,10 @@
 package mongo
 
+import "time"
+
 type (
 	Config struct {
-		Connection string
+		ConnectionUri string
+		Timeout       time.Duration
 	}
 )

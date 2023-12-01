@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	auth2 "github.com/miruken-go/demo.microservice/adb2c/auth"
+	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
 	"github.com/miruken-go/miruken/context"
 	"net/http"
 	"os"
@@ -14,7 +15,6 @@ import (
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
-	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
 	"github.com/miruken-go/miruken/api/http/httpsrv/openapi"
 	"github.com/miruken-go/miruken/api/http/httpsrv/openapi/ui"
 	"github.com/miruken-go/miruken/api/json/stdjson"
@@ -102,8 +102,7 @@ func main() {
 	handler, err := miruken.Setup(
 		auth2.Feature, jwt.Feature(), play.Feature(),
 		config.Feature(koanfp.P(k)), stdjson.Feature(),
-		logs.Feature(logger),
-		openapiGen).
+		logs.Feature(logger), openapiGen).
 		Specs(&api.GoPolymorphism{}).
 		Options(stdjson.CamelCase).
 		Handler()
