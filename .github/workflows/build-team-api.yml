@@ -34,5 +34,8 @@ jobs:
       with: 
         fetch-depth: 0
         submodules: 'recursive'
+    - name: npm ci
+      working-directory: ./deployment/src
+      run: npm ci
     - name: Run buildTeamApi.js
       run:  node ./deployment/src/buildTeamApi.js 

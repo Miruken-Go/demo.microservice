@@ -33,5 +33,8 @@ jobs:
       with: 
         fetch-depth: 0
         submodules: 'recursive'
+    - name: npm ci
+      working-directory: ./deployment/src
+      run: npm ci
     - name: Run buildAdb2cAuthSrv.js
       run:  node ./deployment/src/buildAdb2cAuthSrv.js 
