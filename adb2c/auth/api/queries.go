@@ -1,8 +1,10 @@
 package api
 
+import "github.com/google/uuid"
+
 type (
 	GetSubject struct {
-		SubjectId string
+		SubjectId uuid.UUID
 	}
 
 	FindSubjects struct {
@@ -10,7 +12,7 @@ type (
 	}
 
 	GetPrincipal struct {
-		PrincipalId string
+		PrincipalId uuid.UUID
 	}
 
 	FindPrincipals struct {
@@ -18,7 +20,7 @@ type (
 	}
 
 	GetEntitlement struct {
-		EntitlementId string
+		EntitlementId uuid.UUID
 	}
 
 	FindEntitlements struct {
@@ -26,7 +28,7 @@ type (
 	}
 
 	GetTag struct {
-		TagId string
+		TagId uuid.UUID
 	}
 
 	FindTags struct {

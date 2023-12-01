@@ -11,7 +11,7 @@ type (
 
 	Subject struct {
 		Id         uuid.UUID
-		Name       string
+		ObjectId   string
 		Principals []Principal
 	}
 

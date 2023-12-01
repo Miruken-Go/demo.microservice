@@ -1,18 +1,61 @@
 package handle
 
 import (
+	"errors"
+	ut "github.com/go-playground/universal-translator"
 	"github.com/google/uuid"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/internal"
+	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/args"
 	"github.com/miruken-go/miruken/handles"
 	"github.com/miruken-go/miruken/security/authorizes"
+	play "github.com/miruken-go/miruken/validates/play"
+	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/net/context"
 	"time"
 )
 
-func (h *Handler) CreateSubject(
-	_*struct {
+import "go.mongodb.org/mongo-driver/mongo"
+
+//go:generate $GOPATH/bin/miruken -tests
+
+type (
+	SubjectHandler struct {
+		play.Validates1[api.CreateSubject]
+		play.Validates2[api.AssignPrincipals]
+		play.Validates3[api.RevokePrincipals]
+		play.Validates4[api.RemoveSubjects]
+		play.Validates5[api.GetSubject]
+		play.Validates6[api.FindSubjects]
+		database *mongo.Database
+	}
+)
+
+
+func (h *SubjectHandler) Constructor(
+	client *mongo.Client,
+	_*struct{args.Optional}, translator ut.Translator,
+) {
+	h.database = client.Database("adb2c")
+
+	_ = h.Validates1.WithRules(
+		play.Rules{
+			play.Type[api.CreateSubject](map[string]string{
+				"ObjectId": "required",
+			}),
+		}, nil, translator)
+
+	_ = h.Validates5.WithRules(
+		play.Rules{
+			play.Type[api.GetSubject](map[string]string{
+				"SubjectId": "required",
+			}),
+		}, nil, translator)
+}
+
+func (h *SubjectHandler) Create(
+	_*struct{
 		handles.It
 		authorizes.Required
 	  }, create api.CreateSubject,
@@ -21,22 +64,20 @@ func (h *Handler) CreateSubject(
 	now := time.Now().UTC()
 	subject := internal.Subject{
 		ID:         uuid.New(),
-		Name:       create.Name,
+		ObjectID:   create.ObjectId,
 		CreatedAt:  now,
-		ModifiedAt: now,
 	}
-	if _, err := h.database.Collection("subject").InsertOne(ctx, subject); err != nil {
+	_, err := h.database.Collection("subject").InsertOne(ctx, subject)
+	if err != nil {
 		return api.Subject{}, err
-	} else {
-		return api.Subject{
-			Id:   subject.ID,
-			Name: subject.Name,
-		}, nil
 	}
+	return api.Subject{
+		Id: subject.ID,
+	}, nil
 }
 
-func (h *Handler) AssignPrincipals(
-	_*struct {
+func (h *SubjectHandler) Assign(
+	_*struct{
 		handles.It
 		authorizes.Required
 	}, assign api.AssignPrincipals,
@@ -44,8 +85,8 @@ func (h *Handler) AssignPrincipals(
 	return nil
 }
 
-func (h *Handler) RevokePrincipals(
-	_*struct {
+func (h *SubjectHandler) Revoke(
+	_*struct{
 		handles.It
 		authorizes.Required
 	  }, revoke api.RevokePrincipals,
@@ -53,8 +94,8 @@ func (h *Handler) RevokePrincipals(
 	return nil
 }
 
-func (h *Handler) RemoveSubjects(
-	_*struct {
+func (h *SubjectHandler) Remove(
+	_*struct{
 		handles.It
 		authorizes.Required
 	  }, remove api.RemoveSubjects,
@@ -62,15 +103,32 @@ func (h *Handler) RemoveSubjects(
 	return nil
 }
 
-func (h *Handler) GetSubject(
-	_ *handles.It, get api.GetSubject,
-) (api.Subject, error) {
+func (h *SubjectHandler) Get(
+	_*struct{
+		handles.It
+		authorizes.Required
+	  }, get api.GetSubject,
+	_*struct{args.Optional}, ctx context.Context,
+) (api.Subject, miruken.HandleResult) {
+	filter := bson.M{"_id": get.SubjectId}
+	var result internal.Subject
+	err := h.database.Collection("subject").FindOne(ctx, filter).Decode(&result)
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		return api.Subject{}, miruken.NotHandled
+	} else if err != nil {
+		return api.Subject{}, miruken.NotHandled.WithError(err)
+	}
 	return api.Subject{
-	}, nil
+		Id:       result.ID,
+		ObjectId: result.ObjectID,
+	}, miruken.Handled
 }
 
-func (h *Handler) FindSubjects(
-	_ *handles.It, find api.FindSubjects,
+func (h *SubjectHandler) Find(
+	_*struct{
+		handles.It
+		authorizes.Required
+	  }, find api.FindSubjects,
 ) ([]api.Subject, error) {
 	return []api.Subject{
 	}, nil

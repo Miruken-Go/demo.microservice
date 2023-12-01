@@ -8,7 +8,7 @@ import "github.com/miruken-go/miruken/creates"
 type Factory struct{}
 
 func (F *Factory) New(
-	_*struct {
+	_*struct{
 		t creates.It `key:"api.Tag"`
 		s creates.It `key:"api.Subject"`
 		p creates.It `key:"api.Principal"`

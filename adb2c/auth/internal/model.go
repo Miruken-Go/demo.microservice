@@ -7,15 +7,14 @@ import (
 
 type (
 	Subject struct {
-		ID         uuid.UUID `bson:"_id,omitempty"`
-		Name       string    `bson:"name"`
-		CreatedAt  time.Time `bson:"created_at"`
-		ModifiedAt time.Time `bson:"modified_at"`
+		ID        uuid.UUID `bson:"_id,omitempty"`
+		ObjectID  string    `bson:"object_id,omitempty"`
+		CreatedAt time.Time `bson:"created_at"`
 	}
 
 	Principal struct {
-		ID      uuid.UUID  `bson:"_id,omitempty"`
-		Name    string     `bson:"name"`
+		ID     uuid.UUID   `bson:"_id,omitempty"`
+		Name   string      `bson:"name"`
 		TagIDs []uuid.UUID `bson:"tags"`
 	}
 

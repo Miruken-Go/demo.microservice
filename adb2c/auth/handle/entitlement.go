@@ -4,10 +4,24 @@ import (
 	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
 	"github.com/miruken-go/miruken/handles"
 	"github.com/miruken-go/miruken/security/authorizes"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func (h *Handler) CreateEntitlement(
-	_*struct {
+type (
+	EntitlementHandler struct {
+		database *mongo.Database
+	}
+)
+
+
+func (h *EntitlementHandler) Constructor(
+	client *mongo.Client,
+) {
+	h.database = client.Database("adb2c")
+}
+
+func (h *EntitlementHandler) Create(
+	_*struct{
 		handles.It
 		authorizes.Required
 	  }, create api.CreateEntitlement,
@@ -16,8 +30,8 @@ func (h *Handler) CreateEntitlement(
 	return entitlement, nil
 }
 
-func (h *Handler) RemoveEntitlements(
-	_*struct {
+func (h *EntitlementHandler) Remove(
+	_*struct{
 		handles.It
 		authorizes.Required
 	}, remove api.RemoveEntitlements,
@@ -25,14 +39,14 @@ func (h *Handler) RemoveEntitlements(
 	return nil
 }
 
-func (h *Handler) GetEntitlement(
+func (h *EntitlementHandler) Get(
 	_ *handles.It, get api.GetEntitlement,
 ) (api.Entitlement, error) {
 	return api.Entitlement{
 	}, nil
 }
 
-func (h *Handler) FindEntitlements(
+func (h *EntitlementHandler) Find(
 	_ *handles.It, find api.FindEntitlements,
 ) ([]api.Entitlement, error) {
 	return []api.Entitlement{

@@ -3,7 +3,7 @@ package api
 type (
 	// CreateSubject creates a new subject.
 	CreateSubject struct {
-		Name       string
+		ObjectId   string
 		Principals []Principal
 	}
 
