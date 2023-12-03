@@ -99,6 +99,7 @@ func (h *SubjectHandler) Remove(
 		handles.It
 		authorizes.Required
 	  }, remove api.RemoveSubjects,
+	_*struct{args.Optional}, ctx context.Context,
 ) error {
 	return nil
 }
@@ -110,8 +111,8 @@ func (h *SubjectHandler) Get(
 	  }, get api.GetSubject,
 	_*struct{args.Optional}, ctx context.Context,
 ) (api.Subject, miruken.HandleResult) {
-	filter := bson.M{"_id": get.SubjectId}
 	var result internal.Subject
+	filter := bson.M{"_id": get.SubjectId}
 	err := h.database.Collection("subject").FindOne(ctx, filter).Decode(&result)
 	if errors.Is(err, mongo.ErrNoDocuments) {
 		return api.Subject{}, miruken.NotHandled

@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	auth2 "github.com/miruken-go/demo.microservice/adb2c/auth"
+	"github.com/miruken-go/demo.microservice/adb2c/mongo"
 	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
 	"github.com/miruken-go/miruken/context"
 	"net/http"
@@ -36,6 +37,7 @@ type Config struct {
 	}
 	OpenApi openapi.Config
 }
+
 
 func main() {
 	// logging
@@ -102,7 +104,7 @@ func main() {
 	handler, err := miruken.Setup(
 		auth2.Feature, jwt.Feature(), play.Feature(),
 		config.Feature(koanfp.P(k)), stdjson.Feature(),
-		logs.Feature(logger), openapiGen).
+		logs.Feature(logger), mongo.Feature(), openapiGen).
 		Specs(&api.GoPolymorphism{}).
 		Options(stdjson.CamelCase).
 		Handler()
