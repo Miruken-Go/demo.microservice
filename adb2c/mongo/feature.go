@@ -18,7 +18,7 @@ func (i *Installer) Install(setup *miruken.SetupBuilder) error {
 	if setup.Tag(&featureTag) {
 		setup.Specs(&Factory{})
 		if i.aliases != nil {
-			setup.Options(Options{Aliases: i.aliases})
+			setup.Options(Options{Aliases: i.aliases, Clients: i.clients})
 		}
 	}
 	return nil
