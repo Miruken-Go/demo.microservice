@@ -111,7 +111,7 @@ func main() {
 	docs := openapiGen.Docs()
 
 	h := httpsrv.Api(ctx,
-		auth.WithFlowRef("login.oauth").Bearer(),
+		auth.WithFlowAlias("login.oauth").Bearer(),
 	)
 
 	// configure routes

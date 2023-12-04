@@ -51,7 +51,7 @@ func main() {
 
 	http.Handle("/enrich", httpsrv.Use(ctx,
 		httpsrv.H[*token.EnrichHandler](),
-		auth.WithFlowRef("Login.Adb2c").Basic().Required()))
+		auth.WithFlowAlias("Login.Adb2c").Basic().Required()))
 
 	// start http server
 	port := k.String("App.Port")

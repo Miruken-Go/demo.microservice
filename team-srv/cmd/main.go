@@ -120,7 +120,7 @@ func main() {
 
 	// Polymorphic miruken endpoints
 	poly := httpsrv.Api(ctx,
-		auth.WithFlowRef("Login.OAuth").Bearer(),
+		auth.WithFlowAlias("Login.OAuth").Bearer(),
 	)
 	mux.Handle("/process", poly)
 	mux.Handle("/process/", poly)

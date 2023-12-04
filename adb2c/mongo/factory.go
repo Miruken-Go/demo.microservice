@@ -39,7 +39,8 @@ func (f *Factory) DefaultClient(
 	_*struct{
 		provides.Single `mode:"covariant"`
 	  }, p *provides.It,
-	ctx miruken.HandleContext,
+	_*struct{args.Optional}, ctx context.Context,
+	hc miruken.HandleContext,
 ) (client *mongo.Client, err error) {
 	typ := p.Key().(reflect.Type)
 	cfg, ok := f.opts.Clients[typ]
@@ -53,16 +54,19 @@ func (f *Factory) DefaultClient(
 			}
 		}
 		path := fmt.Sprintf("Databases.%s", key)
-		cfg, _, ok, err = provides.Type[Config](ctx, &config.Load{Path: path})
+		cfg, _, ok, err = provides.Type[Config](hc, &config.Load{Path: path})
 		if !ok || err != nil {
 			return
 		}
 	}
-	return newClient(cfg)
+	return newClient(cfg, ctx)
 }
 
 
-func newClient(cfg Config) (*mongo.Client, error) {
+func newClient(
+	cfg Config,
+	ctx context.Context,
+) (*mongo.Client, error) {
 	if uri := cfg.ConnectionUri; uri == "" {
 		return nil, nil
 	} else {
@@ -71,7 +75,7 @@ func newClient(cfg Config) (*mongo.Client, error) {
 			opts.SetTimeout(timeout)
 		}
 		opts.ApplyURI(uri)
-		return mongo.Connect(context.Background(), opts)
+		return mongo.Connect(ctx, opts)
 	}
 }
 

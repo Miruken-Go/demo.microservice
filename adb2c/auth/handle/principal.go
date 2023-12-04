@@ -1,10 +1,17 @@
 package handle
 
 import (
+	"errors"
+	"github.com/google/uuid"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
+	"github.com/miruken-go/demo.microservice/adb2c/auth/internal"
+	"github.com/miruken-go/miruken"
+	"github.com/miruken-go/miruken/args"
 	"github.com/miruken-go/miruken/handles"
 	"github.com/miruken-go/miruken/security/authorizes"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"golang.org/x/net/context"
 )
 
 type (
@@ -25,9 +32,20 @@ func (h *PrincipalHandler) Create(
 		handles.It
 		authorizes.Required
 	  }, create api.CreatePrincipal,
-) (api.Principal, error) {
-	var principal api.Principal
-	return principal, nil
+	_*struct{args.Optional}, ctx context.Context,
+) (api.PrincipalCreated, error) {
+	principal := internal.Principal{
+		ID:     uuid.New(),
+		Name:   create.Name,
+		TagIDs: create.TagIds,
+	}
+	principals := h.database.Collection("principal")
+	if _, err := principals.InsertOne(ctx, principal); err != nil {
+		return api.PrincipalCreated{}, err
+	}
+	return api.PrincipalCreated{
+		PrincipalId: principal.ID,
+	}, nil
 }
 
 func (h *PrincipalHandler) Assign(
@@ -53,15 +71,34 @@ func (h *PrincipalHandler) Remove(
 		handles.It
 		authorizes.Required
 	}, remove api.RemovePrincipals,
+	_*struct{args.Optional}, ctx context.Context,
 ) error {
+	if principalIds := remove.PrincipalIds; len(principalIds) > 0 {
+		principals := h.database.Collection("principal")
+		filter := bson.M{"_id": bson.M{"$in": principalIds}}
+		_, err := principals.DeleteMany(ctx, filter)
+		return err
+	}
 	return nil
 }
 
 func (h *PrincipalHandler) Get(
 	_ *handles.It, get api.GetPrincipal,
-) (api.Principal, error) {
+	_*struct{args.Optional}, ctx context.Context,
+) (api.Principal, miruken.HandleResult) {
+	var result internal.Principal
+	filter := bson.M{"_id": get.PrincipalId}
+	principals := h.database.Collection("principal")
+	err := principals.FindOne(ctx, filter).Decode(&result)
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		return api.Principal{}, miruken.NotHandled
+	} else if err != nil {
+		return api.Principal{}, miruken.NotHandled.WithError(err)
+	}
 	return api.Principal{
-	}, nil
+		Id:   result.ID,
+		Name: result.Name,
+	}, miruken.Handled
 }
 
 func (h *PrincipalHandler) Find(

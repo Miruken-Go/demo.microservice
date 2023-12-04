@@ -8,7 +8,7 @@ type (
 	}
 
 	FindSubjects struct {
-		Principals []Principal
+		PrincipalIds []uuid.UUID
 	}
 
 	GetPrincipal struct {
@@ -16,6 +16,7 @@ type (
 	}
 
 	FindPrincipals struct {
+		Name string
 		Tags []Tag
 	}
 
@@ -24,7 +25,8 @@ type (
 	}
 
 	FindEntitlements struct {
-		Tags []Tag
+		Name   string
+		TagIds []uuid.UUID
 	}
 
 	GetTag struct {
@@ -32,6 +34,6 @@ type (
 	}
 
 	FindTags struct {
-		Names []string
+		Name string
 	}
 )
