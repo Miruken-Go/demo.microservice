@@ -1,6 +1,7 @@
 import * as bash     from '#infrastructure/bash.js'
 import * as logging  from '#infrastructure/logging.js'
 import * as git      from '#infrastructure/git.js'
+import * as gh       from '#infrastructure/gh.js'
 import { handle }    from '#infrastructure/handler.js'
 import { variables } from '#infrastructure/envVariables.js'
 
@@ -22,6 +23,6 @@ handle(async () => {
         await git.commitAll(`Updated miruken to ${variables.mirukenVersion}`)
         await git.push();
 
-        await gh.sendRepositoryDispatch('updated-team-api-dependencies')
+        await gh.sendRepositoryDispatch('updated-team-api')
     }
 })
