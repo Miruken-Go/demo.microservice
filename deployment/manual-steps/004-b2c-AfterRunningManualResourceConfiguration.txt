@@ -2,7 +2,7 @@ For dev, qa, prod and any other desired environments, do the following:
 
 Running deployManualResourceConfiguration.js does almost all the configuration for b2c but there are still a couple of manual steps to perform after it has been run.
 
-For all the created app
+For all the created app registrations
     App Registrations > All applications > Pick App > 
         Overview        > Create Service Principal
         API Permissions > Grant admin consent for <appname> 
