@@ -35,6 +35,8 @@ jobs:
         env:                            ${{ inputs.env }}
         instance:                       ${{ inputs.instance }}
         tag:                            ${{ inputs.tag }}
+        repository:                     ${{ github.repository }}
+        repositoryOwner:                ${{ github.repository_owner }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3

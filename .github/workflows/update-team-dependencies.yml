@@ -29,6 +29,8 @@ jobs:
         GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
         mirukenVersion:                 ${{ inputs.mirukenVersion }}
         teamapiVersion:                 ${{ inputs.teamapiVersion }}
+        repository:                     ${{ github.repository }}
+        repositoryOwner:                ${{ github.repository_owner }}
 
     steps:
     - name: Checkout repository

@@ -12,6 +12,8 @@ jobs:
         subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
         deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
+        repository:                     ${{ github.repository }}
+        repositoryOwner:                ${{ github.repository_owner }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3

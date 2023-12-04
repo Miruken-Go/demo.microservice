@@ -47,7 +47,7 @@ handle(async () => {
 
     await git.tagAndPush(gitTag)
 
-    await gh.sendRepositoryDispatch(`built-${appName}`, {
+    await gh.sendRepositoryDispatch(`built-${app.name}`, {
         tag: version
     })
 })

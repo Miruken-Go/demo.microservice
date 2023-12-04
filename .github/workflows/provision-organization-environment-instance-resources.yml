@@ -31,6 +31,8 @@ jobs:
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
         env:                            ${{ inputs.env }}
         instance:                       ${{ inputs.instance }}
+        repository:                     ${{ github.repository }}
+        repositoryOwner:                ${{ github.repository_owner }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3

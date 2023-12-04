@@ -26,6 +26,6 @@ handle(async () => {
         await git.commitAll(`Updated miruken to ${variables.mirukenVersion} and team-api to ${variables.teamapiVersion}`)
         await git.push();
 
-        await gh.sendRepositoryDispatch('updated-team-dependencies', {})
+        await gh.sendRepositoryDispatch('updated-team-dependencies')
     }
 })

@@ -1,5 +1,6 @@
 import * as az          from '#infrastructure/az.js'
 import * as bash        from '#infrastructure/bash.js'
+import * as gh          from '#infrastructure/gh.js'
 import * as logging     from '#infrastructure/logging.js'
 import { handle }       from '#infrastructure/handler.js'
 import { variables }    from '#infrastructure/envVariables.js'
@@ -34,4 +35,8 @@ handle(async () => {
             
         logging.printObject("Bicep Outputs", results.properties.outputs)
     }
+
+    await gh.sendRepositoryDispatch(`provisioned-domain-environment-common-resources`, {
+        env: organization.env
+    })
 })

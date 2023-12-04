@@ -12,7 +12,7 @@ variables.requireEnvVariables([
 handle(async () => {
     logging.printEnvironmentVariables(variables)
 
-    logging.header("Updating adb2c-api-connector-srv dependencies")
+    logging.header("Updating adb2c dependencies")
 
     await bash.execute(`
         cd adb2c
@@ -23,6 +23,6 @@ handle(async () => {
         await git.commitAll(`Updated miruken to ${variables.mirukenVersion}`)
         await git.push();
 
-        await gh.sendRepositoryDispatch('updated-adb2c', {})
+        await gh.sendRepositoryDispatch('updated-adb2c-dependencies')
     }
 })

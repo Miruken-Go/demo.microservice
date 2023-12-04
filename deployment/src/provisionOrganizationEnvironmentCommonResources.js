@@ -31,4 +31,8 @@ handle(async () => {
                 keyVaultName=${organization.keyVaultName}          \
                 location=${organization.location}                  \
     `)
+
+    await gh.sendRepositoryDispatch(`provisioned-organization-environment-common-resources`, {
+        env: organization.env
+    })
 })

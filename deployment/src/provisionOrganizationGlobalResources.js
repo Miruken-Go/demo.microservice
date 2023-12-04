@@ -35,4 +35,6 @@ handle(async () => {
                 containerRepositoryName=${organization.containerRepositoryName} \
                 location=${organization.location}                               \
     `)
+
+    await gh.sendRepositoryDispatch(`provisioned-organization-global-resources`)
 })
