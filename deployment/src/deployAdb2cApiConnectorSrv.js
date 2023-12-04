@@ -90,7 +90,9 @@ async function main() {
         }
 
         await gh.sendRepositoryDispatch(`deployed-${application.name}`, {
-            tag: variables.tag
+            tag:      variables.tag,
+            env:      organization.env,
+            instance: organization.instance,
         })
 
         console.log("Script completed successfully")

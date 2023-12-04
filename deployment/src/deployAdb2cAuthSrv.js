@@ -110,7 +110,9 @@ async function main() {
         await b2c.addRedirectUris(appRegistration.id, [`https://${appUrl}/oauth2-redirect.html`])
 
         await gh.sendRepositoryDispatch(`deployed-${application.name}`, {
-            tag: variables.tag
+            tag:      variables.tag,
+            env:      organization.env,
+            instance: organization.instance,
         })
 
         console.log("Script completed successfully")
