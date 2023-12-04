@@ -7,10 +7,6 @@ variables.requireEnvVariables([
     'mirukenVersion'
 ])
 
-variables.optionalEnvVariables([
-    'skipGitHubAction'
-])
-
 async function main() {
     try {
         logging.printEnvironmentVariables(variables)
@@ -26,11 +22,7 @@ async function main() {
             await git.commitAll(`Updated miruken to ${variables.mirukenVersion}`)
             await git.push();
 
-            if (!variables.skipGitHubAction) {
-                await bash.execute(`
-                    gh workflow run build-team-api.yml
-                `)
-            }
+            await gh.sendRepositoryDispatch('updated-team-api', {})
         }
 
         console.log("Script completed successfully")

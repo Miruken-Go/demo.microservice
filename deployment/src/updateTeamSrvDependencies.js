@@ -9,10 +9,6 @@ variables.requireEnvVariables([
     'teamVersion'
 ])
 
-variables.optionalEnvVariables([
-    'skipGitHubAction'
-])
-
 async function main() {
     try {
         logging.printEnvironmentVariables(variables)
@@ -31,11 +27,7 @@ async function main() {
             await git.commitAll(`Updated miruken to ${variables.mirukenVersion}, teamapi to ${variables.teamapiVersion} and team to ${variables.teamVersion}`)
             await git.push();
 
-            if (!variables.skipGitHubAction) {
-                await bash.execute(`
-                    gh workflow run build-team-srv.yml
-                `)
-            }
+            await gh.sendRepositoryDispatch('updated-team-srv-dependencies', {})
         }
 
         console.log("Script completed successfully")

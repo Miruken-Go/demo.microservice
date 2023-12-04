@@ -1,14 +1,11 @@
 import * as bash     from '#infrastructure/bash.js'
 import * as logging  from '#infrastructure/logging.js'
 import * as git      from '#infrastructure/git.js'
+import * as gh       from '#infrastructure/gh.js'
 import { variables } from '#infrastructure/envVariables.js'
 
 variables.requireEnvVariables([
     'mirukenVersion'
-])
-
-variables.optionalEnvVariables([
-    'skipGitHubAction'
 ])
 
 async function main() {
@@ -26,12 +23,7 @@ async function main() {
             await git.commitAll(`Updated miruken to ${variables.mirukenVersion}`)
             await git.push();
 
-            if (!variables.skipGitHubAction) {
-                await bash.execute(`
-                    gh workflow run build-adb2c-api-connector-srv.yml
-                    gh workflow run build-adb2c-auth-srv.yml
-                `)
-            }
+            await gh.sendRepositoryDispatch('updated-adb2c', {})
         }
 
         console.log("Script completed successfully")

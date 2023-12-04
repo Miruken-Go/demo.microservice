@@ -1,6 +1,7 @@
 import * as logging  from '#infrastructure/logging.js'
 import * as az       from '#infrastructure/az.js'
 import * as bash     from '#infrastructure/bash.js'
+import * as gh       from '#infrastructure/gh.js'
 import { variables } from '#infrastructure/envVariables.js'
 
 import { 
@@ -87,6 +88,10 @@ async function main() {
                 `)
             }
         }
+
+        await gh.sendRepositoryDispatch(`deployed-${application.name}`, {
+            tag: variables.tag
+        })
 
         console.log("Script completed successfully")
     } catch (error) {

@@ -7,10 +7,6 @@ import { variables }    from '#infrastructure/envVariables.js'
 import { secrets }      from '#infrastructure/envSecrets.js'
 import { organization } from './config.js'
 
-variables.optionalEnvVariables([
-    'skipGitHubAction'
-])
-
 async function main() {
     try {
         logging.printEnvironmentVariables(variables)

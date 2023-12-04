@@ -2,14 +2,11 @@ import * as bash     from '#infrastructure/bash.js'
 import * as logging  from '#infrastructure/logging.js'
 import * as git      from '#infrastructure/git.js'
 import * as go       from '#infrastructure/go.js'
+import * as gh       from '#infrastructure/gh.js'
 import { variables } from '#infrastructure/envVariables.js'
 
 variables.requireEnvVariables([
     'repositoryPath'
-])
-
-variables.optionalEnvVariables([
-    'skipGitHubAction'
 ])
 
 async function main() {
@@ -42,13 +39,10 @@ async function main() {
         const mirukenVersion = await go.getModuleVersion('team-api', 'github.com/miruken-go/miruken')
         console.log(`mirukenVersion: [${mirukenVersion}]`)
       
-        if (!variables.skipGitHubAction) {
-            await bash.execute(`
-                gh workflow run update-team-dependencies.yml \
-                    -f mirukenVersion=${mirukenVersion}      \
-                    -f teamapiVersion=${version}             \
-            `)
-        }
+        await gh.sendRepositoryDispatch('built-team-api', {
+            mirukenVersion: mirukenVersion,
+            teamapiVersion: version,
+        })
 
         console.log("Script completed successfully")
     } catch (error) {

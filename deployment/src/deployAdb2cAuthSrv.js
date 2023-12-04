@@ -1,6 +1,7 @@
 import * as logging  from '#infrastructure/logging.js'
 import * as az       from '#infrastructure/az.js'
 import * as bash     from '#infrastructure/bash.js'
+import * as gh       from '#infrastructure/gh.js'
 import { B2C }       from '#infrastructure/b2c.js'
 import { variables } from '#infrastructure/envVariables.js'
 
@@ -107,6 +108,10 @@ async function main() {
 
         const appUrl = await az.getContainerAppUrl(application.containerAppName, application.resourceGroups.instance)
         await b2c.addRedirectUris(appRegistration.id, [`https://${appUrl}/oauth2-redirect.html`])
+
+        await gh.sendRepositoryDispatch(`deployed-${application.name}`, {
+            tag: variables.tag
+        })
 
         console.log("Script completed successfully")
     } catch (error) {

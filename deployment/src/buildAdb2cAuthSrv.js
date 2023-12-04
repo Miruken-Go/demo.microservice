@@ -2,13 +2,10 @@ import * as az          from '#infrastructure/az.js'
 import * as bash        from '#infrastructure/bash.js'
 import * as logging     from '#infrastructure/logging.js'
 import * as git         from '#infrastructure/git.js'
+import * as gh          from '#infrastructure/gh.js'
 import { variables }    from '#infrastructure/envVariables.js'
 import { secrets }      from '#infrastructure/envSecrets.js'
 import { organization } from './config.js'
-
-variables.optionalEnvVariables([
-    'skipGitHubAction'
-])
 
 async function main() {
     try {
@@ -50,14 +47,9 @@ async function main() {
 
         await git.tagAndPush(gitTag)
 
-        if (!variables.skipGitHubAction) {
-            await bash.execute(`
-                gh workflow run deploy-${appName}.yml \
-                    -f env=dev                     \
-                    -f instance=ci                 \
-                    -f tag=${version}              \
-            `)
-        }
+        await gh.sendRepositoryDispatch(`built-${appName}`, {
+            tag: version
+        })
 
         console.log("Script completed successfully")
     } catch (error) {

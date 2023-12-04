@@ -1,15 +1,12 @@
 import * as bash     from '#infrastructure/bash.js'
 import * as logging  from '#infrastructure/logging.js'
 import * as git      from '#infrastructure/git.js'
+import * as gh       from '#infrastructure/gh.js'
 import { variables } from '#infrastructure/envVariables.js'
 
 variables.requireEnvVariables([
     'mirukenVersion',
     'teamapiVersion'
-])
-
-variables.optionalEnvVariables([
-    'skipGitHubAction'
 ])
 
 async function main() {
@@ -29,11 +26,7 @@ async function main() {
             await git.commitAll(`Updated miruken to ${variables.mirukenVersion} and team-api to ${variables.teamapiVersion}`)
             await git.push();
 
-            if (!variables.skipGitHubAction) {
-                await bash.execute(`
-                    gh workflow run build-team.yml
-                `)
-            } 
+            await gh.sendRepositoryDispatch('updated-team-dependencies', {})
         }
 
         console.log("Script completed successfully")
