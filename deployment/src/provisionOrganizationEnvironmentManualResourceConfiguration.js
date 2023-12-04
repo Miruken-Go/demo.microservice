@@ -3,6 +3,7 @@ import * as gh       from '#infrastructure/gh.js'
 import { handle }    from '#infrastructure/handler.js'
 import { B2C }       from '#infrastructure/b2c.js'
 import { variables } from '#infrastructure/envVariables.js'
+import path          from 'node:path'
 
 import { 
     configDirectory,
@@ -26,7 +27,7 @@ handle(async () => {
     const b2c = new B2C(organization, variables.b2cDeploymentPipelineClientId)
 
     await b2c.configureAppRegistrations()
-    await b2c.configureCustomPolicies()
+    await b2c.configureCustomPolicies(path.join(configDirectory, 'custom-policies'))
 
     await gh.sendRepositoryDispatch(`provisioned-organization-environment-manual-resource-configuration`, {
         env:      organization.env,
