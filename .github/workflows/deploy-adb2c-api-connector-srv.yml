@@ -21,6 +21,8 @@ on:
         default: ''
         required: false
         type: string
+  repository_dispatch:
+    types: [built-adb2c-api-connector-srv]
 
 jobs:
   containerized_job:
@@ -34,7 +36,7 @@ jobs:
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
         env:                            ${{ inputs.env }}
         instance:                       ${{ inputs.instance }}
-        tag:                            ${{ inputs.tag }}
+        tag:                            ${{ inputs.tag || github.event.client_payload.tag }}
         repository:                     ${{ github.repository }}
         repositoryOwner:                ${{ github.repository_owner }}
     steps:

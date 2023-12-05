@@ -15,6 +15,8 @@ on:
         description: 'version of team'
         required: true
         type: string
+  repository_dispatch:
+    types: [built-team]
 
 permissions:
   contents: write
@@ -31,9 +33,9 @@ jobs:
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
         ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
         GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
-        mirukenVersion:                 ${{ inputs.mirukenVersion }}
-        teamapiVersion:                 ${{ inputs.teamapiVersion }}
-        teamVersion:                    ${{ inputs.teamVersion }}
+        mirukenVersion:                 ${{ inputs.mirukenVersion || github.event.client_payload.mirukenVersion }}
+        teamapiVersion:                 ${{ inputs.teamapiVersion || github.event.client_payload.teamapiVersion }}
+        teamVersion:                    ${{ inputs.teamVersion    || github.event.client_payload.teamVersion }}
         repository:                     ${{ github.repository }}
         repositoryOwner:                ${{ github.repository_owner }}
 

@@ -10,6 +10,8 @@ on:
     branches: [ "main" ]
     paths:
     - 'team-srv/**'
+  repository_dispatch:
+    types: [updated-team-srv-dependencies]
 
 permissions:
   contents: write

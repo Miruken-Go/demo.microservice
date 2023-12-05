@@ -8,7 +8,7 @@ on:
         required: true
         type: string
   repository_dispatch:
-    types: [miruken-version-created]
+    types: [built-miruken]
 
 permissions:
   contents: write
@@ -25,7 +25,7 @@ jobs:
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
         ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
         GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
-        mirukenVersion:                 ${{ inputs.mirukenVersion || github.event.client_payload.version }}
+        mirukenVersion:                 ${{ inputs.mirukenVersion || github.event.client_payload.mirukenVersion }}
         repository:                     ${{ github.repository }}
         repositoryOwner:                ${{ github.repository_owner }}
 
@@ -38,4 +38,4 @@ jobs:
       working-directory: ./deployment/src
       run: npm ci
     - name: Run updateTeamApiDependencies.js
-      run:  node ./deployment/src/updateTeamApiDependencies.js 
+      run:  node ./deployment/src/updateMiruken.js 

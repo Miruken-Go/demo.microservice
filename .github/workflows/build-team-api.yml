@@ -10,6 +10,8 @@ on:
     branches: [ "main" ]
     paths:
     - 'team-api/**'
+  repository_dispatch:
+    types: [updated-miruken-dependencies]
 
 permissions:
   contents: write

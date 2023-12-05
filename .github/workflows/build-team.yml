@@ -10,6 +10,8 @@ on:
     branches: [ "main" ]
     paths:
     - 'team/**'
+  repository_dispatch:
+    types: [updated-team-dependencies]
 
 permissions:
   contents: write
