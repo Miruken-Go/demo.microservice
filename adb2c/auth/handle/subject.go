@@ -1,7 +1,6 @@
 package handle
 
 import (
-	"errors"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/google/uuid"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
@@ -30,6 +29,11 @@ type (
 		play.Validates6[api.FindSubjects]
 		database *mongo.Database
 	}
+
+ 	subjectResult struct {
+		Subject           internal.Subject    `bson:"subject"`
+		RelatedPrincipals []internal.Principal `bson:"related_principals"`
+ 	}
 )
 
 
@@ -50,13 +54,6 @@ func (h *SubjectHandler) Constructor(
 		play.Rules{
 			play.Type[api.GetSubject](map[string]string{
 				"SubjectId": "required",
-			}),
-		}, nil, translator)
-
-	_ = h.Validates6.WithRules(
-		play.Rules{
-			play.Type[api.FindSubjects](map[string]string{
-				"PrincipalIds": "gt=0,required",
 			}),
 		}, nil, translator)
 }
@@ -148,19 +145,37 @@ func (h *SubjectHandler) Get(
 	  }, get api.GetSubject,
 	_*struct{args.Optional}, ctx context.Context,
 ) (api.Subject, miruken.HandleResult) {
-	var result internal.Subject
-	filter := bson.M{"_id": get.SubjectId}
-	subjects := h.database.Collection("subject")
-	err := subjects.FindOne(ctx, filter).Decode(&result)
-	if errors.Is(err, mongo.ErrNoDocuments) {
-		return api.Subject{}, miruken.NotHandled
-	} else if err != nil {
+	pipeline := []bson.M{
+		{
+			"$match": bson.M{
+				"subject_id": get.SubjectId,
+			},
+		},
+		joinPrincipals, unwindPrincipals,
+		{
+			"$group": bson.M{
+				"_id":                "$_id",
+				"subject_id":         bson.M{"$first": "$subject_id"},
+				"related_principals": bson.M{"$push": "$related_principals"},
+			},
+		},
+		joinSubject, unwindSubject, projectSubject,
+	}
+
+	subjectPrincipals := h.database.Collection("subject_principal")
+	cursor, err := subjectPrincipals.Aggregate(ctx, pipeline)
+	if err != nil {
 		return api.Subject{}, miruken.NotHandled.WithError(err)
 	}
-	return api.Subject{
-		Id:       result.ID,
-		ObjectId: result.ObjectID,
-	}, miruken.Handled
+
+	var result subjectResult
+	if cursor.Next(ctx) {
+		if err := cursor.Decode(&result); err != nil {
+			return api.Subject{}, miruken.NotHandled.WithError(err)
+		}
+		return result.mapSubject(), miruken.Handled
+	}
+	return api.Subject{}, miruken.NotHandled
 }
 
 func (h *SubjectHandler) Find(
@@ -171,55 +186,34 @@ func (h *SubjectHandler) Find(
 	_*struct{args.Optional}, ctx context.Context,
 ) ([]api.Subject, error) {
 	principalIds := find.PrincipalIds
-	pipeline := []bson.M{
-		{
-			"$match": bson.M{
-				"principal_id": bson.M{"$in": principalIds},
+
+	var pipeline []bson.M
+	if len(principalIds) > 0 {
+		pipeline = append(pipeline,
+			bson.M{
+				"$match": bson.M{
+					"principal_id": bson.M{"$in": principalIds},
+				},
 			},
-		},
-		{
-			"$lookup": bson.M{
-				"from":         "subject",
-				"localField":   "subject_id",
-				"foreignField": "_id",
-				"as":           "subject",
-			},
-		},
-		{
-			"$lookup": bson.M{
-				"from":         "principal",
-				"localField":   "principal_id",
-				"foreignField": "_id",
-				"as":           "matched_principals",
-			},
-		},
-		{
-			"$unwind": "$subject",
-		},
-		{
-			"$unwind": "$matched_principals",
-		},
-		{
-			"$group": bson.M{
-				"_id":   "$subject._id",
-				"subject": bson.M{"$first": "$subject"},
-				"matched_principals": bson.M{"$push": "$matched_principals"},
-				"count": bson.M{"$sum": 1},
-			},
-		},
-		{
-			"$match": bson.M{
-				"count": len(principalIds),
-			},
-		},
-		{
-			"$project": bson.M{
-				"_id":                0,
-				"subject":            1,
-				"matched_principals": 1,
-			},
-		},
+		)
 	}
+
+	pipeline = append(pipeline,
+		joinSubject, unwindSubject,
+		joinPrincipals, unwindPrincipals,
+		bson.M{
+			"$group": bson.M{
+				"_id":               "$subject._id",
+				"subject":            bson.M{"$first": "$subject"},
+				"related_principals": bson.M{"$push": "$related_principals"},
+				"count":              bson.M{"$sum": 1},
+			},
+		},
+		bson.M{
+			"$match": bson.M{"count": bson.M{"$gte": len(principalIds)}},
+		},
+		projectSubject,
+	)
 
 	subjectPrincipals := h.database.Collection("subject_principal")
 	cursor, err := subjectPrincipals.Aggregate(ctx, pipeline)
@@ -230,30 +224,74 @@ func (h *SubjectHandler) Find(
 		_ = cursor.Close(ctx)
 	}()
 
-	type Result struct {
-		Subject           internal.Subject     `bson:"subject"`
-		MatchedPrincipals []internal.Principal `bson:"matched_principals"`
-	}
-
-	var results []Result
+	var results []subjectResult
 	if err := cursor.All(ctx, &results); err != nil {
 		return nil, err
 	}
 
 	response := make([]api.Subject, len(results))
 	for i, result := range results {
-		principals := make([]api.Principal, len(result.MatchedPrincipals))
-		for j, principal := range result.MatchedPrincipals {
-			principals[j] = api.Principal{
-				Id:   principal.ID,
-				Name: principal.Name,
-			}
-		}
-		response[i] = api.Subject{
-			Id:        result.Subject.ID,
-			ObjectId:  result.Subject.ObjectID,
-			Principals: principals,
-		}
+		response[i] = result.mapSubject()
 	}
 	return response, nil
 }
+
+
+func (s subjectResult) mapSubject() api.Subject {
+	principals := make([]api.Principal, len(s.RelatedPrincipals))
+	for i, principal := range s.RelatedPrincipals {
+		tags := make([]api.Tag, len(principal.TagIDs))
+		for j, tagId := range principal.TagIDs {
+			tags[j] = api.Tag{
+				Id: tagId,
+			}
+		}
+		principals[i] = api.Principal{
+			Id:   principal.ID,
+			Name: principal.Name,
+			Tags: tags,
+		}
+	}
+
+	return api.Subject{
+		Id:         s.Subject.ID,
+		ObjectId:   s.Subject.ObjectID,
+		Principals: principals,
+	}
+}
+
+var (
+	joinSubject = bson.M{
+		"$lookup": bson.M{
+			"from":         "subject",
+			"localField":   "subject_id",
+			"foreignField": "_id",
+			"as":           "subject",
+		},
+	}
+
+	unwindSubject = bson.M{
+		"$unwind": "$subject",
+	}
+
+	joinPrincipals = bson.M{
+		"$lookup": bson.M{
+			"from":         "principal",
+			"localField":   "principal_id",
+			"foreignField": "_id",
+			"as":           "related_principals",
+		},
+	}
+
+	unwindPrincipals = bson.M{
+		"$unwind": "$related_principals",
+	}
+
+	projectSubject = bson.M{
+		"$project": bson.M{
+			"_id":                0,
+			"subject":            1,
+			"related_principals": 1,
+		},
+	}
+)
