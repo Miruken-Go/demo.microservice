@@ -30,17 +30,17 @@ jobs:
     container:
       image: ghcr.io/miruken-go/demo.microservice.build:1699298856
       env:
+        repository:                     ${{ github.repository }}
+        repositoryOwner:                ${{ github.repository_owner }}
         tenantId:                       ${{ vars.TENANT_ID }}
         subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
         deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
+        ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
+        GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
         env:                            ${{ inputs.env      || 'dev' }}
         instance:                       ${{ inputs.instance || 'ci'  }}
         tag:                            ${{ inputs.tag      || github.event.client_payload.tag }}
-        ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
-        GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
-        repository:                     ${{ github.repository }}
-        repositoryOwner:                ${{ github.repository_owner }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
