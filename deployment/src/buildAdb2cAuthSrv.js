@@ -48,6 +48,8 @@ handle(async () => {
     await git.tagAndPush(gitTag)
 
     await gh.sendRepositoryDispatch(`built-${appName}`, {
-        tag: version
+        env:      'dev',
+        instance: 'ci',
+        tag:      version,
     })
 })

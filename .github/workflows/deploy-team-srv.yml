@@ -38,8 +38,8 @@ jobs:
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
         ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
         GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
-        env:                            ${{ inputs.env      || 'dev' }}
-        instance:                       ${{ inputs.instance || 'ci'  }}
+        env:                            ${{ inputs.env      || github.event.client_payload.env }}
+        instance:                       ${{ inputs.instance || github.event.client_payload.instance }}
         tag:                            ${{ inputs.tag      || github.event.client_payload.tag }}
     steps:
     - name: Checkout repository
