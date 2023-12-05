@@ -30,7 +30,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
 // CosmosDb
 /////////////////////////////////////////////////////////////////////////////////////
 
-resource name_resource 'Microsoft.DocumentDb/databaseAccounts@2023-11-15-preview' = {
+resource cosmosdb 'Microsoft.DocumentDb/databaseAccounts@2023-11-15-preview' = {
   name:     prefix
   location: location
   kind:     'GlobalDocumentDB'
@@ -38,7 +38,6 @@ resource name_resource 'Microsoft.DocumentDb/databaseAccounts@2023-11-15-preview
     databaseAccountOfferType: 'Standard'
     locations: [
       {
-        id: '${prefix}-${location}'
         failoverPriority: 0
         locationName: location
       }
