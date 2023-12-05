@@ -1,4 +1,4 @@
-package handle
+package subject
 
 import (
 	ut "github.com/go-playground/universal-translator"
@@ -20,11 +20,11 @@ import "go.mongodb.org/mongo-driver/mongo"
 //go:generate $GOPATH/bin/miruken -tests
 
 type (
-	SubjectHandler struct {
+	Handler struct {
 		play.Validates1[api.CreateSubject]
 		play.Validates2[api.AssignPrincipals]
 		play.Validates3[api.RevokePrincipals]
-		play.Validates4[api.RemoveSubjects]
+		play.Validates4[api.RemoveSubject]
 		play.Validates5[api.GetSubject]
 		play.Validates6[api.FindSubjects]
 		database *mongo.Database
@@ -37,7 +37,7 @@ type (
 )
 
 
-func (h *SubjectHandler) Constructor(
+func (h *Handler) Constructor(
 	client *mongo.Client,
 	_*struct{args.Optional}, translator ut.Translator,
 ) {
@@ -50,6 +50,29 @@ func (h *SubjectHandler) Constructor(
 			}),
 		}, nil, translator)
 
+	_ = h.Validates2.WithRules(
+		play.Rules{
+			play.Type[api.AssignPrincipals](map[string]string{
+				"SubjectId":    "required",
+				"PrincipalIds": "gt=0,required",
+			}),
+		}, nil, translator)
+
+	_ = h.Validates3.WithRules(
+		play.Rules{
+			play.Type[api.RevokePrincipals](map[string]string{
+				"SubjectId":    "required",
+				"PrincipalIds": "gt=0,required",
+			}),
+		}, nil, translator)
+
+	_ = h.Validates4.WithRules(
+		play.Rules{
+			play.Type[api.RemoveSubject](map[string]string{
+				"SubjectId": "required",
+			}),
+		}, nil, translator)
+
 	_ = h.Validates5.WithRules(
 		play.Rules{
 			play.Type[api.GetSubject](map[string]string{
@@ -58,7 +81,7 @@ func (h *SubjectHandler) Constructor(
 		}, nil, translator)
 }
 
-func (h *SubjectHandler) Create(
+func (h *Handler) Create(
 	_*struct{
 		handles.It
 		authorizes.Required
@@ -80,7 +103,7 @@ func (h *SubjectHandler) Create(
 	}, nil
 }
 
-func (h *SubjectHandler) Assign(
+func (h *Handler) Assign(
 	_*struct{
 		handles.It
 		authorizes.Required
@@ -106,7 +129,7 @@ func (h *SubjectHandler) Assign(
 	return err
 }
 
-func (h *SubjectHandler) Revoke(
+func (h *Handler) Revoke(
 	_*struct{
 		handles.It
 		authorizes.Required
@@ -122,23 +145,19 @@ func (h *SubjectHandler) Revoke(
 	return err
 }
 
-func (h *SubjectHandler) Remove(
+func (h *Handler) Remove(
 	_*struct{
 		handles.It
 		authorizes.Required
-	  }, remove api.RemoveSubjects,
+	  }, remove api.RemoveSubject,
 	_*struct{args.Optional}, ctx context.Context,
 ) error {
-	if subjectIds := remove.SubjectIds; len(subjectIds) > 0 {
-		subjects := h.database.Collection("subject")
-		filter := bson.M{"_id": bson.M{"$in": subjectIds}}
-		_, err := subjects.DeleteMany(ctx, filter)
-		return err
-	}
-	return nil
+	subjects := h.database.Collection("subject")
+	_, err := subjects.DeleteOne(ctx, bson.M{"_id": remove.SubjectId})
+	return err
 }
 
-func (h *SubjectHandler) Get(
+func (h *Handler) Get(
 	_*struct{
 		handles.It
 		authorizes.Required
@@ -178,7 +197,7 @@ func (h *SubjectHandler) Get(
 	return api.Subject{}, miruken.NotHandled
 }
 
-func (h *SubjectHandler) Find(
+func (h *Handler) Find(
 	_*struct{
 		handles.It
 		authorizes.Required
@@ -259,6 +278,7 @@ func (s subjectResult) mapSubject() api.Subject {
 		Principals: principals,
 	}
 }
+
 
 var (
 	joinSubject = bson.M{

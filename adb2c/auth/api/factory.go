@@ -55,8 +55,8 @@ func (F *Factory) New(
 
 	case "api.CreateSubject":
 		return new(CreateSubject)
-	case "api.RemoveSubjects":
-		return new(RemoveSubjects)
+	case "api.RemoveSubject":
+		return new(RemoveSubject)
 	case "api.GetSubject":
 		return new(GetSubject)
 	case "api.FindSubjects":
@@ -72,8 +72,8 @@ func (F *Factory) New(
 		return new(AssignPrincipals)
 	case "api.RevokePrincipals":
 		return new(RevokePrincipals)
-	case "api.RemovePrincipals":
-		return new(RemovePrincipals)
+	case "api.RemovePrincipal":
+		return new(RemovePrincipal)
 	case "api.GetPrincipal":
 		return new(GetPrincipal)
 	case "api.FindPrincipals":
@@ -89,8 +89,8 @@ func (F *Factory) New(
 		return new(AssignEntitlements)
 	case "api.RevokeEntitlements":
 		return new(RevokeEntitlements)
-	case "api.RemoveEntitlements":
-		return new(RevokeEntitlements)
+	case "api.RemoveEntitlement":
+		return new(RemoveEntitlement)
 	case "api.GetEntitlement":
 		return new(GetEntitlement)
 	case "api.FindEntitlements":
@@ -98,8 +98,8 @@ func (F *Factory) New(
 
 	case "api.CreateTag":
 		return new(CreateTag)
-	case "api.RemoveTags":
-		return new(RemoveTags)
+	case "api.RemoveTag":
+		return new(RemoveTag)
 	case "api.GetTag":
 		return new(GetTag)
 	case "api.FindTags":

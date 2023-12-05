@@ -1,4 +1,6 @@
-package handle
+package entitlement
+
+//go:generate $GOPATH/bin/miruken -tests
 
 import (
 	"errors"
@@ -15,19 +17,19 @@ import (
 )
 
 type (
-	EntitlementHandler struct {
+	Handler struct {
 		database *mongo.Database
 	}
 )
 
 
-func (h *EntitlementHandler) Constructor(
+func (h *Handler) Constructor(
 	client *mongo.Client,
 ) {
 	h.database = client.Database("adb2c")
 }
 
-func (h *EntitlementHandler) Create(
+func (h *Handler) Create(
 	_*struct{
 		handles.It
 		authorizes.Required
@@ -48,23 +50,37 @@ func (h *EntitlementHandler) Create(
 	}, nil
 }
 
-func (h *EntitlementHandler) Remove(
+func (h *Handler) Tag(
 	_*struct{
 		handles.It
 		authorizes.Required
-	}, remove api.RemoveEntitlements,
-	_*struct{args.Optional}, ctx context.Context,
+	}, tag api.TagEntitlement,
 ) error {
-	if entitlementIds := remove.EntitlementIds; len(entitlementIds) > 0 {
-		entitlements := h.database.Collection("entitlement")
-		filter := bson.M{"_id": bson.M{"$in": entitlementIds}}
-		_, err := entitlements.DeleteMany(ctx, filter)
-		return err
-	}
 	return nil
 }
 
-func (h *EntitlementHandler) Get(
+func (h *Handler) Untag(
+	_*struct{
+		handles.It
+		authorizes.Required
+	}, untag api.UntagEntitlement,
+) error {
+	return nil
+}
+
+func (h *Handler) Remove(
+	_*struct{
+		handles.It
+		authorizes.Required
+	}, remove api.RemoveEntitlement,
+	_*struct{args.Optional}, ctx context.Context,
+) error {
+	entitlements := h.database.Collection("entitlement")
+	_, err := entitlements.DeleteOne(ctx, bson.M{"_id": remove.EntitlementId})
+	return err
+}
+
+func (h *Handler) Get(
 	_ *handles.It, get api.GetEntitlement,
 	_*struct{args.Optional}, ctx context.Context,
 ) (api.Entitlement, miruken.HandleResult) {
@@ -83,7 +99,7 @@ func (h *EntitlementHandler) Get(
 	}, miruken.Handled
 }
 
-func (h *EntitlementHandler) Find(
+func (h *Handler) Find(
 	_ *handles.It, find api.FindEntitlements,
 ) ([]api.Entitlement, error) {
 	return []api.Entitlement{

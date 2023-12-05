@@ -1,4 +1,6 @@
-package handle
+package tag
+
+//go:generate $GOPATH/bin/miruken -tests
 
 import (
 	"errors"
@@ -18,8 +20,9 @@ import (
 )
 
 type (
-	TagHandler struct {
+	Handler struct {
 		play.Validates1[api.CreateTag]
+		play.Validates2[api.RemoveTag]
 		play.Validates3[api.GetTag]
 		play.Validates4[api.FindTags]
 		database *mongo.Database
@@ -27,7 +30,7 @@ type (
 )
 
 
-func (h *TagHandler) Constructor(
+func (h *Handler) Constructor(
 	client *mongo.Client,
 	_*struct{args.Optional}, translator ut.Translator,
 ) {
@@ -40,6 +43,13 @@ func (h *TagHandler) Constructor(
 			}),
 		}, nil, translator)
 
+	_ = h.Validates2.WithRules(
+		play.Rules{
+			play.Type[api.RemoveTag](map[string]string{
+				"TagId": "required",
+			}),
+		}, nil, translator)
+
 	_ = h.Validates3.WithRules(
 		play.Rules{
 			play.Type[api.GetTag](map[string]string{
@@ -48,7 +58,7 @@ func (h *TagHandler) Constructor(
 		}, nil, translator)
 }
 
-func (h *TagHandler) Create(
+func (h *Handler) Create(
 	_*struct{
 		handles.It
 		authorizes.Required
@@ -68,23 +78,19 @@ func (h *TagHandler) Create(
 	}, nil
 }
 
-func (h *TagHandler) Remove(
+func (h *Handler) Remove(
 	_*struct{
 		handles.It
 		authorizes.Required
-	  }, remove api.RemoveTags,
+	  }, remove api.RemoveTag,
 	_*struct{args.Optional}, ctx context.Context,
 ) error {
-	if tagsIds := remove.TagIds; len(tagsIds) > 0 {
-		tags := h.database.Collection("tag")
-		filter := bson.M{"_id": bson.M{"$in": tagsIds}}
-		_, err := tags.DeleteMany(ctx, filter)
-		return err
-	}
-	return nil
+	tags := h.database.Collection("tag")
+	_, err := tags.DeleteOne(ctx, bson.M{"_id": remove.TagId})
+	return err
 }
 
-func (h *TagHandler) Get(
+func (h *Handler) Get(
 	_ *handles.It, get api.GetTag,
 	_*struct{args.Optional}, ctx context.Context,
 ) (api.Tag, miruken.HandleResult) {
@@ -103,7 +109,7 @@ func (h *TagHandler) Get(
 	}, miruken.Handled
 }
 
-func (h *TagHandler) Find(
+func (h *Handler) Find(
 	_ *handles.It, find api.FindTags,
 	_*struct{args.Optional}, ctx context.Context,
 ) ([]api.Tag, error) {

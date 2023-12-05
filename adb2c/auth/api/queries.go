@@ -16,8 +16,8 @@ type (
 	}
 
 	FindPrincipals struct {
-		Name string
-		Tags []Tag
+		Name   string
+		TagIds []uuid.UUID
 	}
 
 	GetEntitlement struct {

@@ -22,8 +22,8 @@ type (
 		PrincipalIds []uuid.UUID
 	}
 
-	RemoveSubjects struct {
-		SubjectIds []uuid.UUID
+	RemoveSubject struct {
+		SubjectId uuid.UUID
 	}
 
 
@@ -57,8 +57,8 @@ type (
 		EntitlementIds []uuid.UUID
 	}
 
-	RemovePrincipals struct {
-		PrincipalIds []uuid.UUID
+	RemovePrincipal struct {
+		PrincipalId uuid.UUID
 	}
 
 
@@ -81,8 +81,8 @@ type (
 		TagIds        []uuid.UUID
 	}
 
-	RemoveEntitlements struct {
-		EntitlementIds []uuid.UUID
+	RemoveEntitlement struct {
+		EntitlementId uuid.UUID
 	}
 
 
@@ -94,8 +94,8 @@ type (
 		TagId uuid.UUID
 	}
 
-	RemoveTags struct {
-		TagIds []uuid.UUID
+	RemoveTag struct {
+		TagId uuid.UUID
 	}
 )
 
