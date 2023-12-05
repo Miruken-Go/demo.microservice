@@ -31,6 +31,8 @@ jobs:
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
         env:                            ${{ inputs.env }}
         instance:                       ${{ inputs.instance }}
+        ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
+        GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
         repository:                     ${{ github.repository }}
         repositoryOwner:                ${{ github.repository_owner }}
     steps:

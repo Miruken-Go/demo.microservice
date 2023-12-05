@@ -37,6 +37,8 @@ jobs:
         env:                            ${{ inputs.env      || 'dev' }}
         instance:                       ${{ inputs.instance || 'ci'  }}
         tag:                            ${{ inputs.tag      || github.event.client_payload.tag }}
+        ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
+        GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
         repository:                     ${{ github.repository }}
         repositoryOwner:                ${{ github.repository_owner }}
     steps:
