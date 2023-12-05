@@ -50,4 +50,4 @@ jobs:
       working-directory: ./deployment/src
       run: npm ci
     - name: Run deployTeamsrv.js
-      run:  node ./deployment/src/deployTeamsrv.js
+      run:  node --trace-uncaught ./deployment/src/deployTeamsrv.js

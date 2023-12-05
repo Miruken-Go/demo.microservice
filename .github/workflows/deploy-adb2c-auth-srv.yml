@@ -50,4 +50,4 @@ jobs:
       working-directory: ./deployment/src
       run: npm ci
     - name: Run deployAdb2cAuthSrv.js
-      run:  node ./deployment/src/deployAdb2cAuthSrv.js
+      run:  node --trace-uncaught ./deployment/src/deployAdb2cAuthSrv.js
