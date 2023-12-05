@@ -282,6 +282,8 @@ github.com/miruken-go/miruken v0.30.70 h1:8l+ijtn322dnj90qgisD7yytUByHdWkprQYOuO
 github.com/miruken-go/miruken v0.30.70/go.mod h1:blzQiFc3ijdFwQh6Eil0Oku2XC4FmgjJTuAS69P61Cw=
 github.com/miruken-go/miruken v0.30.71 h1:B+/75poiD0mm/AFD1qtGWJ+csheRH62fDfa+Jf7c91k=
 github.com/miruken-go/miruken v0.30.71/go.mod h1:UkUtcs6anB3EZfQXFCeFp8og+q6crF7hKKTesbtxCkQ=
+github.com/miruken-go/miruken v0.30.72 h1:3qb0nEhpyfnxMDk5TP6WNzejBU8D3Nsc5x8qbdOcj7E=
+github.com/miruken-go/miruken v0.30.72/go.mod h1:UkUtcs6anB3EZfQXFCeFp8og+q6crF7hKKTesbtxCkQ=
 github.com/mitchellh/cli v1.0.0/go.mod h1:hNIlj7HEI86fIcpObd7a0FcrxTWetlwJDGcceTlRvqc=
 github.com/mitchellh/cli v1.1.0/go.mod h1:xcISNoH86gajksDmfB23e/pu+B+GeFRMYmoHXxx3xhI=
 github.com/mitchellh/copystructure v1.0.0/go.mod h1:SNtv71yrdKgLRyLFxmLdkAbkKEFWgYaq1OVrnRcwhnw=

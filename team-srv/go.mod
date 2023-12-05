@@ -8,7 +8,7 @@ require (
 	github.com/knadh/koanf v1.5.0
 	github.com/miruken-go/demo.microservice/adb2c v0.1.1
 	github.com/miruken-go/demo.microservice/team v0.2.61
-	github.com/miruken-go/miruken v0.30.71
+	github.com/miruken-go/miruken v0.30.72
 	github.com/rs/zerolog v1.31.0
 )
 
