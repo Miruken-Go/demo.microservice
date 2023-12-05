@@ -29,6 +29,7 @@ handle(async () => {
             --resource-group ${organization.resourceGroups.common} \
             --mode complete                                        \
             --parameters                                           \
+                prefix=${organization.resourceGroups.common}       \
                 keyVaultName=${organization.keyVaultName}          \
                 location=${organization.location}                  \
     `)
