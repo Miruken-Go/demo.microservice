@@ -262,6 +262,8 @@ github.com/miruken-go/demo.microservice/team v0.2.62 h1:9lj2S16sXhvx5suK4Hqm1pMF
 github.com/miruken-go/demo.microservice/team v0.2.62/go.mod h1:Or8ZeiB84kSXUNxlosjI9v2yxmSUM4TkikZDI+8Y3/A=
 github.com/miruken-go/demo.microservice/team v0.2.63 h1:sbdk3zu0jIctvb4ZUK3Cj8rGEeR+DfRVchWsT/LC8d0=
 github.com/miruken-go/demo.microservice/team v0.2.63/go.mod h1:V7pclny+rYmPy3HUAGruPJu+7LU6Aw2xyuniMcjrBn4=
+github.com/miruken-go/demo.microservice/team v0.2.64 h1:ZTE5bpemd+W9CXYhtoxzBJl9rGJZm0HomIIuANnwnvs=
+github.com/miruken-go/demo.microservice/team v0.2.64/go.mod h1:FMetm8aw51Lkhj5/jZORhBzrg14apZpHYtJnM+N/1xs=
 github.com/miruken-go/demo.microservice/team-api v0.1.0 h1:mc8Rkrf1TWrvlPE4B2qK+cN3Q+J3F9nLeUCWE3jO31I=
 github.com/miruken-go/demo.microservice/team-api v0.1.0/go.mod h1:2gEfgfFXRcojHFXtyJXGeidc5ulWyAEs5LnhCQ/8QL8=
 github.com/miruken-go/demo.microservice/team-api v0.1.2 h1:8oXJelPzE+LY6ejLlE2lm6wiO024biaRRMfjYDvNQCc=
@@ -294,6 +296,8 @@ github.com/miruken-go/demo.microservice/team-api v0.1.24 h1:U4BFmGrTDvHD47ApLGLI
 github.com/miruken-go/demo.microservice/team-api v0.1.24/go.mod h1:gsK8qgTiYbcF3NAYuCeb3/rkVsTgIanyhK1618+8FTo=
 github.com/miruken-go/demo.microservice/team-api v0.1.25 h1:XQ2Wgy1RwRFJbRw2zwxCtCsw1J0nxqd+7kN/7oOCN50=
 github.com/miruken-go/demo.microservice/team-api v0.1.25/go.mod h1:inTs9AyBYndhJYv/JvVgjDPtU+iXd26kUus9Az/rqjY=
+github.com/miruken-go/demo.microservice/team-api v0.1.26 h1:wemIk4hKphhtFpAOAZXocHDHKiE7aiLTciY5xhx5XNk=
+github.com/miruken-go/demo.microservice/team-api v0.1.26/go.mod h1:waYE9CytYQXuxnei9AXVXRKXY6UEiBXfn+yYwmGrniY=
 github.com/miruken-go/demo.microservice/teamapi v0.10.38 h1:yJ8tlceUdSyu2L8qAykugp7PlYQu65HRYcDVAjk8Sj8=
 github.com/miruken-go/demo.microservice/teamapi v0.10.38/go.mod h1:RMcWPvYrp6AFXXqFkVLix0u9nL3+lo+Fi9VoV67rN5U=
 github.com/miruken-go/miruken v0.30.45 h1:p2VDe7H9HAf0jTSmFTndKWVkf7G/ttHKXTQbNLwScFc=
@@ -332,6 +336,8 @@ github.com/miruken-go/miruken v0.30.74 h1:bnJDEraGllARmdj7Ltv/6NE3HUfrIuEDEXIj0m
 github.com/miruken-go/miruken v0.30.74/go.mod h1:UkUtcs6anB3EZfQXFCeFp8og+q6crF7hKKTesbtxCkQ=
 github.com/miruken-go/miruken v0.30.75 h1:21wo3/JJ7ptQTUDR6pt+SjT0YM8Ya2VNfGwrE7nhapQ=
 github.com/miruken-go/miruken v0.30.75/go.mod h1:UkUtcs6anB3EZfQXFCeFp8og+q6crF7hKKTesbtxCkQ=
+github.com/miruken-go/miruken v0.30.76 h1:cn+EKbrJRJhpH5GqQLiOXWBFseJXThdv+j1R3+sE1eA=
+github.com/miruken-go/miruken v0.30.76/go.mod h1:UkUtcs6anB3EZfQXFCeFp8og+q6crF7hKKTesbtxCkQ=
 github.com/mitchellh/cli v1.0.0/go.mod h1:hNIlj7HEI86fIcpObd7a0FcrxTWetlwJDGcceTlRvqc=
 github.com/mitchellh/cli v1.1.0/go.mod h1:xcISNoH86gajksDmfB23e/pu+B+GeFRMYmoHXxx3xhI=
 github.com/mitchellh/copystructure v1.0.0/go.mod h1:SNtv71yrdKgLRyLFxmLdkAbkKEFWgYaq1OVrnRcwhnw=
