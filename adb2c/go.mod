@@ -9,7 +9,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/google/uuid v1.4.0
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/miruken v0.30.72
+	github.com/miruken-go/miruken v0.30.74
 	github.com/rs/zerolog v1.31.0
 	github.com/stretchr/testify v1.8.4
 	go.mongodb.org/mongo-driver v1.13.0
