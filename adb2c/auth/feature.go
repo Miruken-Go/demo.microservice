@@ -6,16 +6,18 @@ import (
 	"github.com/miruken-go/demo.microservice/adb2c/auth/principal"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/subject"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/tag"
+	"github.com/miruken-go/demo.microservice/adb2c/azure"
 	"github.com/miruken-go/demo.microservice/adb2c/mongo"
-	"github.com/miruken-go/miruken"
+	"github.com/miruken-go/miruken/setup"
 )
 
-var Feature = miruken.FeatureSet(
+var Feature = setup.FeatureSet(
 	api.Feature,
 	subject.Feature,
 	principal.Feature,
 	entitlement.Feature,
 	tag.Feature,
-	mongo.Feature())
+	mongo.Feature(),
+	azure.Feature())
 
 

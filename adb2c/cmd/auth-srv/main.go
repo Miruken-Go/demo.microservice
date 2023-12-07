@@ -4,7 +4,7 @@ import (
 	"errors"
 	auth2 "github.com/miruken-go/demo.microservice/adb2c/auth"
 	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
-	"github.com/miruken-go/miruken/context"
+	"github.com/miruken-go/miruken/setup"
 	"net/http"
 	"os"
 
@@ -12,7 +12,6 @@ import (
 	"github.com/go-logr/zerologr"
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/providers/env"
-	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
 	"github.com/miruken-go/miruken/api/http/httpsrv/openapi"
@@ -99,30 +98,29 @@ func main() {
 		},
 	})
 
-	// initialize miruken
-	handler, err := miruken.Setup(
+	// initialize context
+	ctx, err := setup.New(
 		auth2.Feature, jwt.Feature(), play.Feature(),
 		config.Feature(koanfp.P(k)), stdjson.Feature(),
 		logs.Feature(logger), openapiGen).
 		Specs(&api.GoPolymorphism{}).
 		Options(stdjson.CamelCase).
-		Handler()
+		Context()
 
 	if err != nil {
 		logger.Error(err, "setup failed")
 		os.Exit(1)
 	}
 
-	ctx := context.New(handler)
 	defer ctx.End(nil)
 
-	// configure routes
-	var mux http.ServeMux
-
-	// Polymorphic miruken endpoints
+	// Polymorphic api endpoints
 	poly := httpsrv.Api(ctx,
 		auth.WithFlowAlias("Login.OAuth").Bearer(),
 	)
+
+	// configure routes
+	var mux http.ServeMux
 	mux.Handle("/process", poly)
 	mux.Handle("/process/", poly)
 	mux.Handle("/publish", poly)

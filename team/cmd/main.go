@@ -8,7 +8,6 @@ import (
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/miruken-go/demo.microservice/team"
-	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
 	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
@@ -17,9 +16,9 @@ import (
 	"github.com/miruken-go/miruken/api/json/stdjson"
 	"github.com/miruken-go/miruken/config"
 	koanfp "github.com/miruken-go/miruken/config/koanf"
-	context2 "github.com/miruken-go/miruken/context"
 	"github.com/miruken-go/miruken/logs"
 	"github.com/miruken-go/miruken/security/jwt"
+	"github.com/miruken-go/miruken/setup"
 	play "github.com/miruken-go/miruken/validates/play"
 	"github.com/rs/zerolog"
 	"golang.org/x/net/context"
@@ -90,26 +89,26 @@ func main() {
 		},
 	})
 
-	// initialize miruken
-	handler, err := miruken.Setup(
+	// initialize context
+	ctx, err := setup.New(
 		team.Feature, jwt.Feature(),
 		auth.Feature(), play.Feature(),
 		config.Feature(koanfp.P(k)), stdjson.Feature(),
 		logs.Feature(logger), openapiGen).
 		Specs(&api.GoPolymorphism{}).
 		Options(stdjson.CamelCase).
-		Handler()
+		Context()
 
 	if err != nil {
 		logger.Error(err, "setup failed")
 		os.Exit(1)
 	}
 
-	ctx := context2.New(handler)
 	defer ctx.End(nil)
 
 	docs := openapiGen.Docs()
 
+	// Polymorphic api endpoints
 	h := httpsrv.Api(ctx,
 		auth.WithFlowAlias("login.oauth").Bearer(),
 	)
