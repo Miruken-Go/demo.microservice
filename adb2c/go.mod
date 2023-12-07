@@ -3,6 +3,7 @@ module github.com/miruken-go/demo.microservice/adb2c
 go 1.21
 
 require (
+	github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos v0.3.6
 	github.com/getkin/kin-openapi v0.122.0
 	github.com/go-logr/logr v1.3.0
 	github.com/go-logr/zerologr v1.2.3
@@ -12,7 +13,7 @@ require (
 	github.com/miruken-go/miruken v0.30.79
 	github.com/rs/zerolog v1.31.0
 	github.com/stretchr/testify v1.8.4
-	go.mongodb.org/mongo-driver v1.13.0
+	go.mongodb.org/mongo-driver v1.13.1
 	golang.org/x/net v0.19.0
 )
 
@@ -20,8 +21,7 @@ require (
 	dario.cat/mergo v1.0.0 // indirect
 	github.com/Azure/azure-sdk-for-go v68.0.0+incompatible // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.9.0 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos v0.3.6 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/internal v1.5.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/internal v1.5.1 // indirect
 	github.com/MicahParks/keyfunc/v2 v2.1.0 // indirect
 	github.com/Rican7/conjson v0.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
