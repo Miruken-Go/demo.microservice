@@ -6,7 +6,7 @@ import (
 	"errors"
 	"github.com/google/uuid"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
-	"github.com/miruken-go/demo.microservice/adb2c/auth/internal"
+	"github.com/miruken-go/demo.microservice/adb2c/auth/internal/model"
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/args"
 	"github.com/miruken-go/miruken/handles"
@@ -36,7 +36,7 @@ func (h *Handler) Create(
 	  }, create api.CreateEntitlement,
 	_*struct{args.Optional}, ctx context.Context,
 ) (api.EntitlementCreated, error) {
-	entitlement := internal.Entitlement{
+	entitlement := model.EntitlementM{
 		ID:      uuid.New(),
 		Name:    create.Name,
 		TagIDs:  create.TagIds,
@@ -84,7 +84,7 @@ func (h *Handler) Get(
 	_ *handles.It, get api.GetEntitlement,
 	_*struct{args.Optional}, ctx context.Context,
 ) (api.Entitlement, miruken.HandleResult) {
-	var result internal.Entitlement
+	var result model.EntitlementM
 	filter := bson.M{"_id": get.EntitlementId}
 	entitlements := h.database.Collection("entitlement")
 	err := entitlements.FindOne(ctx, filter).Decode(&result)

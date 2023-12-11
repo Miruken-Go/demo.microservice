@@ -1,4 +1,4 @@
-package internal
+package model
 
 import (
 	"github.com/google/uuid"
@@ -7,18 +7,38 @@ import (
 
 type (
 	Subject struct {
+		Id           string    `json:"id"`
+		ObjectId     string    `json:"objectId"`
+		PrincipalIds []string  `json:"principalIds"`
+		CreatedAt    time.Time `json:"createdAt"`
+	}
+
+	Principal struct {
+		Id             string   `json:"id"`
+		Type           string   `json:"type"`
+		Name           string   `json:"name"`
+		Scope          string   `json:"scope"`
+		EntitlementIds []string `json:"entitlementIds"`
+	}
+
+	Entitlement struct {
+		Id   string `json:"id"`
+		Name string `json:"name"`
+	}
+
+	SubjectM struct {
 		ID        uuid.UUID `bson:"_id,omitempty"`
 		ObjectID  string    `bson:"object_id,omitempty"`
 		CreatedAt time.Time `bson:"created_at"`
 	}
 
-	Principal struct {
+	PrincipalM struct {
 		ID     uuid.UUID   `bson:"_id,omitempty"`
 		Name   string      `bson:"name"`
 		TagIDs []uuid.UUID `bson:"tags"`
 	}
 
-	Entitlement struct {
+	EntitlementM struct {
 		ID     uuid.UUID  `bson:"_id,omitempty"`
 		Name   string      `bson:"name"`
 		TagIDs []uuid.UUID `bson:"tags"`

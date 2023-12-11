@@ -7,7 +7,7 @@ import (
 	ut "github.com/go-playground/universal-translator"
 	"github.com/google/uuid"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
-	"github.com/miruken-go/demo.microservice/adb2c/auth/internal"
+	"github.com/miruken-go/demo.microservice/adb2c/auth/internal/model"
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/args"
 	"github.com/miruken-go/miruken/handles"
@@ -65,7 +65,7 @@ func (h *Handler) Create(
 	}, create api.CreateTag,
 	_*struct{args.Optional}, ctx context.Context,
 ) (api.TagCreated, error) {
-	tag := internal.Tag{
+	tag := model.Tag{
 		ID:   uuid.New(),
 		Name: create.Name,
 	}
@@ -94,7 +94,7 @@ func (h *Handler) Get(
 	_ *handles.It, get api.GetTag,
 	_*struct{args.Optional}, ctx context.Context,
 ) (api.Tag, miruken.HandleResult) {
-	var result internal.Tag
+	var result model.Tag
 	filter := bson.M{"_id": get.TagId}
 	tags   := h.database.Collection("tag")
 	err    := tags.FindOne(ctx, filter).Decode(&result)
@@ -130,7 +130,7 @@ func (h *Handler) Find(
 		_ = cursor.Close(ctx)
 	}()
 
-	var results []internal.Tag
+	var results []model.Tag
 	err = cursor.All(ctx, &results)
 
 	tagResults := make([]api.Tag, len(results), len(results))

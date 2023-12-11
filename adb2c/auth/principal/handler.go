@@ -7,7 +7,7 @@ import (
 	ut "github.com/go-playground/universal-translator"
 	"github.com/google/uuid"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
-	"github.com/miruken-go/demo.microservice/adb2c/auth/internal"
+	"github.com/miruken-go/demo.microservice/adb2c/auth/internal/model"
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/args"
 	"github.com/miruken-go/miruken/handles"
@@ -32,8 +32,8 @@ type (
 	}
 
 	principalResult struct {
-		Principal           internal.Principal     `bson:"principal"`
-		RelatedEntitlements []internal.Entitlement `bson:"related_entitlements"`
+		Principal           model.PrincipalM     `bson:"principal"`
+		RelatedEntitlements []model.EntitlementM `bson:"related_entitlements"`
 	}
 )
 
@@ -106,7 +106,7 @@ func (h *Handler) Create(
 	  }, create api.CreatePrincipal,
 	_*struct{args.Optional}, ctx context.Context,
 ) (api.PrincipalCreated, error) {
-	principal := internal.Principal{
+	principal := model.PrincipalM{
 		ID:     uuid.New(),
 		Name:   create.Name,
 		TagIDs: create.TagIds,
@@ -186,7 +186,7 @@ func (h *Handler) Get(
 	_ *handles.It, get api.GetPrincipal,
 	_*struct{args.Optional}, ctx context.Context,
 ) (api.Principal, miruken.HandleResult) {
-	var result internal.Principal
+	var result model.PrincipalM
 	filter := bson.M{"_id": get.PrincipalId}
 	principals := h.database.Collection("principal")
 	err := principals.FindOne(ctx, filter).Decode(&result)
