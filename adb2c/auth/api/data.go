@@ -3,12 +3,6 @@ package api
 import "github.com/google/uuid"
 
 type (
-	Tag struct {
-		Id          uuid.UUID
-		Name        string
-		Description string
-	}
-
 	Subject struct {
 		Id         uuid.UUID
 		ObjectId   string
@@ -17,14 +11,15 @@ type (
 
 	Principal struct {
 		Id           uuid.UUID
+		Type         string
 		Name         string
-		Tags         []Tag
+		Domain       string
 		Entitlements []Entitlement
 	}
 
 	Entitlement struct {
-		Id   uuid.UUID
-		Name string
-		Tags []Tag
+		Id     uuid.UUID
+		Name   string
+		Domain string
 	}
 )

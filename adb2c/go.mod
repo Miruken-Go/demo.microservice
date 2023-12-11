@@ -4,11 +4,13 @@ go 1.21
 
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos v0.3.6
+	github.com/btnguyen2k/gocosmos v0.3.0
 	github.com/getkin/kin-openapi v0.122.0
 	github.com/go-logr/logr v1.3.0
 	github.com/go-logr/zerologr v1.2.3
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/google/uuid v1.4.0
+	github.com/jmoiron/sqlx v1.3.5
 	github.com/knadh/koanf v1.5.0
 	github.com/miruken-go/miruken v0.30.79
 	github.com/rs/zerolog v1.31.0
@@ -20,10 +22,15 @@ require (
 require (
 	dario.cat/mergo v1.0.0 // indirect
 	github.com/Azure/azure-sdk-for-go v68.0.0+incompatible // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.9.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.9.1 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.5.1 // indirect
 	github.com/MicahParks/keyfunc/v2 v2.1.0 // indirect
 	github.com/Rican7/conjson v0.1.0 // indirect
+	github.com/btnguyen2k/consu/checksum v1.1.0 // indirect
+	github.com/btnguyen2k/consu/gjrc v0.2.1 // indirect
+	github.com/btnguyen2k/consu/olaf v0.1.3 // indirect
+	github.com/btnguyen2k/consu/reddo v0.1.8 // indirect
+	github.com/btnguyen2k/consu/semita v0.1.5 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect

@@ -9,7 +9,6 @@ type Factory struct{}
 
 func (F *Factory) New(
 	_*struct{
-		t creates.It `key:"api.Tag"`
 		s creates.It `key:"api.Subject"`
 		p creates.It `key:"api.Principal"`
 		e creates.It `key:"api.Entitlement"`
@@ -22,30 +21,19 @@ func (F *Factory) New(
 		fs creates.It `key:"api.FindSubjects"`
 
 		cp creates.It `key:"api.CreatePrincipal"`
-		tp creates.It `key:"api.TagPrincipal"`
-		up creates.It `key:"api.UntagPrincipal"`
 	    ae creates.It `key:"api.AssignEntitlements"`
 	    re creates.It `key:"api.RevokeEntitlements"`
-		dp creates.It `key:"api.RemovePrincipals"`
+		dp creates.It `key:"api.RemovePrincipal"`
 		gp creates.It `key:"api.GetPrincipal"`
 		fp creates.It `key:"api.FindPrincipals"`
 
 		ce creates.It `key:"api.CreateEntitlement"`
-		te creates.It `key:"api.TagEntitlement"`
-		ue creates.It `key:"api.UntagEntitlement"`
-		de creates.It `key:"api.RemoveEntitlements"`
+		de creates.It `key:"api.RemoveEntitlement"`
 		ge creates.It `key:"api.GetEntitlement"`
 		fe creates.It `key:"api.FindEntitlements"`
-
-		ct creates.It `key:"api.CreateTag"`
-		rt creates.It `key:"api.RemoveTags"`
-		gt creates.It `key:"api.GetTag"`
-		ft creates.It `key:"api.FindTags"`
 	  }, create *creates.It,
 ) any {
 	switch create.Key() {
-	case "api.Tag":
-		return new(Tag)
 	case "api.Subject":
 		return new(Subject)
 	case "api.Principal":
@@ -55,6 +43,10 @@ func (F *Factory) New(
 
 	case "api.CreateSubject":
 		return new(CreateSubject)
+	case "api.AssignPrincipals":
+		return new(AssignPrincipals)
+	case "api.RevokePrincipals":
+		return new(RevokePrincipals)
 	case "api.RemoveSubject":
 		return new(RemoveSubject)
 	case "api.GetSubject":
@@ -64,14 +56,10 @@ func (F *Factory) New(
 
 	case "api.CreatePrincipal":
 		return new(CreatePrincipal)
-	case "api.TagPrincipal":
-		return new(TagPrincipal)
-	case "api.UntagPrincipal":
-		return new(UntagPrincipal)
-	case "api.AssignPrincipals":
-		return new(AssignPrincipals)
-	case "api.RevokePrincipals":
-		return new(RevokePrincipals)
+	case "api.AssignEntitlements":
+		return new(AssignEntitlements)
+	case "api.RevokeEntitlements":
+		return new(RevokeEntitlements)
 	case "api.RemovePrincipal":
 		return new(RemovePrincipal)
 	case "api.GetPrincipal":
@@ -81,29 +69,12 @@ func (F *Factory) New(
 
 	case "api.CreateEntitlement":
 		return new(CreateEntitlement)
-	case "api.TagEntitlement":
-		return new(TagEntitlement)
-	case "api.UntagEntitlement":
-		return new(UntagEntitlement)
-	case "api.AssignEntitlements":
-		return new(AssignEntitlements)
-	case "api.RevokeEntitlements":
-		return new(RevokeEntitlements)
 	case "api.RemoveEntitlement":
 		return new(RemoveEntitlement)
 	case "api.GetEntitlement":
 		return new(GetEntitlement)
 	case "api.FindEntitlements":
 		return new(FindEntitlements)
-
-	case "api.CreateTag":
-		return new(CreateTag)
-	case "api.RemoveTag":
-		return new(RemoveTag)
-	case "api.GetTag":
-		return new(GetTag)
-	case "api.FindTags":
-		return new(FindTags)
 	}
 
 	return nil

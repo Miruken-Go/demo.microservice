@@ -11,29 +11,26 @@ type (
 		PrincipalIds []uuid.UUID
 	}
 
+
 	GetPrincipal struct {
 		PrincipalId uuid.UUID
+		Domain      string
 	}
 
 	FindPrincipals struct {
+		Type   string
 		Name   string
-		TagIds []uuid.UUID
+		Domain string
 	}
+
 
 	GetEntitlement struct {
 		EntitlementId uuid.UUID
+		Domain        string
 	}
 
 	FindEntitlements struct {
 		Name   string
-		TagIds []uuid.UUID
-	}
-
-	GetTag struct {
-		TagId uuid.UUID
-	}
-
-	FindTags struct {
-		Name string
+		Domain string
 	}
 )

@@ -10,7 +10,15 @@ func NewId() uuid.UUID {
 	return uuid.New()
 }
 
+func ParseId(value string) uuid.UUID {
+	id, _ := uuid.Parse(value)
+	return id
+}
+
 func Strings[T fmt.Stringer](values []T) []string {
+	if values == nil {
+		return nil
+	}
 	strings := make([]string, len(values))
 	for i, value := range values {
 		strings[i] = value.String()
@@ -18,15 +26,27 @@ func Strings[T fmt.Stringer](values []T) []string {
 	return strings
 }
 
+func ParseIds(values []string) []uuid.UUID {
+	if values == nil {
+		return nil
+	}
+	uuids := make([]uuid.UUID, len(values))
+	for i, value := range values {
+		id, _ := uuid.Parse(value)
+		uuids[i] = id
+	}
+	return uuids
+}
+
 func Union[T ~[]E, E comparable](items T, add ... E) (T, bool) {
 	added := false
-	for _, value := range items {
-		if !slices.Contains(add, value) {
-			add = append(add, value)
+	for _, value := range add {
+		if !slices.Contains(items, value) {
+			items = append(items, value)
 			added = true
 		}
 	}
-	return add, added
+	return items, added
 }
 
 func Difference[T ~[]E, E comparable](items T, remove ...E) (T, bool) {

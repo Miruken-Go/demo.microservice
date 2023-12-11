@@ -2,10 +2,27 @@ package azure
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	"golang.org/x/net/context"
 	"net/http"
 )
+
+func Container(
+	azure       *azcosmos.Client,
+	databaseId  string,
+	containerId string,
+) *azcosmos.ContainerClient {
+	database, err := azure.NewDatabase(databaseId)
+	if err != nil {
+		panic(fmt.Errorf("error creating %q database client: %w", databaseId, err))
+	}
+	container, err := database.NewContainer(containerId)
+	if err != nil {
+		panic(fmt.Errorf("error creating %q container client: %w", containerId, err))
+	}
+	return container
+}
 
 func CreateItem[T any](
 	item      *T,

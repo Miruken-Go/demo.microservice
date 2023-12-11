@@ -29,73 +29,45 @@ type (
 
 	// CreatePrincipal creates a new principal.
 	CreatePrincipal struct {
+		Type           string
 		Name           string
-		TagIds         []uuid.UUID
+		Domain         string
 		EntitlementIds []uuid.UUID
 	}
 	PrincipalCreated struct {
 		PrincipalId uuid.UUID
 	}
 
-	TagPrincipal struct {
-		PrincipalId uuid.UUID
-		TagIds      []uuid.UUID
-	}
-
-	UntagPrincipal struct {
-		PrincipalId uuid.UUID
-		TagIds      []uuid.UUID
-	}
-
 	AssignEntitlements struct {
 		PrincipalId    uuid.UUID
+		Domain         string
 		EntitlementIds []uuid.UUID
 	}
 
 	RevokeEntitlements struct {
 		PrincipalId    uuid.UUID
+		Domain         string
 		EntitlementIds []uuid.UUID
 	}
 
 	RemovePrincipal struct {
 		PrincipalId uuid.UUID
+		Domain      string
 	}
 
 
 	// CreateEntitlement creates a new entitlement.
 	CreateEntitlement struct {
 		Name   string
-		TagIds []uuid.UUID
+		Domain string
 	}
 	EntitlementCreated struct {
 		EntitlementId uuid.UUID
 	}
 
-	TagEntitlement struct {
-		EntitlementId uuid.UUID
-		TagIds        []uuid.UUID
-	}
-
-	UntagEntitlement struct {
-		EntitlementId uuid.UUID
-		TagIds        []uuid.UUID
-	}
-
 	RemoveEntitlement struct {
 		EntitlementId uuid.UUID
-	}
-
-
-	CreateTag struct {
-		Name        string
-		Description string
-	}
-	TagCreated struct {
-		TagId uuid.UUID
-	}
-
-	RemoveTag struct {
-		TagId uuid.UUID
+		Domain        string
 	}
 )
 
