@@ -28,17 +28,17 @@ func (i *CreateIntegrity) Constructor(
 ) error {
 	return i.WithRules(
 		play.Rules{
-			play.Type[commands.CreateTeam](map[string]string{
+			play.Type[commands.CreateTeam](play.Constraints{
 				"Name": "required",
 			}),
-			play.Type[data.Coach](map[string]string{
+			play.Type[data.Coach](play.Constraints{
 				"Person": "required",
 				"License": "required,len=10",
 			}),
-			play.Type[data.Manager](map[string]string{
+			play.Type[data.Manager](play.Constraints{
 				"Person": "required",
 			}),
-			play.Type[data.Person](map[string]string{
+			play.Type[data.Person](play.Constraints{
 				"Id":        "eq=0",
 				"FirstName": "required",
 				"LastName":  "required",

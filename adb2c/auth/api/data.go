@@ -18,8 +18,9 @@ type (
 	}
 
 	Entitlement struct {
-		Id     uuid.UUID
-		Name   string
-		Domain string
+		Id          uuid.UUID
+		Name        string
+		Domain      string
+		Description string
 	}
 )

@@ -15,23 +15,24 @@ type (
 	SubjectMap map[string]any
 
 	Principal struct {
-		Id             string   `json:"id"`
-		Type           string   `json:"type"`
-		Name           string   `json:"name"`
-		Scope          string   `json:"scope"`
-		EntitlementIds []string `json:"entitlementIds"`
+		Id               string   `json:"id"`
+		Type             string   `json:"type"`
+		Name             string   `json:"name"`
+		Scope            string   `json:"scope"`
+		EntitlementNames []string `json:"entitlementNames"`
 	}
-	PrincipalMap map[string]any
 
 	Entitlement struct {
-		Id    string `json:"id"`
-		Type  string `json:"type"`  // always Entitlement
-		Name  string `json:"name"`
-		Scope string `json:"scope"`
+		Id          string `json:"id"`
+		Type        string `json:"type"`  // always Entitlement
+		Name        string `json:"name"`
+		Scope       string `json:"scope"`
+		Description string `json:"description"`
 	}
-	EntitlementMap map[string]any
 )
 
+
+// Subject
 
 func (m *Subject) ToApi() api.Subject {
 	ps := ParseIds(m.PrincipalIds)
@@ -65,11 +66,13 @@ func (m SubjectMap) ToApi() api.Subject {
 }
 
 
+// Principal
+
 func (m *Principal) ToApi() api.Principal {
-	es := ParseIds(m.EntitlementIds)
+	es := m.EntitlementNames
 	entitlements := make([]api.Entitlement, len(es))
-	for i, eid := range es {
-		entitlements[i] = api.Entitlement{Id: eid}
+	for i, e := range es {
+		entitlements[i] = api.Entitlement{Name:e}
 	}
 	return api.Principal{
 		Id:           ParseId(m.Id),
@@ -80,39 +83,17 @@ func (m *Principal) ToApi() api.Principal {
 	}
 }
 
-func (m PrincipalMap) ToApi() api.Principal {
-	var entitlements []api.Entitlement
-	if val, ok := m["entitlementIds"]; ok && val != nil {
-		es := val.([]any)
-		entitlements = make([]api.Entitlement, len(es))
-		for i, eid := range es {
-			entitlements[i] = api.Entitlement{
-				Id: ParseId(eid.(string)),
-			}
-		}
-	}
-	return api.Principal{
-		Id:           ParseId(m["id"].(string)),
-		Type:         m["type"].(string),
-		Name:         m["name"].(string),
-		Domain:       m["scope"].(string),
-		Entitlements: entitlements,
-	}
-}
 
+// Entitlement
 
 func (m *Entitlement) ToApi() api.Entitlement {
 	return api.Entitlement{
-		Id:     ParseId(m.Id),
-		Name:   m.Name,
-		Domain: m.Scope,
+		Id:          ParseId(m.Id),
+		Name:        m.Name,
+		Domain:      m.Scope,
+		Description: m.Description,
 	}
 }
 
-func (m EntitlementMap) ToApi() api.Entitlement {
-	return api.Entitlement{
-		Id:     ParseId(m["id"].(string)),
-		Name:   m["name"].(string),
-		Domain: m["scope"].(string),
-	}
-}
+
+const EntitlementType = "$E"

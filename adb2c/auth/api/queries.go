@@ -8,7 +8,11 @@ type (
 	}
 
 	FindSubjects struct {
-		PrincipalIds []uuid.UUID
+		ObjectId   string
+		Principals struct {
+			All bool
+			Ids []uuid.UUID
+		}
 	}
 
 

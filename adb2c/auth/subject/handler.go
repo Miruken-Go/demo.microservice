@@ -14,6 +14,7 @@ import (
 	"github.com/miruken-go/miruken/security/authorizes"
 	play "github.com/miruken-go/miruken/validates/play"
 	"golang.org/x/net/context"
+	"strings"
 	"time"
 )
 
@@ -150,10 +151,40 @@ func (h *Handler) Find(
 	  }, find api.FindSubjects,
 	_*struct{args.Optional}, ctx context.Context,
 ) ([]api.Subject, error) {
-	rows, err := h.db.QueryxContext(ctx, fmt.Sprintf(
-		`SELECT CROSS PARTITION * FROM s
- 			WITH database=%s WITH collection=%s`, database, container),
-	)
+	var params []any
+	var sql strings.Builder
+	sql.WriteString("SELECT CROSS PARTITION * FROM s")
+	sql.WriteString("")
+
+	cond := " WHERE"
+
+	if objectId := find.ObjectId; objectId != "" {
+		sql.WriteString(" WHERE s.objectId = :1")
+		params = append(params, objectId)
+		cond = " AND"
+	}
+
+	if principalIds := find.Principals.Ids; len(principalIds) > 0 {
+		sql.WriteString(cond)
+		if all := find.Principals.All; all {
+			sql.WriteString(fmt.Sprintf(
+				"%s ARRAY_LENGTH(SetIntersect(s.principalIds, :%d)) = :%d",
+				cond, len(params)+1, len(params)+2))
+			params = append(params, principalIds, len(principalIds))
+		} else {
+			sql.WriteString(fmt.Sprintf(
+				"%s ARRAY_LENGTH(SetIntersect(s.principalIds, :%d)) != 0",
+				cond, len(params)+1))
+			params = append(params, principalIds)
+		}
+	}
+
+	sql.WriteString(" WITH database=")
+	sql.WriteString(database)
+	sql.WriteString(" WITH collection=")
+	sql.WriteString(container)
+
+	rows, err := h.db.QueryxContext(ctx, sql.String(), params...)
 	if err != nil {
 		return nil, err
 	}
@@ -178,14 +209,14 @@ func (h *Handler) setValidationRules(
 ) {
 	_ = h.Validates1.WithRules(
 		play.Rules{
-			play.Type[api.CreateSubject](map[string]string{
+			play.Type[api.CreateSubject](play.Constraints{
 				"ObjectId": "required",
 			}),
 		}, nil, translator)
 
 	_ = h.Validates2.WithRules(
 		play.Rules{
-			play.Type[api.AssignPrincipals](map[string]string{
+			play.Type[api.AssignPrincipals](play.Constraints{
 				"SubjectId":    "required",
 				"PrincipalIds": "gt=0,required",
 			}),
@@ -193,7 +224,7 @@ func (h *Handler) setValidationRules(
 
 	_ = h.Validates3.WithRules(
 		play.Rules{
-			play.Type[api.RevokePrincipals](map[string]string{
+			play.Type[api.RevokePrincipals](play.Constraints{
 				"SubjectId":    "required",
 				"PrincipalIds": "gt=0,required",
 			}),
@@ -201,14 +232,14 @@ func (h *Handler) setValidationRules(
 
 	_ = h.Validates4.WithRules(
 		play.Rules{
-			play.Type[api.RemoveSubject](map[string]string{
+			play.Type[api.RemoveSubject](play.Constraints{
 				"SubjectId": "required",
 			}),
 		}, nil, translator)
 
 	_ = h.Validates5.WithRules(
 		play.Rules{
-			play.Type[api.GetSubject](map[string]string{
+			play.Type[api.GetSubject](play.Constraints{
 				"SubjectId": "required",
 			}),
 		}, nil, translator)

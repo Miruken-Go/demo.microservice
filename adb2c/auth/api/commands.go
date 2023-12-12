@@ -29,25 +29,25 @@ type (
 
 	// CreatePrincipal creates a new principal.
 	CreatePrincipal struct {
-		Type           string
-		Name           string
-		Domain         string
-		EntitlementIds []uuid.UUID
+		Type             string
+		Name             string
+		Domain           string
+		EntitlementNames []string
 	}
 	PrincipalCreated struct {
 		PrincipalId uuid.UUID
 	}
 
 	AssignEntitlements struct {
-		PrincipalId    uuid.UUID
-		Domain         string
-		EntitlementIds []uuid.UUID
+		PrincipalId      uuid.UUID
+		Domain           string
+		EntitlementNames []string
 	}
 
 	RevokeEntitlements struct {
-		PrincipalId    uuid.UUID
-		Domain         string
-		EntitlementIds []uuid.UUID
+		PrincipalId      uuid.UUID
+		Domain           string
+		EntitlementNames []string
 	}
 
 	RemovePrincipal struct {
@@ -58,8 +58,9 @@ type (
 
 	// CreateEntitlement creates a new entitlement.
 	CreateEntitlement struct {
-		Name   string
-		Domain string
+		Name        string
+		Domain      string
+		Description string
 	}
 	EntitlementCreated struct {
 		EntitlementId uuid.UUID

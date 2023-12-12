@@ -3,10 +3,9 @@ package entitlement
 //go:generate $GOPATH/bin/miruken -tests
 
 import (
-	"fmt"
+	"encoding/json"
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	ut "github.com/go-playground/universal-translator"
-	"github.com/jmoiron/sqlx"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/internal/model"
 	"github.com/miruken-go/demo.microservice/adb2c/azure"
@@ -16,6 +15,7 @@ import (
 	"github.com/miruken-go/miruken/security/authorizes"
 	play "github.com/miruken-go/miruken/validates/play"
 	"golang.org/x/net/context"
+	"strings"
 )
 
 type (
@@ -26,7 +26,6 @@ type (
 		play.Validates4[api.FindEntitlements]
 
 		entitlements *azcosmos.ContainerClient
-		db *sqlx.DB
 	}
 )
 
@@ -38,11 +37,9 @@ const (
 
 
 func (h *Handler) Constructor(
-	db     *sqlx.DB,
 	client *azcosmos.Client,
 	_*struct{args.Optional}, translator ut.Translator,
 ) {
-	h.db           = db
 	h.entitlements = azure.Container(client, database, container)
 	h.setValidationRules(translator)
 }
@@ -56,10 +53,11 @@ func (h *Handler) Create(
 ) (e api.EntitlementCreated, err error) {
 	id := model.NewId()
 	entitlement := model.Entitlement{
-		Id:             id.String(),
-		Type:           "Entitlement",
-		Name:           create.Name,
-		Scope:          create.Domain,
+		Id:          id.String(),
+		Type:        model.EntitlementType,
+		Name:        create.Name,
+		Scope:       create.Domain,
+		Description: create.Description,
 	}
 	pk := azcosmos.NewPartitionKeyString(entitlement.Scope)
 	_, err = azure.CreateItem(&entitlement, ctx, pk, h.entitlements, nil)
@@ -103,27 +101,38 @@ func (h *Handler) Find(
 	_ *handles.It, find api.FindEntitlements,
 	_*struct{args.Optional}, ctx context.Context,
 ) ([]api.Entitlement, error) {
-	rows, err := h.db.QueryxContext(ctx, fmt.Sprintf(
-		`SELECT CROSS PARTITION * FROM e
- 			WITH database=%s WITH collection=%s`, database, container),
-	)
-	if err != nil {
-		return nil, err
+	params := []azcosmos.QueryParameter{
+		{"@entitlement", model.EntitlementType},
 	}
-	defer func() {
-		_ = rows.Close()
-	}()
+	var sql strings.Builder
+	sql.WriteString("SELECT * FROM principal p WHERE p.type = @entitlement")
 
-	results := make([]api.Entitlement, 0)
-	for rows.Next() {
-		row := make(model.EntitlementMap)
-		if err := rows.MapScan(row); err != nil {
+	if name := find.Name; name != "" {
+		sql.WriteString(" AND CONTAINS(p.name, @name, true)")
+		params = append(params, azcosmos.QueryParameter{Name: "@name", Value: name})
+	}
+
+	pk := azcosmos.NewPartitionKeyString(find.Domain)
+	queryPager := h.entitlements.NewQueryItemsPager(sql.String(), pk, &azcosmos.QueryOptions{
+		QueryParameters: params,
+	})
+
+	entitlements := make([]api.Entitlement, 0)
+	for queryPager.More() {
+		queryResponse, err := queryPager.NextPage(ctx)
+		if err != nil {
 			return nil, err
 		}
-		results = append(results, row.ToApi())
+		for _, item := range queryResponse.Items {
+			var entitlement model.Entitlement
+			if err := json.Unmarshal(item, &entitlement); err != nil {
+				return nil, err
+			}
+			entitlements = append(entitlements, entitlement.ToApi())
+		}
 	}
 
-	return results, nil
+	return entitlements, nil
 }
 
 func (h *Handler) setValidationRules(
@@ -131,7 +140,7 @@ func (h *Handler) setValidationRules(
 ) {
 	_ = h.Validates1.WithRules(
 		play.Rules{
-			play.Type[api.CreateEntitlement](map[string]string{
+			play.Type[api.CreateEntitlement](play.Constraints{
 				"Name":   "required",
 				"Domain": "required",
 			}),
@@ -139,15 +148,24 @@ func (h *Handler) setValidationRules(
 
 	_ = h.Validates2.WithRules(
 		play.Rules{
-			play.Type[api.RemoveEntitlement](map[string]string{
+			play.Type[api.RemoveEntitlement](play.Constraints{
 				"EntitlementId": "required",
+				"Domain":        "required",
 			}),
 		}, nil, translator)
 
 	_ = h.Validates3.WithRules(
 		play.Rules{
-			play.Type[api.GetEntitlement](map[string]string{
+			play.Type[api.GetEntitlement](play.Constraints{
 				"EntitlementId": "required",
+				"Domain":        "required",
+			}),
+		}, nil, translator)
+
+	_ = h.Validates4.WithRules(
+		play.Rules{
+			play.Type[api.FindEntitlements](play.Constraints{
+				"Domain": "required",
 			}),
 		}, nil, translator)
 }

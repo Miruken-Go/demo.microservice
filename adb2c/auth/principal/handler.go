@@ -3,10 +3,9 @@ package principal
 //go:generate $GOPATH/bin/miruken -tests
 
 import (
-	"fmt"
+	"encoding/json"
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	ut "github.com/go-playground/universal-translator"
-	"github.com/jmoiron/sqlx"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/internal/model"
 	"github.com/miruken-go/demo.microservice/adb2c/azure"
@@ -16,6 +15,7 @@ import (
 	"github.com/miruken-go/miruken/security/authorizes"
 	play "github.com/miruken-go/miruken/validates/play"
 	"golang.org/x/net/context"
+	"strings"
 )
 
 type (
@@ -28,7 +28,6 @@ type (
 		play.Validates6[api.FindPrincipals]
 
 		principals *azcosmos.ContainerClient
-		db *sqlx.DB
 	}
 )
 
@@ -40,11 +39,9 @@ const (
 
 
 func (h *Handler) Constructor(
-	db     *sqlx.DB,
 	client *azcosmos.Client,
 	_*struct{args.Optional}, translator ut.Translator,
 ) {
-	h.db         = db
 	h.principals = azure.Container(client, database, container)
 	h.setValidationRules(translator)
 }
@@ -58,11 +55,11 @@ func (h *Handler) Create(
 ) (p api.PrincipalCreated, err error) {
 	id := model.NewId()
 	principal := model.Principal{
-		Id:             id.String(),
-		Type:           create.Type,
-		Name:           create.Name,
-		Scope:          create.Domain,
-		EntitlementIds: model.Strings(create.EntitlementIds),
+		Id:               id.String(),
+		Type:             create.Type,
+		Name:             create.Name,
+		Scope:            create.Domain,
+		EntitlementNames: create.EntitlementNames,
 	}
 	pk := azcosmos.NewPartitionKeyString(principal.Scope)
 	_, err = azure.CreateItem(&principal, ctx, pk, h.principals, nil)
@@ -82,10 +79,10 @@ func (h *Handler) Assign(
 	pid := assign.PrincipalId.String()
 	pk  := azcosmos.NewPartitionKeyString(assign.Domain)
 	_, _, err := azure.ReplaceItem(func(principal *model.Principal) (bool, error) {
-		add := model.Strings(assign.EntitlementIds)
-		updated, changed := model.Union(principal.EntitlementIds, add...)
+		add := assign.EntitlementNames
+		updated, changed := model.Union(principal.EntitlementNames, add...)
 		if changed {
-			principal.EntitlementIds = updated
+			principal.EntitlementNames = updated
 		}
 		return changed, nil
 	}, ctx, pid, pk, h.principals, nil)
@@ -102,10 +99,10 @@ func (h *Handler) Revoke(
 	pid := revoke.PrincipalId.String()
 	pk  := azcosmos.NewPartitionKeyString(revoke.Domain)
 	_, _, err := azure.ReplaceItem(func(principal *model.Principal) (bool, error) {
-		remove := model.Strings(revoke.EntitlementIds)
-		updated, changed := model.Difference(principal.EntitlementIds, remove...)
+		remove := revoke.EntitlementNames
+		updated, changed := model.Difference(principal.EntitlementNames, remove...)
 		if changed {
-			principal.EntitlementIds = updated
+			principal.EntitlementNames = updated
 		}
 		return changed, nil
 	}, ctx, pid, pk, h.principals, nil)
@@ -132,7 +129,7 @@ func (h *Handler) Get(
 	pid := get.PrincipalId.String()
 	pk  := azcosmos.NewPartitionKeyString(get.Domain)
 	item, found, err := azure.ReadItem[model.Principal](ctx, pid, pk, h.principals, nil)
-	if !found || item.Type == "Entitlement" {
+	if !found || item.Type == model.EntitlementType {
 		return api.Principal{}, miruken.NotHandled
 	} else if err != nil {
 		return api.Principal{}, miruken.NotHandled.WithError(err)
@@ -145,29 +142,43 @@ func (h *Handler) Find(
 	_ *handles.It, find api.FindPrincipals,
 	_*struct{args.Optional}, ctx context.Context,
 ) ([]api.Principal, error) {
-	rows, err := h.db.QueryxContext(ctx, fmt.Sprintf(
-		`SELECT * FROM p WHERE p.type != 'Entitlement' AND p.scope = :1
- 			WITH database=%s WITH collection=%s`,
-			 database, container),
-			 find.Domain,
-	)
-	if err != nil {
-		return nil, err
+	params := []azcosmos.QueryParameter{
+		{"@entitlement", model.EntitlementType},
 	}
-	defer func() {
-		_ = rows.Close()
-	}()
+	var sql strings.Builder
+	sql.WriteString("SELECT * FROM principal p WHERE p.type != @entitlement")
 
-	results := make([]api.Principal, 0)
-	for rows.Next() {
-		row := make(model.PrincipalMap)
-		if err := rows.MapScan(row); err != nil {
+	if typ := find.Type; typ != "" {
+		sql.WriteString(" AND CONTAINS(p.type, @type, true)")
+		params = append(params, azcosmos.QueryParameter{Name: "@type", Value: typ})
+	}
+
+	if name := find.Name; name != "" {
+		sql.WriteString(" AND CONTAINS(p.name, @name, true)")
+		params = append(params, azcosmos.QueryParameter{Name: "@name", Value: name})
+	}
+
+	pk := azcosmos.NewPartitionKeyString(find.Domain)
+	queryPager := h.principals.NewQueryItemsPager(sql.String(), pk, &azcosmos.QueryOptions{
+		QueryParameters: params,
+	})
+
+	principals := make([]api.Principal, 0)
+	for queryPager.More() {
+		queryResponse, err := queryPager.NextPage(ctx)
+		if err != nil {
 			return nil, err
 		}
-		results = append(results, row.ToApi())
+		for _, item := range queryResponse.Items {
+			var principal model.Principal
+			if err := json.Unmarshal(item, &principal); err != nil {
+				return nil, err
+			}
+			principals = append(principals, principal.ToApi())
+		}
 	}
 
-	return results, nil
+	return principals, nil
 }
 
 func (h *Handler) setValidationRules(
@@ -175,8 +186,8 @@ func (h *Handler) setValidationRules(
 ) {
 	_ = h.Validates1.WithRules(
 		play.Rules{
-			play.Type[api.CreatePrincipal](map[string]string{
-				"Type":   "required",
+			play.Type[api.CreatePrincipal](play.Constraints{
+				"Type":   "required,alphanum",
 				"Name":   "required",
 				"Domain": "required",
 			}),
@@ -184,37 +195,42 @@ func (h *Handler) setValidationRules(
 
 	_ = h.Validates2.WithRules(
 		play.Rules{
-			play.Type[api.AssignEntitlements](map[string]string{
-				"PrincipalId":    "required",
-				"EntitlementIds": "gt=0,required",
+			play.Type[api.AssignEntitlements](play.Constraints{
+				"PrincipalId":      "required",
+				"Domain":           "required",
+				"EntitlementNames": "gt=0,required",
 			}),
 		}, nil, translator)
 
 	_ = h.Validates3.WithRules(
 		play.Rules{
-			play.Type[api.RevokeEntitlements](map[string]string{
-				"PrincipalId":    "required",
-				"EntitlementIds": "gt=0,required",
+			play.Type[api.RevokeEntitlements](play.Constraints{
+				"PrincipalId":      "required",
+				"Domain":           "required",
+				"EntitlementNames": "gt=0,required",
 			}),
 		}, nil, translator)
 
 	_ = h.Validates4.WithRules(
 		play.Rules{
-			play.Type[api.RemovePrincipal](map[string]string{
+			play.Type[api.RemovePrincipal](play.Constraints{
 				"PrincipalId": "required",
+				"Domain":      "required",
 			}),
 		}, nil, translator)
 
 	_ = h.Validates5.WithRules(
 		play.Rules{
-			play.Type[api.GetPrincipal](map[string]string{
+			play.Type[api.GetPrincipal](play.Constraints{
 				"PrincipalId": "required",
+				"Domain":      "required",
 			}),
 		}, nil, translator)
 
 	_ = h.Validates6.WithRules(
 		play.Rules{
-			play.Type[api.FindPrincipals](map[string]string{
+			play.Type[api.FindPrincipals](play.Constraints{
+				"Type":   "omitempty,alphanum",
 				"Domain": "required",
 			}),
 		}, nil, translator)
