@@ -36,6 +36,12 @@ jobs:
         ref:                            ${{ github.event.client_payload.ref || github.ref }}
 
     steps:
+    - name: Debug
+      run: |
+        echo: "ref:                             [$ref]"
+        echo: "github.event.client_payload.ref: [${{github.event.client_payload.ref}}]"
+        echo: "github.ref:                      [${{ github.ref }}]"
+
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
