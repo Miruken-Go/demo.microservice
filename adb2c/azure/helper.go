@@ -10,8 +10,8 @@ import (
 )
 
 func Container(
-	azure *azcosmos.Client,
-	databaseId string,
+	azure       *azcosmos.Client,
+	databaseId  string,
 	containerId string,
 ) *azcosmos.ContainerClient {
 	database, err := azure.NewDatabase(databaseId)
@@ -26,11 +26,11 @@ func Container(
 }
 
 func CreateItem[T any](
-	item *T,
-	ctx context.Context,
-	pk azcosmos.PartitionKey,
+	ctx       context.Context,
+	item      *T,
+	pk        azcosmos.PartitionKey,
 	container *azcosmos.ContainerClient,
-	opts *azcosmos.ItemOptions,
+	opts      *azcosmos.ItemOptions,
 ) (azcosmos.ItemResponse, error) {
 	bytes, err := json.Marshal(item)
 	if err != nil {
@@ -40,12 +40,12 @@ func CreateItem[T any](
 }
 
 func ReplaceItem[T any](
-	op func(*T) (bool, error),
-	ctx context.Context,
-	id string,
-	pk azcosmos.PartitionKey,
+	ctx       context.Context,
+	op        func(*T) (bool, error),
+	id        string,
+	pk        azcosmos.PartitionKey,
 	container *azcosmos.ContainerClient,
-	opts *azcosmos.ItemOptions,
+	opts      *azcosmos.ItemOptions,
 ) (azcosmos.ItemResponse, bool, error) {
 	res, err := container.ReadItem(ctx, pk, id, nil)
 	if err != nil {
@@ -79,11 +79,11 @@ func ReplaceItem[T any](
 }
 
 func ReadItem[T any](
-	ctx context.Context,
-	id string,
-	pk azcosmos.PartitionKey,
+	ctx       context.Context,
+	id        string,
+	pk        azcosmos.PartitionKey,
 	container *azcosmos.ContainerClient,
-	opts *azcosmos.ItemOptions,
+	opts      *azcosmos.ItemOptions,
 ) (T, bool, error) {
 	var item T
 	res, err := container.ReadItem(ctx, pk, id, opts)

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"os"
+	"time"
 
 	auth2 "github.com/miruken-go/demo.microservice/adb2c/auth"
 	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
@@ -136,12 +137,21 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	err = http.ListenAndServe(":"+port, &mux)
+	server := &http.Server{
+		Addr:              ":"+port,
+		Handler:           &mux,
+		ReadTimeout:       1 * time.Second,
+		ReadHeaderTimeout: 1 * time.Second,
+		WriteTimeout:      2 * time.Second,
+		IdleTimeout:       30 * time.Second,
+		MaxHeaderBytes:    1024,
+	}
 
-	if errors.Is(err, http.ErrServerClosed) {
-		logger.Info("server closed")
-	} else if err != nil {
-		logger.Error(err, "error starting server")
-		os.Exit(1)
+	if err := server.ListenAndServe(); err != nil {
+		if errors.Is(err, http.ErrServerClosed) {
+			logger.Info("server closed")
+		} else if err != nil {
+			logger.Error(err, "error starting server")
+		}
 	}
 }

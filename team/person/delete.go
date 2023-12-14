@@ -6,7 +6,7 @@ import (
 )
 
 func (h *Handler) Delete(
-	_ *handles.It, delete *commands.DeletePeople,
+	_ *handles.It, del *commands.DeletePeople,
 ) error {
 	return nil
 }

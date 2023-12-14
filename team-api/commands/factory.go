@@ -9,7 +9,7 @@ import (
 // Factory creates commands from a type id.
 type Factory struct{}
 
-func (F *Factory) New(
+func (f *Factory) New(
 	_ *struct {
 		cp creates.It `key:"commands.CreatePerson"`
 		up creates.It `key:"commands.UpdatePerson"`

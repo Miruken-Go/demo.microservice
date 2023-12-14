@@ -30,9 +30,9 @@ func (f *Factory) Constructor(
 	_ *struct {
 		args.Optional
 		args.FromOptions
-	}, options Options,
+	}, opts Options,
 ) {
-	f.opts = options
+	f.opts = opts
 }
 
 func (f *Factory) NewClient(

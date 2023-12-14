@@ -61,7 +61,7 @@ func (h *Handler) Create(
 		EntitlementNames: create.EntitlementNames,
 	}
 	pk := azcosmos.NewPartitionKeyString(principal.Scope)
-	_, err = azure.CreateItem(&principal, ctx, pk, h.principals, nil)
+	_, err = azure.CreateItem(ctx, &principal, pk, h.principals, nil)
 	if err == nil {
 		p.PrincipalId = id
 	}
@@ -77,14 +77,14 @@ func (h *Handler) Assign(
 ) error {
 	pid := assign.PrincipalId.String()
 	pk := azcosmos.NewPartitionKeyString(assign.Domain)
-	_, _, err := azure.ReplaceItem(func(principal *model.Principal) (bool, error) {
+	_, _, err := azure.ReplaceItem(ctx, func(principal *model.Principal) (bool, error) {
 		add := assign.EntitlementNames
 		updated, changed := model.Union(principal.EntitlementNames, add...)
 		if changed {
 			principal.EntitlementNames = updated
 		}
 		return changed, nil
-	}, ctx, pid, pk, h.principals, nil)
+	}, pid, pk, h.principals, nil)
 	return err
 }
 
@@ -97,14 +97,14 @@ func (h *Handler) Revoke(
 ) error {
 	pid := revoke.PrincipalId.String()
 	pk := azcosmos.NewPartitionKeyString(revoke.Domain)
-	_, _, err := azure.ReplaceItem(func(principal *model.Principal) (bool, error) {
+	_, _, err := azure.ReplaceItem(ctx, func(principal *model.Principal) (bool, error) {
 		remove := revoke.EntitlementNames
 		updated, changed := model.Difference(principal.EntitlementNames, remove...)
 		if changed {
 			principal.EntitlementNames = updated
 		}
 		return changed, nil
-	}, ctx, pid, pk, h.principals, nil)
+	}, pid, pk, h.principals, nil)
 	return err
 }
 
@@ -128,11 +128,12 @@ func (h *Handler) Get(
 	pid := get.PrincipalId.String()
 	pk := azcosmos.NewPartitionKeyString(get.Domain)
 	item, found, err := azure.ReadItem[model.Principal](ctx, pid, pk, h.principals, nil)
-	if !found || item.Type == model.EntitlementType {
+	switch {
+	case !found || item.Type == model.EntitlementType:
 		return api.Principal{}, miruken.NotHandled
-	} else if err != nil {
+	case err != nil:
 		return api.Principal{}, miruken.NotHandled.WithError(err)
-	} else {
+	default:
 		return item.ToApi(), miruken.Handled
 	}
 }

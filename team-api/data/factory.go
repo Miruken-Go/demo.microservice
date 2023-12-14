@@ -9,7 +9,7 @@ import (
 // Factory creates queries from a type id.
 type Factory struct{}
 
-func (F *Factory) New(
+func (f *Factory) New(
 	_ *struct {
 		p creates.It `key:"data.Person"`
 	}, create *creates.It,

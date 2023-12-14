@@ -65,7 +65,7 @@ func (h *Handler) Create(
 		CreatedAt:    time.Now().UTC(),
 	}
 	pk := azcosmos.NewPartitionKeyString(subject.Id)
-	_, err = azure.CreateItem(&subject, ctx, pk, h.subjects, nil)
+	_, err = azure.CreateItem(ctx, &subject, pk, h.subjects, nil)
 	if err == nil {
 		s.SubjectId = id
 	}
@@ -81,14 +81,14 @@ func (h *Handler) Assign(
 ) error {
 	sid := assign.SubjectId.String()
 	pk := azcosmos.NewPartitionKeyString(sid)
-	_, _, err := azure.ReplaceItem(func(subject *model.Subject) (bool, error) {
+	_, _, err := azure.ReplaceItem(ctx, func(subject *model.Subject) (bool, error) {
 		add := model.Strings(assign.PrincipalIds)
 		updated, changed := model.Union(subject.PrincipalIds, add...)
 		if changed {
 			subject.PrincipalIds = updated
 		}
 		return changed, nil
-	}, ctx, sid, pk, h.subjects, nil)
+	}, sid, pk, h.subjects, nil)
 	return err
 }
 
@@ -101,14 +101,14 @@ func (h *Handler) Revoke(
 ) error {
 	sid := revoke.SubjectId.String()
 	pk := azcosmos.NewPartitionKeyString(sid)
-	_, _, err := azure.ReplaceItem(func(subject *model.Subject) (bool, error) {
+	_, _, err := azure.ReplaceItem(ctx, func(subject *model.Subject) (bool, error) {
 		remove := model.Strings(revoke.PrincipalIds)
 		updated, changed := model.Difference(subject.PrincipalIds, remove...)
 		if changed {
 			subject.PrincipalIds = updated
 		}
 		return changed, nil
-	}, ctx, sid, pk, h.subjects, nil)
+	}, sid, pk, h.subjects, nil)
 	return err
 }
 

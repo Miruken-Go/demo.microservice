@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 	"net/http/pprof"
-	_ "net/http/pprof"
 	"os"
 	"os/signal"
 	"syscall"
@@ -134,8 +133,9 @@ func main() {
 
 	// start http server
 	server := &http.Server{
-		Addr:    ":8080",
-		Handler: &mux,
+		Addr:              ":8080",
+		Handler:           &mux,
+		ReadHeaderTimeout: 5 * time.Second,  // Slowloris attack
 	}
 
 	go func() {
@@ -156,7 +156,6 @@ func main() {
 	if err := server.Shutdown(shutdownCtx); err != nil {
 		logger.Error(err, "HTTP shutdown error")
 		_ = server.Close()
-		os.Exit(1)
 	}
 	logger.Info("Graceful shutdown complete")
 }

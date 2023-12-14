@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/miruken-go/miruken/setup"
 
@@ -53,7 +54,7 @@ func main() {
 	}
 
 	var appConfig Config
-	if err := k.Unmarshal("", &appConfig); err != nil {
+	if err = k.Unmarshal("", &appConfig); err != nil {
 		logger.Error(err, "error unmarshalling configuration")
 		os.Exit(1)
 	}
@@ -136,12 +137,21 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	err = http.ListenAndServe(":"+port, &mux)
+	server := &http.Server{
+		Addr:              ":"+port,
+		Handler:           &mux,
+		ReadTimeout:       1 * time.Second,
+		ReadHeaderTimeout: 1 * time.Second,
+		WriteTimeout:      2 * time.Second,
+		IdleTimeout:       30 * time.Second,
+		MaxHeaderBytes:    1024,
+	}
 
-	if errors.Is(err, http.ErrServerClosed) {
-		logger.Info("server closed")
-	} else if err != nil {
-		logger.Error(err, "error starting server")
-		os.Exit(1)
+	if err := server.ListenAndServe(); err != nil {
+		if errors.Is(err, http.ErrServerClosed) {
+			logger.Info("server closed")
+		} else if err != nil {
+			logger.Error(err, "error starting server")
+		}
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/go-logr/zerologr"
 	"github.com/knadh/koanf"
@@ -47,7 +48,8 @@ func main() {
 
 	defer ctx.End(nil)
 
-	http.Handle("/enrich", httpsrv.Use(ctx,
+	var mux http.ServeMux
+	mux.Handle("/enrich", httpsrv.Use(ctx,
 		httpsrv.H[*token.EnrichHandler](),
 		auth.WithFlowAlias("Login.Adb2c").Basic().Required()))
 
@@ -56,12 +58,21 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	err = http.ListenAndServe(":"+port, nil)
+	server := &http.Server{
+		Addr:              ":"+port,
+		Handler:           &mux,
+		ReadTimeout:       1 * time.Second,
+		ReadHeaderTimeout: 1 * time.Second,
+		WriteTimeout:      2 * time.Second,
+		IdleTimeout:       30 * time.Second,
+		MaxHeaderBytes:    1024,
+	}
 
-	if errors.Is(err, http.ErrServerClosed) {
-		logger.Info("server closed")
-	} else if err != nil {
-		logger.Error(err, "error starting server")
-		os.Exit(1)
+	if err := server.ListenAndServe(); err != nil {
+		if errors.Is(err, http.ErrServerClosed) {
+			logger.Info("server closed")
+		} else if err != nil {
+			logger.Error(err, "error starting server")
+		}
 	}
 }

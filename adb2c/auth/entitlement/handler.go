@@ -59,7 +59,7 @@ func (h *Handler) Create(
 		Description: create.Description,
 	}
 	pk := azcosmos.NewPartitionKeyString(entitlement.Scope)
-	_, err = azure.CreateItem(&entitlement, ctx, pk, h.entitlements, nil)
+	_, err = azure.CreateItem(ctx, &entitlement, pk, h.entitlements, nil)
 	if err == nil {
 		e.EntitlementId = id
 	}
@@ -86,11 +86,12 @@ func (h *Handler) Get(
 	eid := get.EntitlementId.String()
 	pk := azcosmos.NewPartitionKeyString(get.Domain)
 	item, found, err := azure.ReadItem[model.Entitlement](ctx, eid, pk, h.entitlements, nil)
-	if !found {
+	switch {
+	case !found || item.Type != model.EntitlementType:
 		return api.Entitlement{}, miruken.NotHandled
-	} else if err != nil {
+	case err != nil:
 		return api.Entitlement{}, miruken.NotHandled.WithError(err)
-	} else {
+	default:
 		return item.ToApi(), miruken.Handled
 	}
 }

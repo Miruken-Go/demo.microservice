@@ -31,11 +31,11 @@ type ADB2CTestSuite struct {
 }
 
 func (suite *ADB2CTestSuite) Setup() *context.Context {
-	handler, _ := setup.Setup(
+	ctx, _ := setup.New(
 		http.Feature(), stdjson.Feature()).
 		Specs(&api.GoPolymorphism{}).
-		Handler()
-	return context.New(handler)
+		Context()
+	return ctx
 }
 
 func (suite *ADB2CTestSuite) SetupTest() {
@@ -43,17 +43,17 @@ func (suite *ADB2CTestSuite) SetupTest() {
 	err := k.Load(file.Provider("./login.json"), json.Parser())
 	suite.Nil(err)
 
-	handler, _ := setup.Setup(
+	ctx, _ := setup.New(
 		httpsrv.Feature(), stdjson.Feature(),
 		token.Feature(), password.Feature(),
 		config.Feature(koanfp.P(k))).
 		Specs(&api.GoPolymorphism{}).
-		Handler()
+		Context()
 
 	suite.srv = httptest.NewServer(
-		httpsrv.Use(handler,
+		httpsrv.Use(ctx,
 			httpsrv.H[*token.EnrichHandler](),
-			auth.WithFlowRef("login.adb2c").Basic().Required()),
+			auth.WithFlowAlias("login.adb2c").Basic().Required()),
 	)
 }
 
@@ -65,7 +65,6 @@ func (suite *ADB2CTestSuite) TearDownTest() {
 func (suite *ADB2CTestSuite) TestEnrichHandler() {
 	suite.Run("Enrich Claims", func() {
 		enrichRequest := token.EnrichRequest{
-			Email:    "user@gmail.com",
 			ObjectId: "123456789",
 			Scope:    "domain1/Roles domain1/Groups domain1/Entitlements",
 		}
