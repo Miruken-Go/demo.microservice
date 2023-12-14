@@ -1,8 +1,9 @@
 package commands
 
 import (
-	"github.com/miruken-go/demo.microservice/team-api/data"
 	"time"
+
+	"github.com/miruken-go/demo.microservice/team-api/data"
 )
 
 type (

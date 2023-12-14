@@ -1,6 +1,9 @@
 package team
 
 import (
+	"sync/atomic"
+	"time"
+
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	"github.com/miruken-go/demo.microservice/team-api/commands"
@@ -13,8 +16,6 @@ import (
 	"github.com/miruken-go/miruken/security/authorizes"
 	"github.com/miruken-go/miruken/security/jwt"
 	play "github.com/miruken-go/miruken/validates/play"
-	"sync/atomic"
-	"time"
 )
 
 type (
@@ -24,7 +25,7 @@ type (
 )
 
 func (i *CreateIntegrity) Constructor(
-	_*struct{args.Optional}, translator ut.Translator,
+	_ *struct{ args.Optional }, translator ut.Translator,
 ) error {
 	return i.WithRules(
 		play.Rules{
@@ -32,7 +33,7 @@ func (i *CreateIntegrity) Constructor(
 				"Name": "required",
 			}),
 			play.Type[data.Coach](play.Constraints{
-				"Person": "required",
+				"Person":  "required",
 				"License": "required,len=10",
 			}),
 			play.Type[data.Manager](play.Constraints{
@@ -50,11 +51,11 @@ func (i *CreateIntegrity) Constructor(
 }
 
 func (h *Handler) Create(
-	_*struct {
+	_ *struct {
 		handles.It
 		authorizes.Required
 		jwt.Scope `name:"Team.Create"`
-	  }, create *commands.CreateTeam,
+	}, create *commands.CreateTeam,
 	ctx miruken.HandleContext,
 ) *promise.Promise[data.Team] {
 	composer := ctx.Composer

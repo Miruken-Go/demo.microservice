@@ -10,4 +10,3 @@ func (h *Handler) Delete(
 ) error {
 	return nil
 }
-

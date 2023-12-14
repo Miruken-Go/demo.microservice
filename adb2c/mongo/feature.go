@@ -1,9 +1,10 @@
 package mongo
 
 import (
+	"reflect"
+
 	"github.com/miruken-go/miruken/setup"
 	"go.mongodb.org/mongo-driver/mongo"
-	"reflect"
 )
 
 type (
@@ -14,11 +15,11 @@ type (
 	}
 )
 
-func (i *Installer) Install(setup *setup.Builder) error {
-	if setup.Tag(&featureTag) {
-		setup.Specs(&Factory{})
+func (i *Installer) Install(b *setup.Builder) error {
+	if b.Tag(&featureTag) {
+		b.Specs(&Factory{})
 		if i.aliases != nil {
-			setup.Options(Options{Aliases: i.aliases, Clients: i.clients})
+			b.Options(Options{Aliases: i.aliases, Clients: i.clients})
 		}
 	}
 	return nil

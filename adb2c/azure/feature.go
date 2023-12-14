@@ -1,10 +1,11 @@
 package azure
 
 import (
+	"reflect"
+
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	"github.com/jmoiron/sqlx"
 	"github.com/miruken-go/miruken/setup"
-	"reflect"
 )
 
 type (
@@ -15,11 +16,11 @@ type (
 	}
 )
 
-func (i *Installer) Install(setup *setup.Builder) error {
-	if setup.Tag(&featureTag) {
-		setup.Specs(&Factory{})
+func (i *Installer) Install(b *setup.Builder) error {
+	if b.Tag(&featureTag) {
+		b.Specs(&Factory{})
 		if i.aliases != nil {
-			setup.Options(Options{Aliases: i.aliases, Clients: i.clients})
+			b.Options(Options{Aliases: i.aliases, Clients: i.clients})
 		}
 	}
 	return nil
@@ -66,7 +67,6 @@ func SqlClientAlias[T ~*sqlx.DB](path string) func(*Installer) {
 		installer.aliases[reflect.TypeOf((*T)(nil)).Elem()] = path
 	}
 }
-
 
 // Feature creates and configures configuration support
 // using the supplied configuration Provider.

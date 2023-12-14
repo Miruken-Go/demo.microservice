@@ -10,13 +10,13 @@ import (
 type Factory struct{}
 
 func (F *Factory) New(
-	_*struct {
+	_ *struct {
 		cp creates.It `key:"commands.CreatePerson"`
 		up creates.It `key:"commands.UpdatePerson"`
-	    dp creates.It `key:"commands.DeletePeople"`
+		dp creates.It `key:"commands.DeletePeople"`
 		ct creates.It `key:"commands.CreateTeam"`
 		ut creates.It `key:"commands.UpdateTeam"`
-	  }, create *creates.It,
+	}, create *creates.It,
 ) any {
 	switch create.Key() {
 	case "commands.CreatePerson":

@@ -4,6 +4,8 @@ package entitlement
 
 import (
 	"encoding/json"
+	"strings"
+
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
@@ -15,7 +17,6 @@ import (
 	"github.com/miruken-go/miruken/security/authorizes"
 	play "github.com/miruken-go/miruken/validates/play"
 	"golang.org/x/net/context"
-	"strings"
 )
 
 type (
@@ -29,27 +30,25 @@ type (
 	}
 )
 
-
 const (
 	database  = "adb2c"
 	container = "principal"
 )
 
-
 func (h *Handler) Constructor(
 	client *azcosmos.Client,
-	_*struct{args.Optional}, translator ut.Translator,
+	_ *struct{ args.Optional }, translator ut.Translator,
 ) {
 	h.entitlements = azure.Container(client, database, container)
 	h.setValidationRules(translator)
 }
 
 func (h *Handler) Create(
-	_*struct{
+	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, create api.CreateEntitlement,
-	_*struct{args.Optional}, ctx context.Context,
+	}, create api.CreateEntitlement,
+	_ *struct{ args.Optional }, ctx context.Context,
 ) (e api.EntitlementCreated, err error) {
 	id := model.NewId()
 	entitlement := model.Entitlement{
@@ -67,26 +66,25 @@ func (h *Handler) Create(
 	return
 }
 
-
 func (h *Handler) Remove(
-	_*struct{
+	_ *struct {
 		handles.It
 		authorizes.Required
 	}, remove api.RemoveEntitlement,
-	_*struct{args.Optional}, ctx context.Context,
+	_ *struct{ args.Optional }, ctx context.Context,
 ) error {
 	eid := remove.EntitlementId.String()
-	pk  := azcosmos.NewPartitionKeyString(remove.Domain)
+	pk := azcosmos.NewPartitionKeyString(remove.Domain)
 	_, err := h.entitlements.DeleteItem(ctx, pk, eid, nil)
 	return err
 }
 
 func (h *Handler) Get(
 	_ *handles.It, get api.GetEntitlement,
-	_*struct{args.Optional}, ctx context.Context,
+	_ *struct{ args.Optional }, ctx context.Context,
 ) (api.Entitlement, miruken.HandleResult) {
 	eid := get.EntitlementId.String()
-	pk  := azcosmos.NewPartitionKeyString(get.Domain)
+	pk := azcosmos.NewPartitionKeyString(get.Domain)
 	item, found, err := azure.ReadItem[model.Entitlement](ctx, eid, pk, h.entitlements, nil)
 	if !found {
 		return api.Entitlement{}, miruken.NotHandled
@@ -99,7 +97,7 @@ func (h *Handler) Get(
 
 func (h *Handler) Find(
 	_ *handles.It, find api.FindEntitlements,
-	_*struct{args.Optional}, ctx context.Context,
+	_ *struct{ args.Optional }, ctx context.Context,
 ) ([]api.Entitlement, error) {
 	params := []azcosmos.QueryParameter{
 		{"@entitlement", model.EntitlementType},

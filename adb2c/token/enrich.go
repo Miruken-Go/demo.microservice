@@ -2,10 +2,11 @@ package token
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/go-logr/logr"
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/args"
-	"net/http"
 )
 
 type (
@@ -25,7 +26,7 @@ type (
 )
 
 func (e *EnrichHandler) Constructor(
-	_*struct{args.Optional}, logger logr.Logger,
+	_ *struct{ args.Optional }, logger logr.Logger,
 ) {
 	if logger == e.logger {
 		e.logger = logr.Discard()

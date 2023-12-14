@@ -11,7 +11,7 @@ import (
 )
 
 func (h *Handler) InitUpdate(
-	_*struct{args.Optional}, translator ut.Translator,
+	_ *struct{ args.Optional }, translator ut.Translator,
 ) error {
 	return h.Validates2.WithRules(
 		play.Rules{

@@ -26,7 +26,6 @@ type (
 		SubjectId uuid.UUID
 	}
 
-
 	// CreatePrincipal creates a new principal.
 	CreatePrincipal struct {
 		Type             string
@@ -55,7 +54,6 @@ type (
 		Domain      string
 	}
 
-
 	// CreateEntitlement creates a new entitlement.
 	CreateEntitlement struct {
 		Name        string
@@ -71,4 +69,3 @@ type (
 		Domain        string
 	}
 )
-

@@ -2,8 +2,9 @@ package model
 
 import (
 	"fmt"
-	"github.com/google/uuid"
 	"slices"
+
+	"github.com/google/uuid"
 )
 
 func NewId() uuid.UUID {
@@ -38,7 +39,7 @@ func ParseIds(values []string) []uuid.UUID {
 	return uuids
 }
 
-func Union[T ~[]E, E comparable](items T, add ... E) (T, bool) {
+func Union[T ~[]E, E comparable](items T, add ...E) (T, bool) {
 	added := false
 	for _, value := range add {
 		if !slices.Contains(items, value) {

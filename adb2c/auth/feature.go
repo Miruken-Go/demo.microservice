@@ -15,5 +15,3 @@ var Feature = setup.FeatureSet(
 	principal.Feature,
 	entitlement.Feature,
 	azure.Feature())
-
-

@@ -1,8 +1,9 @@
 package model
 
 import (
-	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
 	"time"
+
+	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
 )
 
 type (
@@ -24,13 +25,12 @@ type (
 
 	Entitlement struct {
 		Id          string `json:"id"`
-		Type        string `json:"type"`  // always Entitlement
+		Type        string `json:"type"` // always Entitlement
 		Name        string `json:"name"`
 		Scope       string `json:"scope"`
 		Description string `json:"description"`
 	}
 )
-
 
 // Subject
 
@@ -65,14 +65,13 @@ func (m SubjectMap) ToApi() api.Subject {
 	}
 }
 
-
 // Principal
 
 func (m *Principal) ToApi() api.Principal {
 	es := m.EntitlementNames
 	entitlements := make([]api.Entitlement, len(es))
 	for i, e := range es {
-		entitlements[i] = api.Entitlement{Name:e}
+		entitlements[i] = api.Entitlement{Name: e}
 	}
 	return api.Principal{
 		Id:           ParseId(m.Id),
@@ -82,7 +81,6 @@ func (m *Principal) ToApi() api.Principal {
 		Entitlements: entitlements,
 	}
 }
-
 
 // Entitlement
 
@@ -94,6 +92,5 @@ func (m *Entitlement) ToApi() api.Entitlement {
 		Description: m.Description,
 	}
 }
-
 
 const EntitlementType = "$E"

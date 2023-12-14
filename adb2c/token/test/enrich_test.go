@@ -3,6 +3,11 @@ package test
 import (
 	"bytes"
 	json2 "encoding/json"
+	"io"
+	http2 "net/http"
+	"net/http/httptest"
+	"testing"
+
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/parsers/json"
 	"github.com/knadh/koanf/providers/file"
@@ -18,10 +23,6 @@ import (
 	"github.com/miruken-go/miruken/security/password"
 	"github.com/miruken-go/miruken/setup"
 	"github.com/stretchr/testify/suite"
-	"io"
-	http2 "net/http"
-	"net/http/httptest"
-	"testing"
 )
 
 type ADB2CTestSuite struct {

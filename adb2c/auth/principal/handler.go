@@ -4,6 +4,8 @@ package principal
 
 import (
 	"encoding/json"
+	"strings"
+
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
@@ -15,7 +17,6 @@ import (
 	"github.com/miruken-go/miruken/security/authorizes"
 	play "github.com/miruken-go/miruken/validates/play"
 	"golang.org/x/net/context"
-	"strings"
 )
 
 type (
@@ -31,27 +32,25 @@ type (
 	}
 )
 
-
 const (
 	database  = "adb2c"
 	container = "principal"
 )
 
-
 func (h *Handler) Constructor(
 	client *azcosmos.Client,
-	_*struct{args.Optional}, translator ut.Translator,
+	_ *struct{ args.Optional }, translator ut.Translator,
 ) {
 	h.principals = azure.Container(client, database, container)
 	h.setValidationRules(translator)
 }
 
 func (h *Handler) Create(
-	_*struct{
+	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, create api.CreatePrincipal,
-	_*struct{args.Optional}, ctx context.Context,
+	}, create api.CreatePrincipal,
+	_ *struct{ args.Optional }, ctx context.Context,
 ) (p api.PrincipalCreated, err error) {
 	id := model.NewId()
 	principal := model.Principal{
@@ -70,14 +69,14 @@ func (h *Handler) Create(
 }
 
 func (h *Handler) Assign(
-	_*struct{
+	_ *struct {
 		handles.It
 		authorizes.Required
 	}, assign api.AssignEntitlements,
-	_*struct{args.Optional}, ctx context.Context,
+	_ *struct{ args.Optional }, ctx context.Context,
 ) error {
 	pid := assign.PrincipalId.String()
-	pk  := azcosmos.NewPartitionKeyString(assign.Domain)
+	pk := azcosmos.NewPartitionKeyString(assign.Domain)
 	_, _, err := azure.ReplaceItem(func(principal *model.Principal) (bool, error) {
 		add := assign.EntitlementNames
 		updated, changed := model.Union(principal.EntitlementNames, add...)
@@ -90,14 +89,14 @@ func (h *Handler) Assign(
 }
 
 func (h *Handler) Revoke(
-	_*struct{
+	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, revoke api.RevokeEntitlements,
-	_*struct{args.Optional}, ctx context.Context,
+	}, revoke api.RevokeEntitlements,
+	_ *struct{ args.Optional }, ctx context.Context,
 ) error {
 	pid := revoke.PrincipalId.String()
-	pk  := azcosmos.NewPartitionKeyString(revoke.Domain)
+	pk := azcosmos.NewPartitionKeyString(revoke.Domain)
 	_, _, err := azure.ReplaceItem(func(principal *model.Principal) (bool, error) {
 		remove := revoke.EntitlementNames
 		updated, changed := model.Difference(principal.EntitlementNames, remove...)
@@ -110,24 +109,24 @@ func (h *Handler) Revoke(
 }
 
 func (h *Handler) Remove(
-	_*struct{
+	_ *struct {
 		handles.It
 		authorizes.Required
 	}, remove api.RemovePrincipal,
-	_*struct{args.Optional}, ctx context.Context,
+	_ *struct{ args.Optional }, ctx context.Context,
 ) error {
 	pid := remove.PrincipalId.String()
-	pk  := azcosmos.NewPartitionKeyString(remove.Domain)
+	pk := azcosmos.NewPartitionKeyString(remove.Domain)
 	_, err := h.principals.DeleteItem(ctx, pk, pid, nil)
 	return err
 }
 
 func (h *Handler) Get(
 	_ *handles.It, get api.GetPrincipal,
-	_*struct{args.Optional}, ctx context.Context,
+	_ *struct{ args.Optional }, ctx context.Context,
 ) (api.Principal, miruken.HandleResult) {
 	pid := get.PrincipalId.String()
-	pk  := azcosmos.NewPartitionKeyString(get.Domain)
+	pk := azcosmos.NewPartitionKeyString(get.Domain)
 	item, found, err := azure.ReadItem[model.Principal](ctx, pid, pk, h.principals, nil)
 	if !found || item.Type == model.EntitlementType {
 		return api.Principal{}, miruken.NotHandled
@@ -140,7 +139,7 @@ func (h *Handler) Get(
 
 func (h *Handler) Find(
 	_ *handles.It, find api.FindPrincipals,
-	_*struct{args.Optional}, ctx context.Context,
+	_ *struct{ args.Optional }, ctx context.Context,
 ) ([]api.Principal, error) {
 	params := []azcosmos.QueryParameter{
 		{"@entitlement", model.EntitlementType},

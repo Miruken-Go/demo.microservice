@@ -2,6 +2,8 @@ package azure
 
 import (
 	"fmt"
+	"reflect"
+
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	_ "github.com/btnguyen2k/gocosmos"
 	"github.com/jmoiron/sqlx"
@@ -9,7 +11,6 @@ import (
 	"github.com/miruken-go/miruken/args"
 	"github.com/miruken-go/miruken/config"
 	"github.com/miruken-go/miruken/provides"
-	"reflect"
 )
 
 type (
@@ -25,20 +26,19 @@ type (
 	}
 )
 
-
 func (f *Factory) Constructor(
-	_*struct{
+	_ *struct {
 		args.Optional
 		args.FromOptions
-	  }, options Options,
+	}, options Options,
 ) {
 	f.opts = options
 }
 
 func (f *Factory) NewClient(
-	_*struct{
+	_ *struct {
 		provides.Single `mode:"covariant"`
-	  }, p *provides.It,
+	}, p *provides.It,
 	hc miruken.HandleContext,
 ) (client *azcosmos.Client, err error) {
 	typ := p.Key().(reflect.Type)
@@ -62,9 +62,9 @@ func (f *Factory) NewClient(
 }
 
 func (f *Factory) NewSqlClient(
-	_*struct{
+	_ *struct {
 		provides.Single `mode:"covariant"`
-	  }, p *provides.It,
+	}, p *provides.It,
 	hc miruken.HandleContext,
 ) (db *sqlx.DB, err error) {
 	typ := p.Key().(reflect.Type)
@@ -87,7 +87,6 @@ func (f *Factory) NewSqlClient(
 	return newSqlxClient(cfg)
 }
 
-
 func newClient(
 	cfg Config,
 ) (*azcosmos.Client, error) {
@@ -98,7 +97,6 @@ func newClient(
 	}
 }
 
-
 func newSqlxClient(
 	cfg Config,
 ) (*sqlx.DB, error) {
@@ -108,7 +106,6 @@ func newSqlxClient(
 		return sqlx.Open("gocosmos", uri)
 	}
 }
-
 
 var (
 	ClientType = reflect.TypeOf((*azcosmos.Client)(nil))

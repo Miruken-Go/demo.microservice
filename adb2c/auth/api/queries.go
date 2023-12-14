@@ -15,7 +15,6 @@ type (
 		}
 	}
 
-
 	GetPrincipal struct {
 		PrincipalId uuid.UUID
 		Domain      string
@@ -26,7 +25,6 @@ type (
 		Name   string
 		Domain string
 	}
-
 
 	GetEntitlement struct {
 		EntitlementId uuid.UUID

@@ -2,6 +2,9 @@ package main
 
 import (
 	"errors"
+	"net/http"
+	"os"
+
 	"github.com/go-logr/zerologr"
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/providers/env"
@@ -13,8 +16,6 @@ import (
 	"github.com/miruken-go/miruken/logs"
 	"github.com/miruken-go/miruken/setup"
 	"github.com/rs/zerolog"
-	"net/http"
-	"os"
 )
 
 func main() {

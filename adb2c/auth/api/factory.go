@@ -8,21 +8,21 @@ import "github.com/miruken-go/miruken/creates"
 type Factory struct{}
 
 func (F *Factory) New(
-	_*struct{
+	_ *struct {
 		s creates.It `key:"api.Subject"`
 		p creates.It `key:"api.Principal"`
 		e creates.It `key:"api.Entitlement"`
 
 		cs creates.It `key:"api.CreateSubject"`
-	    ap creates.It `key:"api.AssignPrincipals"`
-	    rp creates.It `key:"api.RevokePrincipals"`
+		ap creates.It `key:"api.AssignPrincipals"`
+		rp creates.It `key:"api.RevokePrincipals"`
 		rs creates.It `key:"api.RemoveSubjects"`
 		gs creates.It `key:"api.GetSubject"`
 		fs creates.It `key:"api.FindSubjects"`
 
 		cp creates.It `key:"api.CreatePrincipal"`
-	    ae creates.It `key:"api.AssignEntitlements"`
-	    re creates.It `key:"api.RevokeEntitlements"`
+		ae creates.It `key:"api.AssignEntitlements"`
+		re creates.It `key:"api.RevokeEntitlements"`
 		dp creates.It `key:"api.RemovePrincipal"`
 		gp creates.It `key:"api.GetPrincipal"`
 		fp creates.It `key:"api.FindPrincipals"`
@@ -31,7 +31,7 @@ func (F *Factory) New(
 		de creates.It `key:"api.RemoveEntitlement"`
 		ge creates.It `key:"api.GetEntitlement"`
 		fe creates.It `key:"api.FindEntitlements"`
-	  }, create *creates.It,
+	}, create *creates.It,
 ) any {
 	switch create.Key() {
 	case "api.Subject":

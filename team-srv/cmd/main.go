@@ -2,9 +2,10 @@ package main
 
 import (
 	"errors"
-	"github.com/miruken-go/miruken/setup"
 	"net/http"
 	"os"
+
+	"github.com/miruken-go/miruken/setup"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/go-logr/zerologr"
@@ -31,7 +32,7 @@ type Config struct {
 		Source  struct {
 			Url string
 		}
-		Port    string
+		Port string
 	}
 	OpenApi openapi.Config
 }

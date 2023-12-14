@@ -2,6 +2,9 @@ package subject
 
 import (
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/jmoiron/sqlx"
@@ -14,8 +17,6 @@ import (
 	"github.com/miruken-go/miruken/security/authorizes"
 	play "github.com/miruken-go/miruken/validates/play"
 	"golang.org/x/net/context"
-	"strings"
-	"time"
 )
 
 //go:generate $GOPATH/bin/miruken -tests
@@ -30,33 +31,31 @@ type (
 		play.Validates6[api.FindSubjects]
 
 		subjects *azcosmos.ContainerClient
-		db *sqlx.DB
+		db       *sqlx.DB
 	}
 )
-
 
 const (
 	database  = "adb2c"
 	container = "subject"
 )
 
-
 func (h *Handler) Constructor(
-	db     *sqlx.DB,
+	db *sqlx.DB,
 	client *azcosmos.Client,
-	_*struct{args.Optional}, translator ut.Translator,
+	_ *struct{ args.Optional }, translator ut.Translator,
 ) {
-	h.db       = db
+	h.db = db
 	h.subjects = azure.Container(client, database, container)
 	h.setValidationRules(translator)
 }
 
 func (h *Handler) Create(
-	_*struct{
+	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, create api.CreateSubject,
-	_*struct{args.Optional}, ctx context.Context,
+	}, create api.CreateSubject,
+	_ *struct{ args.Optional }, ctx context.Context,
 ) (s api.SubjectCreated, err error) {
 	id := model.NewId()
 	subject := model.Subject{
@@ -74,14 +73,14 @@ func (h *Handler) Create(
 }
 
 func (h *Handler) Assign(
-	_*struct{
+	_ *struct {
 		handles.It
 		authorizes.Required
 	}, assign api.AssignPrincipals,
-	_*struct{args.Optional}, ctx context.Context,
+	_ *struct{ args.Optional }, ctx context.Context,
 ) error {
 	sid := assign.SubjectId.String()
-	pk  := azcosmos.NewPartitionKeyString(sid)
+	pk := azcosmos.NewPartitionKeyString(sid)
 	_, _, err := azure.ReplaceItem(func(subject *model.Subject) (bool, error) {
 		add := model.Strings(assign.PrincipalIds)
 		updated, changed := model.Union(subject.PrincipalIds, add...)
@@ -94,14 +93,14 @@ func (h *Handler) Assign(
 }
 
 func (h *Handler) Revoke(
-	_*struct{
+	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, revoke api.RevokePrincipals,
-	_*struct{args.Optional}, ctx context.Context,
+	}, revoke api.RevokePrincipals,
+	_ *struct{ args.Optional }, ctx context.Context,
 ) error {
 	sid := revoke.SubjectId.String()
-	pk  := azcosmos.NewPartitionKeyString(sid)
+	pk := azcosmos.NewPartitionKeyString(sid)
 	_, _, err := azure.ReplaceItem(func(subject *model.Subject) (bool, error) {
 		remove := model.Strings(revoke.PrincipalIds)
 		updated, changed := model.Difference(subject.PrincipalIds, remove...)
@@ -114,27 +113,27 @@ func (h *Handler) Revoke(
 }
 
 func (h *Handler) Remove(
-	_*struct{
+	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, remove api.RemoveSubject,
-	_*struct{args.Optional}, ctx context.Context,
+	}, remove api.RemoveSubject,
+	_ *struct{ args.Optional }, ctx context.Context,
 ) error {
 	sid := remove.SubjectId.String()
-	pk  := azcosmos.NewPartitionKeyString(sid)
+	pk := azcosmos.NewPartitionKeyString(sid)
 	_, err := h.subjects.DeleteItem(ctx, pk, sid, nil)
 	return err
 }
 
 func (h *Handler) Get(
-	_*struct{
+	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, get api.GetSubject,
-	_*struct{args.Optional}, ctx context.Context,
+	}, get api.GetSubject,
+	_ *struct{ args.Optional }, ctx context.Context,
 ) (api.Subject, miruken.HandleResult) {
 	sid := get.SubjectId.String()
-	pk  := azcosmos.NewPartitionKeyString(sid)
+	pk := azcosmos.NewPartitionKeyString(sid)
 	item, found, err := azure.ReadItem[model.Subject](ctx, sid, pk, h.subjects, nil)
 	if !found {
 		return api.Subject{}, miruken.NotHandled
@@ -145,11 +144,11 @@ func (h *Handler) Get(
 }
 
 func (h *Handler) Find(
-	_*struct{
+	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, find api.FindSubjects,
-	_*struct{args.Optional}, ctx context.Context,
+	}, find api.FindSubjects,
+	_ *struct{ args.Optional }, ctx context.Context,
 ) ([]api.Subject, error) {
 	var params []any
 	var sql strings.Builder
