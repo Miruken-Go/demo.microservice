@@ -1,8 +1,8 @@
-package mongo
+package azure
 
 import (
+	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	"github.com/miruken-go/miruken/setup"
-	"go.mongodb.org/mongo-driver/mongo"
 	"reflect"
 )
 
@@ -24,7 +24,7 @@ func (i *Installer) Install(setup *setup.Builder) error {
 	return nil
 }
 
-func Client[T ~*mongo.Client](cfg Config) func(*Installer) {
+func Client[T ~*azcosmos.Client](cfg Config) func(*Installer) {
 	return func(installer *Installer) {
 		if installer.clients == nil {
 			installer.clients = make(map[reflect.Type]Config, 1)
@@ -33,7 +33,7 @@ func Client[T ~*mongo.Client](cfg Config) func(*Installer) {
 	}
 }
 
-func ClientAlias[T ~*mongo.Client](path string) func(*Installer) {
+func ClientAlias[T ~*azcosmos.Client](path string) func(*Installer) {
 	if path == "" {
 		panic("path is required")
 	}

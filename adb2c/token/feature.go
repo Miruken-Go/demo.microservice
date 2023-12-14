@@ -1,25 +1,25 @@
 package token
 
 import (
-	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/security/password"
+	"github.com/miruken-go/miruken/setup"
 )
 
 // Installer enables Azure ADB2C token enrichment.
 type Installer struct{}
 
-func (i *Installer) DependsOn() []miruken.Feature {
-	return []miruken.Feature{password.Feature()}
+func (i *Installer) DependsOn() []setup.Feature {
+	return []setup.Feature{password.Feature()}
 }
 
-func (i *Installer) Install(setup *miruken.SetupBuilder) error {
+func (i *Installer) Install(setup *setup.Builder) error {
 	if setup.Tag(&featureTag) {
 		setup.Specs(&EnrichHandler{})
 	}
 	return nil
 }
 
-func Feature(config ...func(*Installer)) miruken.Feature {
+func Feature(config ...func(*Installer)) setup.Feature {
 	installer := &Installer{}
 	for _, configure := range config {
 		if configure != nil {

@@ -1,25 +1,24 @@
-package mongo
+package azure
 
 import (
 	"fmt"
+	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/args"
 	"github.com/miruken-go/miruken/config"
 	"github.com/miruken-go/miruken/provides"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/net/context"
 	"reflect"
 )
 
 type (
-	// Options for mongo clients.
+	// Options for azure cosmosdb resources.
 	Options struct {
 		Aliases map[reflect.Type]string
 		Clients map[reflect.Type]Config
 	}
 
-	// Factory of mongo clients.
+	// Factory of azure cosmosdb resources.
 	Factory struct {
 		opts Options
 	}
@@ -41,14 +40,14 @@ func (f *Factory) NewClient(
 	  }, p *provides.It,
 	_*struct{args.Optional}, ctx context.Context,
 	hc miruken.HandleContext,
-) (client *mongo.Client, err error) {
+) (client *azcosmos.Client, err error) {
 	typ := p.Key().(reflect.Type)
 	cfg, ok := f.opts.Clients[typ]
 	if !ok {
 		var key string
 		if key, ok = f.opts.Aliases[typ]; !ok {
 			if typ == ClientType {
-				key = "Mongo"
+				key = "Azure"
 			} else {
 				key = typ.Name()
 			}
@@ -66,19 +65,14 @@ func (f *Factory) NewClient(
 func newClient(
 	cfg Config,
 	ctx context.Context,
-) (*mongo.Client, error) {
+) (*azcosmos.Client, error) {
 	if uri := cfg.ConnectionUri; uri == "" {
 		return nil, nil
 	} else {
-		opts := options.Client()
-		if timeout := cfg.Timeout; timeout > 0 {
-			opts.SetTimeout(timeout)
-		}
-		opts.ApplyURI(uri)
-		return mongo.Connect(ctx, opts)
+		return azcosmos.NewClientFromConnectionString(uri, nil)
 	}
 }
 
 var (
-	ClientType = reflect.TypeOf((*mongo.Client)(nil))
+	ClientType = reflect.TypeOf((*azcosmos.Client)(nil))
 )

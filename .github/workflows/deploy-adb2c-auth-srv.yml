@@ -32,6 +32,7 @@ jobs:
       env:
         repository:                     ${{ github.repository }}
         repositoryOwner:                ${{ github.repository_owner }}
+        ref:                            ${{ github.event.client_payload.ref || github.ref }}
         tenantId:                       ${{ vars.TENANT_ID }}
         subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
         deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
@@ -43,8 +44,9 @@ jobs:
         tag:                            ${{ inputs.tag      || github.event.client_payload.tag }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
+        ref:        $ref
         submodules: 'recursive'
     - name: npm ci
       working-directory: ./deployment/src

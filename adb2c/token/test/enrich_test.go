@@ -7,7 +7,6 @@ import (
 	"github.com/knadh/koanf/parsers/json"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/miruken-go/demo.microservice/adb2c/token"
-	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/api/http"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
@@ -17,6 +16,7 @@ import (
 	koanfp "github.com/miruken-go/miruken/config/koanf"
 	"github.com/miruken-go/miruken/context"
 	"github.com/miruken-go/miruken/security/password"
+	"github.com/miruken-go/miruken/setup"
 	"github.com/stretchr/testify/suite"
 	"io"
 	http2 "net/http"
@@ -30,7 +30,7 @@ type ADB2CTestSuite struct {
 }
 
 func (suite *ADB2CTestSuite) Setup() *context.Context {
-	handler, _ := miruken.Setup(
+	handler, _ := setup.Setup(
 		http.Feature(), stdjson.Feature()).
 		Specs(&api.GoPolymorphism{}).
 		Handler()
@@ -42,7 +42,7 @@ func (suite *ADB2CTestSuite) SetupTest() {
 	err := k.Load(file.Provider("./login.json"), json.Parser())
 	suite.Nil(err)
 
-	handler, _ := miruken.Setup(
+	handler, _ := setup.Setup(
 		httpsrv.Feature(), stdjson.Feature(),
 		token.Feature(), password.Feature(),
 		config.Feature(koanfp.P(k))).

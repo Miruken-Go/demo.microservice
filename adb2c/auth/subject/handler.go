@@ -1,6 +1,8 @@
 package subject
 
 import (
+	"fmt"
+	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/google/uuid"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
@@ -28,10 +30,11 @@ type (
 		play.Validates5[api.GetSubject]
 		play.Validates6[api.FindSubjects]
 		database *mongo.Database
+		azure *azcosmos.Client
 	}
 
  	subjectResult struct {
-		Subject           internal.Subject    `bson:"subject"`
+		Subject           internal.Subject     `bson:"subject"`
 		RelatedPrincipals []internal.Principal `bson:"related_principals"`
  	}
 )
@@ -39,8 +42,11 @@ type (
 
 func (h *Handler) Constructor(
 	client *mongo.Client,
+	azure *azcosmos.Client,
 	_*struct{args.Optional}, translator ut.Translator,
 ) {
+	h.azure = azure
+
 	h.database = client.Database("adb2c")
 
 	_ = h.Validates1.WithRules(
@@ -204,6 +210,27 @@ func (h *Handler) Find(
 	  }, find api.FindSubjects,
 	_*struct{args.Optional}, ctx context.Context,
 ) ([]api.Subject, error) {
+	//database := azcosmos.DatabaseProperties{ID: "adb2c"}
+	//dbResp, err := h.azure.CreateDatabase(ctx, database, nil)
+	//fmt.Println(dbResp)
+	db, err := h.azure.NewDatabase("adb2c")
+	if err != nil {
+		return nil, nil
+	}
+	properties := azcosmos.ContainerProperties{
+		ID: "subject",
+		PartitionKeyDefinition: azcosmos.PartitionKeyDefinition{
+			Paths: []string{"/id"},
+		},
+	}
+	cntResp, err := db.CreateContainer(ctx, properties, nil)
+	if err != nil {
+		return nil, nil
+	}
+	fmt.Println(cntResp)
+	container, err := h.azure.NewContainer("adb2c", "subject")
+	fmt.Println(container)
+
 	principalIds := find.PrincipalIds
 
 	var pipeline []bson.M
