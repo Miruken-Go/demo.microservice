@@ -2,6 +2,8 @@ package mongo
 
 import (
 	"fmt"
+	"reflect"
+
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/args"
 	"github.com/miruken-go/miruken/config"
@@ -9,7 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/net/context"
-	"reflect"
 )
 
 type (
@@ -25,21 +26,20 @@ type (
 	}
 )
 
-
 func (f *Factory) Constructor(
-	_*struct{
+	_ *struct {
 		args.Optional
 		args.FromOptions
-	  }, options Options,
+	}, options Options,
 ) {
 	f.opts = options
 }
 
 func (f *Factory) NewClient(
-	_*struct{
+	_ *struct {
 		provides.Single `mode:"covariant"`
-	  }, p *provides.It,
-	_*struct{args.Optional}, ctx context.Context,
+	}, p *provides.It,
+	_ *struct{ args.Optional }, ctx context.Context,
 	hc miruken.HandleContext,
 ) (client *mongo.Client, err error) {
 	typ := p.Key().(reflect.Type)
@@ -61,7 +61,6 @@ func (f *Factory) NewClient(
 	}
 	return newClient(cfg, ctx)
 }
-
 
 func newClient(
 	cfg Config,

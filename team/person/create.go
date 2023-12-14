@@ -1,6 +1,9 @@
 package person
 
 import (
+	"sync/atomic"
+	"time"
+
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	"github.com/miruken-go/demo.microservice/team-api/commands"
@@ -12,12 +15,10 @@ import (
 	"github.com/miruken-go/miruken/security/authorizes"
 	"github.com/miruken-go/miruken/security/principal"
 	play "github.com/miruken-go/miruken/validates/play"
-	"sync/atomic"
-	"time"
 )
 
 func (h *Handler) InitCreate(
-	_*struct{args.Optional}, translator ut.Translator,
+	_ *struct{ args.Optional }, translator ut.Translator,
 ) error {
 	return h.Validates1.WithRules(
 		play.Rules{
@@ -42,11 +43,11 @@ func (h *Handler) AuthorizeCreate(
 }
 
 func (h *Handler) Create(
-	_*struct {
+	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, create *commands.CreatePerson,
-	_*struct{args.Optional}, parts api.PartContainer,
+	}, create *commands.CreatePerson,
+	_ *struct{ args.Optional }, parts api.PartContainer,
 ) (any, error) {
 	person := data.Person{
 		Id:        atomic.AddInt32(&h.nextId, 1),
@@ -68,7 +69,6 @@ func (h *Handler) Create(
 		AddParts(parts.Parts())
 	return pb.Build(), nil
 }
-
 
 func notfuture(fl validator.FieldLevel) bool {
 	if t, ok := fl.Field().Interface().(time.Time); ok {

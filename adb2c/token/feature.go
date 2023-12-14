@@ -12,9 +12,9 @@ func (i *Installer) DependsOn() []setup.Feature {
 	return []setup.Feature{password.Feature()}
 }
 
-func (i *Installer) Install(setup *setup.Builder) error {
-	if setup.Tag(&featureTag) {
-		setup.Specs(&EnrichHandler{})
+func (i *Installer) Install(b *setup.Builder) error {
+	if b.Tag(&featureTag) {
+		b.Specs(&EnrichHandler{})
 	}
 	return nil
 }

@@ -2,22 +2,22 @@ package subject
 
 import (
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	ut "github.com/go-playground/universal-translator"
-	"github.com/google/uuid"
+	"github.com/jmoiron/sqlx"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
-	"github.com/miruken-go/demo.microservice/adb2c/auth/internal"
+	"github.com/miruken-go/demo.microservice/adb2c/auth/internal/model"
+	"github.com/miruken-go/demo.microservice/adb2c/azure"
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/args"
 	"github.com/miruken-go/miruken/handles"
 	"github.com/miruken-go/miruken/security/authorizes"
 	play "github.com/miruken-go/miruken/validates/play"
-	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/net/context"
-	"time"
 )
-
-import "go.mongodb.org/mongo-driver/mongo"
 
 //go:generate $GOPATH/bin/miruken -tests
 
@@ -29,36 +29,193 @@ type (
 		play.Validates4[api.RemoveSubject]
 		play.Validates5[api.GetSubject]
 		play.Validates6[api.FindSubjects]
-		database *mongo.Database
-		azure *azcosmos.Client
-	}
 
- 	subjectResult struct {
-		Subject           internal.Subject     `bson:"subject"`
-		RelatedPrincipals []internal.Principal `bson:"related_principals"`
- 	}
+		subjects *azcosmos.ContainerClient
+		db       *sqlx.DB
+	}
 )
 
+const (
+	database  = "adb2c"
+	container = "subject"
+)
 
 func (h *Handler) Constructor(
-	client *mongo.Client,
-	azure *azcosmos.Client,
-	_*struct{args.Optional}, translator ut.Translator,
+	db *sqlx.DB,
+	client *azcosmos.Client,
+	_ *struct{ args.Optional }, translator ut.Translator,
 ) {
-	h.azure = azure
+	h.db = db
+	h.subjects = azure.Container(client, database, container)
+	h.setValidationRules(translator)
+}
 
-	h.database = client.Database("adb2c")
+func (h *Handler) Create(
+	_ *struct {
+		handles.It
+		authorizes.Required
+	}, create api.CreateSubject,
+	_ *struct{ args.Optional }, ctx context.Context,
+) (s api.SubjectCreated, err error) {
+	id := model.NewId()
+	subject := model.Subject{
+		Id:           id.String(),
+		ObjectId:     create.ObjectId,
+		PrincipalIds: model.Strings(create.PrincipalIds),
+		CreatedAt:    time.Now().UTC(),
+	}
+	pk := azcosmos.NewPartitionKeyString(subject.Id)
+	_, err = azure.CreateItem(&subject, ctx, pk, h.subjects, nil)
+	if err == nil {
+		s.SubjectId = id
+	}
+	return
+}
 
+func (h *Handler) Assign(
+	_ *struct {
+		handles.It
+		authorizes.Required
+	}, assign api.AssignPrincipals,
+	_ *struct{ args.Optional }, ctx context.Context,
+) error {
+	sid := assign.SubjectId.String()
+	pk := azcosmos.NewPartitionKeyString(sid)
+	_, _, err := azure.ReplaceItem(func(subject *model.Subject) (bool, error) {
+		add := model.Strings(assign.PrincipalIds)
+		updated, changed := model.Union(subject.PrincipalIds, add...)
+		if changed {
+			subject.PrincipalIds = updated
+		}
+		return changed, nil
+	}, ctx, sid, pk, h.subjects, nil)
+	return err
+}
+
+func (h *Handler) Revoke(
+	_ *struct {
+		handles.It
+		authorizes.Required
+	}, revoke api.RevokePrincipals,
+	_ *struct{ args.Optional }, ctx context.Context,
+) error {
+	sid := revoke.SubjectId.String()
+	pk := azcosmos.NewPartitionKeyString(sid)
+	_, _, err := azure.ReplaceItem(func(subject *model.Subject) (bool, error) {
+		remove := model.Strings(revoke.PrincipalIds)
+		updated, changed := model.Difference(subject.PrincipalIds, remove...)
+		if changed {
+			subject.PrincipalIds = updated
+		}
+		return changed, nil
+	}, ctx, sid, pk, h.subjects, nil)
+	return err
+}
+
+func (h *Handler) Remove(
+	_ *struct {
+		handles.It
+		authorizes.Required
+	}, remove api.RemoveSubject,
+	_ *struct{ args.Optional }, ctx context.Context,
+) error {
+	sid := remove.SubjectId.String()
+	pk := azcosmos.NewPartitionKeyString(sid)
+	_, err := h.subjects.DeleteItem(ctx, pk, sid, nil)
+	return err
+}
+
+func (h *Handler) Get(
+	_ *struct {
+		handles.It
+		authorizes.Required
+	}, get api.GetSubject,
+	_ *struct{ args.Optional }, ctx context.Context,
+) (api.Subject, miruken.HandleResult) {
+	sid := get.SubjectId.String()
+	pk := azcosmos.NewPartitionKeyString(sid)
+	item, found, err := azure.ReadItem[model.Subject](ctx, sid, pk, h.subjects, nil)
+	if !found {
+		return api.Subject{}, miruken.NotHandled
+	} else if err != nil {
+		return api.Subject{}, miruken.NotHandled.WithError(err)
+	}
+	return item.ToApi(), miruken.Handled
+}
+
+func (h *Handler) Find(
+	_ *struct {
+		handles.It
+		authorizes.Required
+	}, find api.FindSubjects,
+	_ *struct{ args.Optional }, ctx context.Context,
+) ([]api.Subject, error) {
+	var params []any
+	var sql strings.Builder
+	sql.WriteString("SELECT CROSS PARTITION * FROM s")
+	sql.WriteString("")
+
+	cond := " WHERE"
+
+	if objectId := find.ObjectId; objectId != "" {
+		sql.WriteString(" WHERE s.objectId = :1")
+		params = append(params, objectId)
+		cond = " AND"
+	}
+
+	if principalIds := find.Principals.Ids; len(principalIds) > 0 {
+		sql.WriteString(cond)
+		if all := find.Principals.All; all {
+			sql.WriteString(fmt.Sprintf(
+				"%s ARRAY_LENGTH(SetIntersect(s.principalIds, :%d)) = :%d",
+				cond, len(params)+1, len(params)+2))
+			params = append(params, principalIds, len(principalIds))
+		} else {
+			sql.WriteString(fmt.Sprintf(
+				"%s ARRAY_LENGTH(SetIntersect(s.principalIds, :%d)) != 0",
+				cond, len(params)+1))
+			params = append(params, principalIds)
+		}
+	}
+
+	sql.WriteString(" WITH database=")
+	sql.WriteString(database)
+	sql.WriteString(" WITH collection=")
+	sql.WriteString(container)
+
+	rows, err := h.db.QueryxContext(ctx, sql.String(), params...)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = rows.Close()
+	}()
+
+	results := make([]api.Subject, 0)
+	for rows.Next() {
+		row := make(model.SubjectMap)
+		if err := rows.MapScan(row); err != nil {
+			return nil, err
+		}
+		results = append(results, row.ToApi())
+	}
+
+	return results, nil
+}
+
+func (h *Handler) setValidationRules(
+	translator ut.Translator,
+) {
 	_ = h.Validates1.WithRules(
 		play.Rules{
-			play.Type[api.CreateSubject](map[string]string{
+			play.Type[api.CreateSubject](play.Constraints{
 				"ObjectId": "required",
 			}),
 		}, nil, translator)
 
 	_ = h.Validates2.WithRules(
 		play.Rules{
-			play.Type[api.AssignPrincipals](map[string]string{
+			play.Type[api.AssignPrincipals](play.Constraints{
 				"SubjectId":    "required",
 				"PrincipalIds": "gt=0,required",
 			}),
@@ -66,7 +223,7 @@ func (h *Handler) Constructor(
 
 	_ = h.Validates3.WithRules(
 		play.Rules{
-			play.Type[api.RevokePrincipals](map[string]string{
+			play.Type[api.RevokePrincipals](play.Constraints{
 				"SubjectId":    "required",
 				"PrincipalIds": "gt=0,required",
 			}),
@@ -74,271 +231,15 @@ func (h *Handler) Constructor(
 
 	_ = h.Validates4.WithRules(
 		play.Rules{
-			play.Type[api.RemoveSubject](map[string]string{
+			play.Type[api.RemoveSubject](play.Constraints{
 				"SubjectId": "required",
 			}),
 		}, nil, translator)
 
 	_ = h.Validates5.WithRules(
 		play.Rules{
-			play.Type[api.GetSubject](map[string]string{
+			play.Type[api.GetSubject](play.Constraints{
 				"SubjectId": "required",
 			}),
 		}, nil, translator)
 }
-
-func (h *Handler) Create(
-	_*struct{
-		handles.It
-		authorizes.Required
-	  }, create api.CreateSubject,
-	_*struct{args.Optional}, ctx context.Context,
-) (api.SubjectCreated, error) {
-	now := time.Now().UTC()
-	subject := internal.Subject{
-		ID:         uuid.New(),
-		ObjectID:   create.ObjectId,
-		CreatedAt:  now,
-	}
-	subjects := h.database.Collection("subject")
-	if _, err := subjects.InsertOne(ctx, subject); err != nil {
-		return api.SubjectCreated{}, err
-	}
-	return api.SubjectCreated{
-		SubjectId: subject.ID,
-	}, nil
-}
-
-func (h *Handler) Assign(
-	_*struct{
-		handles.It
-		authorizes.Required
-	}, assign api.AssignPrincipals,
-	_*struct{args.Optional}, ctx context.Context,
-) error {
-	subjectId  := assign.SubjectId
-	operations := make([]mongo.WriteModel, len(assign.PrincipalIds))
-	for i, principalId := range assign.PrincipalIds {
-		subPrincipal := internal.SubjectPrincipal{
-			SubjectID:   subjectId,
-			PrincipalID: principalId,
-		}
-		filter := bson.M{"subject_id": subjectId, "principal_id": principalId}
-		update := bson.M{"$setOnInsert": subPrincipal}
-		operations[i] = mongo.NewUpdateOneModel().
-			SetFilter(filter).
-			SetUpdate(update).
-			SetUpsert(true)
-	}
-	subjectPrincipals := h.database.Collection("subject_principal")
-	_, err := subjectPrincipals.BulkWrite(ctx, operations)
-	return err
-}
-
-func (h *Handler) Revoke(
-	_*struct{
-		handles.It
-		authorizes.Required
-	  }, revoke api.RevokePrincipals,
-	_*struct{args.Optional}, ctx context.Context,
-) error {
-	filter := bson.M{
-		"subject_id":   revoke.SubjectId,
-		"principal_id": bson.M{"$in": revoke.PrincipalIds},
-	}
-	subjectPrincipals := h.database.Collection("subject_principal")
-	_, err := subjectPrincipals.DeleteMany(ctx, filter)
-	return err
-}
-
-func (h *Handler) Remove(
-	_*struct{
-		handles.It
-		authorizes.Required
-	  }, remove api.RemoveSubject,
-	_*struct{args.Optional}, ctx context.Context,
-) error {
-	subjects := h.database.Collection("subject")
-	_, err := subjects.DeleteOne(ctx, bson.M{"_id": remove.SubjectId})
-	return err
-}
-
-func (h *Handler) Get(
-	_*struct{
-		handles.It
-		authorizes.Required
-	  }, get api.GetSubject,
-	_*struct{args.Optional}, ctx context.Context,
-) (api.Subject, miruken.HandleResult) {
-	pipeline := []bson.M{
-		{
-			"$match": bson.M{
-				"subject_id": get.SubjectId,
-			},
-		},
-		joinPrincipals, unwindPrincipals,
-		{
-			"$group": bson.M{
-				"_id":                "$_id",
-				"subject_id":         bson.M{"$first": "$subject_id"},
-				"related_principals": bson.M{"$push": "$related_principals"},
-			},
-		},
-		joinSubject, unwindSubject, projectSubject,
-	}
-
-	subjectPrincipals := h.database.Collection("subject_principal")
-	cursor, err := subjectPrincipals.Aggregate(ctx, pipeline)
-	if err != nil {
-		return api.Subject{}, miruken.NotHandled.WithError(err)
-	}
-
-	var result subjectResult
-	if cursor.Next(ctx) {
-		if err := cursor.Decode(&result); err != nil {
-			return api.Subject{}, miruken.NotHandled.WithError(err)
-		}
-		return result.mapSubject(), miruken.Handled
-	}
-	return api.Subject{}, miruken.NotHandled
-}
-
-func (h *Handler) Find(
-	_*struct{
-		handles.It
-		authorizes.Required
-	  }, find api.FindSubjects,
-	_*struct{args.Optional}, ctx context.Context,
-) ([]api.Subject, error) {
-	//database := azcosmos.DatabaseProperties{ID: "adb2c"}
-	//dbResp, err := h.azure.CreateDatabase(ctx, database, nil)
-	//fmt.Println(dbResp)
-	db, err := h.azure.NewDatabase("adb2c")
-	if err != nil {
-		return nil, nil
-	}
-	properties := azcosmos.ContainerProperties{
-		ID: "subject",
-		PartitionKeyDefinition: azcosmos.PartitionKeyDefinition{
-			Paths: []string{"/id"},
-		},
-	}
-	cntResp, err := db.CreateContainer(ctx, properties, nil)
-	if err != nil {
-		return nil, nil
-	}
-	fmt.Println(cntResp)
-	container, err := h.azure.NewContainer("adb2c", "subject")
-	fmt.Println(container)
-
-	principalIds := find.PrincipalIds
-
-	var pipeline []bson.M
-	if len(principalIds) > 0 {
-		pipeline = append(pipeline,
-			bson.M{
-				"$match": bson.M{
-					"principal_id": bson.M{"$in": principalIds},
-				},
-			},
-		)
-	}
-
-	pipeline = append(pipeline,
-		joinSubject, unwindSubject,
-		joinPrincipals, unwindPrincipals,
-		bson.M{
-			"$group": bson.M{
-				"_id":               "$subject._id",
-				"subject":            bson.M{"$first": "$subject"},
-				"related_principals": bson.M{"$push": "$related_principals"},
-				"count":              bson.M{"$sum": 1},
-			},
-		},
-		bson.M{
-			"$match": bson.M{"count": bson.M{"$gte": len(principalIds)}},
-		},
-		projectSubject,
-	)
-
-	subjectPrincipals := h.database.Collection("subject_principal")
-	cursor, err := subjectPrincipals.Aggregate(ctx, pipeline)
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		_ = cursor.Close(ctx)
-	}()
-
-	var results []subjectResult
-	if err := cursor.All(ctx, &results); err != nil {
-		return nil, err
-	}
-
-	response := make([]api.Subject, len(results))
-	for i, result := range results {
-		response[i] = result.mapSubject()
-	}
-	return response, nil
-}
-
-
-func (s subjectResult) mapSubject() api.Subject {
-	principals := make([]api.Principal, len(s.RelatedPrincipals))
-	for i, principal := range s.RelatedPrincipals {
-		tags := make([]api.Tag, len(principal.TagIDs))
-		for j, tagId := range principal.TagIDs {
-			tags[j] = api.Tag{
-				Id: tagId,
-			}
-		}
-		principals[i] = api.Principal{
-			Id:   principal.ID,
-			Name: principal.Name,
-			Tags: tags,
-		}
-	}
-
-	return api.Subject{
-		Id:         s.Subject.ID,
-		ObjectId:   s.Subject.ObjectID,
-		Principals: principals,
-	}
-}
-
-
-var (
-	joinSubject = bson.M{
-		"$lookup": bson.M{
-			"from":         "subject",
-			"localField":   "subject_id",
-			"foreignField": "_id",
-			"as":           "subject",
-		},
-	}
-
-	unwindSubject = bson.M{
-		"$unwind": "$subject",
-	}
-
-	joinPrincipals = bson.M{
-		"$lookup": bson.M{
-			"from":         "principal",
-			"localField":   "principal_id",
-			"foreignField": "_id",
-			"as":           "related_principals",
-		},
-	}
-
-	unwindPrincipals = bson.M{
-		"$unwind": "$related_principals",
-	}
-
-	projectSubject = bson.M{
-		"$project": bson.M{
-			"_id":                0,
-			"subject":            1,
-			"related_principals": 1,
-		},
-	}
-)

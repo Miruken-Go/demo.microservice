@@ -1,9 +1,11 @@
 package azure
 
 import (
-	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
-	"github.com/miruken-go/miruken/setup"
 	"reflect"
+
+	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
+	"github.com/jmoiron/sqlx"
+	"github.com/miruken-go/miruken/setup"
 )
 
 type (
@@ -14,11 +16,11 @@ type (
 	}
 )
 
-func (i *Installer) Install(setup *setup.Builder) error {
-	if setup.Tag(&featureTag) {
-		setup.Specs(&Factory{})
+func (i *Installer) Install(b *setup.Builder) error {
+	if b.Tag(&featureTag) {
+		b.Specs(&Factory{})
 		if i.aliases != nil {
-			setup.Options(Options{Aliases: i.aliases, Clients: i.clients})
+			b.Options(Options{Aliases: i.aliases, Clients: i.clients})
 		}
 	}
 	return nil
@@ -34,6 +36,27 @@ func Client[T ~*azcosmos.Client](cfg Config) func(*Installer) {
 }
 
 func ClientAlias[T ~*azcosmos.Client](path string) func(*Installer) {
+	if path == "" {
+		panic("path is required")
+	}
+	return func(installer *Installer) {
+		if installer.aliases == nil {
+			installer.aliases = make(map[reflect.Type]string, 1)
+		}
+		installer.aliases[reflect.TypeOf((*T)(nil)).Elem()] = path
+	}
+}
+
+func SqlClient[T ~*sqlx.DB](cfg Config) func(*Installer) {
+	return func(installer *Installer) {
+		if installer.clients == nil {
+			installer.clients = make(map[reflect.Type]Config, 1)
+		}
+		installer.clients[reflect.TypeOf((*T)(nil)).Elem()] = cfg
+	}
+}
+
+func SqlClientAlias[T ~*sqlx.DB](path string) func(*Installer) {
 	if path == "" {
 		panic("path is required")
 	}

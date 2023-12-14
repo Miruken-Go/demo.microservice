@@ -20,12 +20,12 @@ type (
 )
 
 func (i *UpdateIntegrity) Constructor(
-	_*struct{args.Optional}, translator ut.Translator,
+	_ *struct{ args.Optional }, translator ut.Translator,
 ) error {
 	return i.WithRules(
 		play.Rules{
 			play.Type[commands.UpdateTeam](map[string]string{
-				"Id": "required,gt=0",
+				"Id":   "required,gt=0",
 				"Name": "omitempty,min=1",
 			}),
 			play.Type[data.Coach](map[string]string{

@@ -2,11 +2,12 @@ package main
 
 import (
 	"errors"
+	"net/http"
+	"os"
+
 	auth2 "github.com/miruken-go/demo.microservice/adb2c/auth"
 	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
 	"github.com/miruken-go/miruken/setup"
-	"net/http"
-	"os"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/go-logr/zerologr"
@@ -31,11 +32,10 @@ type Config struct {
 		Source  struct {
 			Url string
 		}
-		Port    string
+		Port string
 	}
 	OpenApi openapi.Config
 }
-
 
 func main() {
 	// logging

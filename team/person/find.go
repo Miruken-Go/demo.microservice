@@ -1,12 +1,13 @@
 package person
 
 import (
+	"time"
+
 	"github.com/miruken-go/demo.microservice/team-api/commands"
 	"github.com/miruken-go/demo.microservice/team-api/data"
 	"github.com/miruken-go/demo.microservice/team-api/queries"
 	"github.com/miruken-go/miruken/handles"
 	play "github.com/miruken-go/miruken/validates/play"
-	"time"
 )
 
 //go:generate $GOPATH/bin/miruken -tests
@@ -26,4 +27,3 @@ func (h *Handler) Find(
 		{Id: 1, FirstName: "John", LastName: "Smith", BirthDate: time.Now()},
 	}, nil
 }
-

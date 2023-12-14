@@ -2,6 +2,14 @@ package main
 
 import (
 	"errors"
+	"net/http"
+	"net/http/pprof"
+	_ "net/http/pprof"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/go-logr/zerologr"
 	"github.com/knadh/koanf"
@@ -22,13 +30,6 @@ import (
 	play "github.com/miruken-go/miruken/validates/play"
 	"github.com/rs/zerolog"
 	"golang.org/x/net/context"
-	"net/http"
-	"net/http/pprof"
-	_ "net/http/pprof"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
 )
 
 func main() {
@@ -56,7 +57,7 @@ func main() {
 			},
 			Contact: &openapi3.Contact{
 				Name: "Miruken",
-				URL: "https://github.com/Miruken-Go/demo.microservice",
+				URL:  "https://github.com/Miruken-Go/demo.microservice",
 			},
 		},
 		Components: &openapi3.Components{
@@ -69,9 +70,9 @@ func main() {
 								AuthorizationURL: "https://majorleaguemirukenauthdev.b2clogin.com/majorleaguemirukenauthdev.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1a_signup_signin",
 								TokenURL:         "https://majorleaguemirukenauthdev.b2clogin.com/majorleaguemirukenauthdev.onmicrosoft.com/oauth2/v2.0/token?p=b2c_1a_signup_signin",
 								Scopes: map[string]string{
-									"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Groups": "Groups to which the user belongs.",
-									"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Roles":  "Roles to which the user belongs.",
-									"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Entitlements":  "Entitlements the user has.",
+									"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Groups":       "Groups to which the user belongs.",
+									"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Roles":        "Roles to which the user belongs.",
+									"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Entitlements": "Entitlements the user has.",
 								},
 							},
 						},
@@ -133,7 +134,7 @@ func main() {
 
 	// start http server
 	server := &http.Server{
-		Addr:   ":8080",
+		Addr:    ":8080",
 		Handler: &mux,
 	}
 

@@ -2,10 +2,12 @@ package main
 
 import (
 	"errors"
+	"net/http"
+	"os"
+
 	"github.com/go-logr/zerologr"
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/providers/env"
-	"github.com/miruken-go/demo.microservice/adb2c/mongo"
 	"github.com/miruken-go/demo.microservice/adb2c/token"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
 	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
@@ -14,8 +16,6 @@ import (
 	"github.com/miruken-go/miruken/logs"
 	"github.com/miruken-go/miruken/setup"
 	"github.com/rs/zerolog"
-	"net/http"
-	"os"
 )
 
 func main() {
@@ -38,7 +38,6 @@ func main() {
 		token.Feature(),
 		config.Feature(koanfp.P(k)),
 		logs.Feature(logger),
-		mongo.Feature(),
 	).Context()
 
 	if err != nil {

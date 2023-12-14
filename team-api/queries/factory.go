@@ -10,10 +10,10 @@ import (
 type Factory struct{}
 
 func (F *Factory) New(
-	_*struct {
+	_ *struct {
 		fp creates.It `key:"queries.FindPeople"`
 		ft creates.It `key:"queries.FindTeams"`
-	  }, create *creates.It,
+	}, create *creates.It,
 ) any {
 	switch create.Key() {
 	case "queries.FindPeople":
