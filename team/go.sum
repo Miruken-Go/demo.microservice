@@ -214,8 +214,12 @@ github.com/miekg/dns v1.1.26/go.mod h1:bPDLeHnStXmXAq1m/Ch/hvfNHr14JKNPMBo3VZKju
 github.com/miekg/dns v1.1.41/go.mod h1:p6aan82bvRIyn+zDIv9xYNUpwa73JcSh9BKwknJysuI=
 github.com/miruken-go/demo.microservice/team-api v0.4.0-alpha.11 h1:Gpsv49Lj+d0jXR04mVsz9JqIqnPRexPYzSxJU5jJu44=
 github.com/miruken-go/demo.microservice/team-api v0.4.0-alpha.11/go.mod h1:1RIypxToQkC0KtcdNUH9ns5CuHHbwpAGvZxM1ixgvLU=
+github.com/miruken-go/demo.microservice/team-api v0.4.0-alpha.28 h1:2uqVPr8/2AKrkvmlNDNIoOJpyF5xN8JJVzHRKehsj/I=
+github.com/miruken-go/demo.microservice/team-api v0.4.0-alpha.28/go.mod h1:ImNeIMobjbpJQR8scw7mHvsVtrhfklGHthktgWF35Mw=
 github.com/miruken-go/miruken v0.30.84 h1:ArPtwxSCZRfU0cvKAl5beUSzA8bVYxSZat89KELLbKY=
 github.com/miruken-go/miruken v0.30.84/go.mod h1:KxMEePv/FyLnjOgtSV6B0ZoGQt+U0WjO2pdxPYweLp4=
+github.com/miruken-go/miruken v0.30.85 h1:389HBkNXRBkldcifsVoU+FGHH7uOYz6nwcXaPIZxVT0=
+github.com/miruken-go/miruken v0.30.85/go.mod h1:KxMEePv/FyLnjOgtSV6B0ZoGQt+U0WjO2pdxPYweLp4=
 github.com/mitchellh/cli v1.0.0/go.mod h1:hNIlj7HEI86fIcpObd7a0FcrxTWetlwJDGcceTlRvqc=
 github.com/mitchellh/cli v1.1.0/go.mod h1:xcISNoH86gajksDmfB23e/pu+B+GeFRMYmoHXxx3xhI=
 github.com/mitchellh/copystructure v1.0.0/go.mod h1:SNtv71yrdKgLRyLFxmLdkAbkKEFWgYaq1OVrnRcwhnw=
