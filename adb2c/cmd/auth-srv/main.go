@@ -60,7 +60,7 @@ func main() {
 	}
 
 	// openapi generator
-	openapiGen := openapi.Feature(openapi3.T{
+	openapiGen := openapi.Feature(&openapi3.T{
 		Info: &openapi3.Info{
 			Title:       "Authorization Api",
 			Description: "REST Api for managing User Authorization",
@@ -130,7 +130,7 @@ func main() {
 	// OpenAPI document and swagger endpoints
 	docs := openapiGen.Docs()
 	mux.Handle("/openapi", openapi.Handler(docs, true))
-	mux.Handle("/", ui.Handler("", docs, appConfig.OpenApi))
+	mux.Handle("/", ui.Handler("", docs, &appConfig.OpenApi))
 
 	// start http server
 	port := appConfig.App.Port
