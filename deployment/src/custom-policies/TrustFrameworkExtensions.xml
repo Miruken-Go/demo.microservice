@@ -27,18 +27,18 @@
         <DisplayName>Request type for the authorization service </DisplayName>
         <DataType>string</DataType>
       </ClaimType>
-      <ClaimType Id="groups">
-        <DisplayName>Groups</DisplayName>
+      <ClaimType Id="group">
+        <DisplayName>Group</DisplayName>
         <DataType>stringCollection</DataType>
         <UserHelpText>A collection of groups for the current user.</UserHelpText>
       </ClaimType>
-      <ClaimType Id="roles">
-        <DisplayName>Roles</DisplayName>
+      <ClaimType Id="role">
+        <DisplayName>Role</DisplayName>
         <DataType>stringCollection</DataType>
         <UserHelpText>A collection of roles for the current user.</UserHelpText>
       </ClaimType>
-      <ClaimType Id="entitlements">
-        <DisplayName>Entitlements</DisplayName>
+      <ClaimType Id="entitlement">
+        <DisplayName>Entitlement</DisplayName>
         <DataType>stringCollection</DataType>
         <UserHelpText>A collection of entitlements for the current user.</UserHelpText>
       </ClaimType>
@@ -91,9 +91,9 @@
           </InputClaims>
           <OutputClaims>
             <!-- Claims parsed from your REST API -->
-            <OutputClaim ClaimTypeReferenceId="groups" />
-            <OutputClaim ClaimTypeReferenceId="roles" />
-            <OutputClaim ClaimTypeReferenceId="entitlements" />
+            <OutputClaim ClaimTypeReferenceId="group" />
+            <OutputClaim ClaimTypeReferenceId="role" />
+            <OutputClaim ClaimTypeReferenceId="entitlement" />
           </OutputClaims>
           <UseTechnicalProfileForSessionManagement ReferenceId="SM-Noop" />
         </TechnicalProfile>

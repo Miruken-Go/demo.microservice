@@ -69,9 +69,9 @@ func main() {
 								AuthorizationURL: "https://majorleaguemirukenauthdev.b2clogin.com/majorleaguemirukenauthdev.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1a_signup_signin",
 								TokenURL:         "https://majorleaguemirukenauthdev.b2clogin.com/majorleaguemirukenauthdev.onmicrosoft.com/oauth2/v2.0/token?p=b2c_1a_signup_signin",
 								Scopes: map[string]string{
-									"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Groups":       "Groups to which the user belongs.",
-									"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Roles":        "Roles to which the user belongs.",
-									"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Entitlements": "Entitlements the user has.",
+									"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Group":       "Groups to which the user belongs.",
+									"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Role":        "Roles to which the user belongs.",
+									"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Entitlement": "Entitlements the user has.",
 								},
 							},
 						},
@@ -82,9 +82,9 @@ func main() {
 		},
 		Security: openapi3.SecurityRequirements{
 			{"team_auth": []string{
-				"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Groups",
-				"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Roles",
-				"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Entitlements",
+				"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Group",
+				"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Role",
+				"https://majorleaguemirukenauthdev.onmicrosoft.com/league/Entitlement",
 			}},
 		},
 	})

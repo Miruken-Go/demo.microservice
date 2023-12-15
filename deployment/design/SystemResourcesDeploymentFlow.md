@@ -174,9 +174,9 @@ Domain 1
         ui
         api
             scopes
-                Groups
-                Roles
-                Entitlements
+                Group
+                Role
+                Entitlement
 
     domain1-env-common
         Resource Group
@@ -202,9 +202,9 @@ Domain 2
         ui
         api
             scopes
-                Groups
-                Roles
-                Entitlements
+                Group
+                Role
+                Entitlement
 
     domain2-env-common
         Resource Group

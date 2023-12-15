@@ -52,9 +52,9 @@ func (e *EnrichHandler) ServeHTTP(
 		"Domain", request.Scope)
 
 	claims := map[string]any{
-		"Groups":       []string{"oncall"},
-		"Roles":        []string{"admin", "coach", "player"},
-		"Entitlements": []string{"createTeam", "updateTeam", "createPerson", "updatePerson"},
+		"Group":       []string{"oncall"},
+		"Role":        []string{"admin", "coach", "player"},
+		"Entitlement": []string{"createTeam", "updateTeam", "createPerson", "updatePerson"},
 	}
 
 	w.Header().Set("Content-Type", "application/json")
