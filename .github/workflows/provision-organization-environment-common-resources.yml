@@ -29,10 +29,12 @@ jobs:
         GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
         repository:                     ${{ github.repository }}
         repositoryOwner:                ${{ github.repository_owner }}
+        ref:                            ${{ github.event.client_payload.ref || github.ref }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
+        ref:        ${{ github.event.client_payload.ref || github.ref }}
         submodules: 'recursive'
     - name: npm ci
       working-directory: ./deployment/src
