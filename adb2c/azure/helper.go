@@ -2,7 +2,9 @@ package azure
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"net/http"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
@@ -47,23 +49,28 @@ func ReplaceItem[T any](
 	container *azcosmos.ContainerClient,
 	opts      *azcosmos.ItemOptions,
 ) (azcosmos.ItemResponse, bool, error) {
+	var resError *azcore.ResponseError
 	res, err := container.ReadItem(ctx, pk, id, nil)
-	if err != nil {
+	if errors.As(err, &resError) {
+		if resError.StatusCode == http.StatusNotFound {
+			return res, false, nil
+		}
+	} else if err != nil {
 		return res, false, err
 	}
 	var item T
 	err = json.Unmarshal(res.Value, &item)
 	if err != nil {
-		return res, false, err
+		return res, true, err
 	}
 	if changed, err := op(&item); err != nil {
-		return azcosmos.ItemResponse{}, false, err
+		return res, true, err
 	} else if !changed {
-		return res, false, nil
+		return res, true, nil
 	}
 	bytes, err := json.Marshal(item)
 	if err != nil {
-		return azcosmos.ItemResponse{}, false, err
+		return res, true, err
 	}
 	if opts != nil {
 		if opts.IfMatchEtag == nil {
@@ -75,7 +82,7 @@ func ReplaceItem[T any](
 		}
 	}
 	res, err = container.ReplaceItem(ctx, pk, id, bytes, opts)
-	return res, err == nil, err
+	return res, true, err
 }
 
 func ReadItem[T any](
@@ -86,15 +93,13 @@ func ReadItem[T any](
 	opts      *azcosmos.ItemOptions,
 ) (T, bool, error) {
 	var item T
+	var resError *azcore.ResponseError
 	res, err := container.ReadItem(ctx, pk, id, opts)
-	if err != nil {
-		if raw := res.Response.RawResponse; raw != nil {
-			if raw.StatusCode == http.StatusNotFound {
-				return item, false, nil
-			}
+	if errors.As(err, &resError) {
+		if resError.StatusCode == http.StatusNotFound {
+			return item, false, nil
 		}
-	} else {
-		err = json.Unmarshal(res.Value, &item)
 	}
+	err = json.Unmarshal(res.Value, &item)
 	return item, true, err
 }

@@ -35,13 +35,13 @@ type (
 // Subject
 
 func (m *Subject) ToApi() api.Subject {
-	ps := ParseIds(m.PrincipalIds)
+	ps := m.PrincipalIds
 	principals := make([]api.Principal, len(ps))
 	for i, pid := range ps {
 		principals[i] = api.Principal{Id: pid}
 	}
 	return api.Subject{
-		Id:         ParseId(m.Id),
+		Id:         m.Id,
 		ObjectId:   m.ObjectId,
 		Principals: principals,
 	}
@@ -54,12 +54,12 @@ func (m SubjectMap) ToApi() api.Subject {
 		principals = make([]api.Principal, len(ps))
 		for i, pid := range ps {
 			principals[i] = api.Principal{
-				Id: ParseId(pid.(string)),
+				Id: pid.(string),
 			}
 		}
 	}
 	return api.Subject{
-		Id:         ParseId(m["id"].(string)),
+		Id:         m["id"].(string),
 		ObjectId:   m["objectId"].(string),
 		Principals: principals,
 	}
@@ -74,7 +74,7 @@ func (m *Principal) ToApi() api.Principal {
 		entitlements[i] = api.Entitlement{Name: e}
 	}
 	return api.Principal{
-		Id:           ParseId(m.Id),
+		Id:           m.Id,
 		Type:         m.Type,
 		Name:         m.Name,
 		Domain:       m.Scope,
@@ -86,7 +86,7 @@ func (m *Principal) ToApi() api.Principal {
 
 func (m *Entitlement) ToApi() api.Entitlement {
 	return api.Entitlement{
-		Id:          ParseId(m.Id),
+		Id:          m.Id,
 		Name:        m.Name,
 		Domain:      m.Scope,
 		Description: m.Description,

@@ -2,11 +2,9 @@ package main
 
 import (
 	"errors"
+	"github.com/miruken-go/miruken/setup"
 	"net/http"
 	"os"
-	"time"
-
-	"github.com/miruken-go/miruken/setup"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/go-logr/zerologr"
@@ -33,8 +31,8 @@ type Config struct {
 		Source  struct {
 			Url string
 		}
-		Port string
 	}
+	Server  httpsrv.Config
 	OpenApi openapi.Config
 }
 
@@ -133,19 +131,7 @@ func main() {
 	mux.Handle("/", ui.Handler("", docs, &appConfig.OpenApi))
 
 	// start http server
-	port := appConfig.App.Port
-	if port == "" {
-		port = "8080"
-	}
-	server := &http.Server{
-		Addr:              ":"+port,
-		Handler:           &mux,
-		ReadTimeout:       1 * time.Second,
-		ReadHeaderTimeout: 1 * time.Second,
-		WriteTimeout:      2 * time.Second,
-		IdleTimeout:       30 * time.Second,
-		MaxHeaderBytes:    1024,
-	}
+	server := httpsrv.New(&mux, &appConfig.Server)
 
 	if err := server.ListenAndServe(); err != nil {
 		if errors.Is(err, http.ErrServerClosed) {

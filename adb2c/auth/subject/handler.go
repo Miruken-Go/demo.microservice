@@ -59,9 +59,9 @@ func (h *Handler) Create(
 ) (s api.SubjectCreated, err error) {
 	id := model.NewId()
 	subject := model.Subject{
-		Id:           id.String(),
+		Id:           id,
 		ObjectId:     create.ObjectId,
-		PrincipalIds: model.Strings(create.PrincipalIds),
+		PrincipalIds: create.PrincipalIds,
 		CreatedAt:    time.Now().UTC(),
 	}
 	pk := azcosmos.NewPartitionKeyString(subject.Id)
@@ -78,18 +78,24 @@ func (h *Handler) Assign(
 		authorizes.Required
 	}, assign api.AssignPrincipals,
 	_ *struct{ args.Optional }, ctx context.Context,
-) error {
-	sid := assign.SubjectId.String()
+) miruken.HandleResult {
+	sid := assign.SubjectId
 	pk := azcosmos.NewPartitionKeyString(sid)
-	_, _, err := azure.ReplaceItem(ctx, func(subject *model.Subject) (bool, error) {
-		add := model.Strings(assign.PrincipalIds)
-		updated, changed := model.Union(subject.PrincipalIds, add...)
+	_, found, err := azure.ReplaceItem(ctx, func(subject *model.Subject) (bool, error) {
+		updated, changed := model.Union(subject.PrincipalIds, assign.PrincipalIds...)
 		if changed {
 			subject.PrincipalIds = updated
 		}
 		return changed, nil
 	}, sid, pk, h.subjects, nil)
-	return err
+	switch {
+	case !found:
+		return miruken.NotHandled
+	case err != nil:
+		return miruken.NotHandled.WithError(err)
+	default:
+		return miruken.Handled
+	}
 }
 
 func (h *Handler) Revoke(
@@ -98,18 +104,24 @@ func (h *Handler) Revoke(
 		authorizes.Required
 	}, revoke api.RevokePrincipals,
 	_ *struct{ args.Optional }, ctx context.Context,
-) error {
-	sid := revoke.SubjectId.String()
+) miruken.HandleResult {
+	sid := revoke.SubjectId
 	pk := azcosmos.NewPartitionKeyString(sid)
-	_, _, err := azure.ReplaceItem(ctx, func(subject *model.Subject) (bool, error) {
-		remove := model.Strings(revoke.PrincipalIds)
-		updated, changed := model.Difference(subject.PrincipalIds, remove...)
+	_, found, err := azure.ReplaceItem(ctx, func(subject *model.Subject) (bool, error) {
+		updated, changed := model.Difference(subject.PrincipalIds, revoke.PrincipalIds...)
 		if changed {
 			subject.PrincipalIds = updated
 		}
 		return changed, nil
 	}, sid, pk, h.subjects, nil)
-	return err
+	switch {
+	case !found:
+		return miruken.NotHandled
+	case err != nil:
+		return miruken.NotHandled.WithError(err)
+	default:
+		return miruken.Handled
+	}
 }
 
 func (h *Handler) Remove(
@@ -119,7 +131,7 @@ func (h *Handler) Remove(
 	}, remove api.RemoveSubject,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) error {
-	sid := remove.SubjectId.String()
+	sid := remove.SubjectId
 	pk := azcosmos.NewPartitionKeyString(sid)
 	_, err := h.subjects.DeleteItem(ctx, pk, sid, nil)
 	return err
@@ -132,15 +144,17 @@ func (h *Handler) Get(
 	}, get api.GetSubject,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) (api.Subject, miruken.HandleResult) {
-	sid := get.SubjectId.String()
-	pk := azcosmos.NewPartitionKeyString(sid)
+	sid := get.SubjectId
+	pk  := azcosmos.NewPartitionKeyString(sid)
 	item, found, err := azure.ReadItem[model.Subject](ctx, sid, pk, h.subjects, nil)
-	if !found {
+	switch {
+	case !found:
 		return api.Subject{}, miruken.NotHandled
-	} else if err != nil {
+	case err != nil:
 		return api.Subject{}, miruken.NotHandled.WithError(err)
+	default:
+		return item.ToApi(), miruken.Handled
 	}
-	return item.ToApi(), miruken.Handled
 }
 
 func (h *Handler) Find(

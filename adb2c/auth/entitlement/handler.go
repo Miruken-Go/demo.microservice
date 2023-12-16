@@ -52,7 +52,7 @@ func (h *Handler) Create(
 ) (e api.EntitlementCreated, err error) {
 	id := model.NewId()
 	entitlement := model.Entitlement{
-		Id:          id.String(),
+		Id:          id,
 		Type:        model.EntitlementType,
 		Name:        create.Name,
 		Scope:       create.Domain,
@@ -73,7 +73,7 @@ func (h *Handler) Remove(
 	}, remove api.RemoveEntitlement,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) error {
-	eid := remove.EntitlementId.String()
+	eid := remove.EntitlementId
 	pk := azcosmos.NewPartitionKeyString(remove.Domain)
 	_, err := h.entitlements.DeleteItem(ctx, pk, eid, nil)
 	return err
@@ -83,7 +83,7 @@ func (h *Handler) Get(
 	_ *handles.It, get api.GetEntitlement,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) (api.Entitlement, miruken.HandleResult) {
-	eid := get.EntitlementId.String()
+	eid := get.EntitlementId
 	pk := azcosmos.NewPartitionKeyString(get.Domain)
 	item, found, err := azure.ReadItem[model.Entitlement](ctx, eid, pk, h.entitlements, nil)
 	switch {

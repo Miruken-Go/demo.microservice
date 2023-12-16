@@ -1,16 +1,14 @@
 package api
 
-import "github.com/google/uuid"
-
 type (
 	Subject struct {
-		Id         uuid.UUID
+		Id         string
 		ObjectId   string
 		Principals []Principal
 	}
 
 	Principal struct {
-		Id           uuid.UUID
+		Id           string
 		Type         string
 		Name         string
 		Domain       string
@@ -18,7 +16,7 @@ type (
 	}
 
 	Entitlement struct {
-		Id          uuid.UUID
+		Id          string
 		Name        string
 		Domain      string
 		Description string

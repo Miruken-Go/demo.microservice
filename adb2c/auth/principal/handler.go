@@ -54,7 +54,7 @@ func (h *Handler) Create(
 ) (p api.PrincipalCreated, err error) {
 	id := model.NewId()
 	principal := model.Principal{
-		Id:               id.String(),
+		Id:               id,
 		Type:             create.Type,
 		Name:             create.Name,
 		Scope:            create.Domain,
@@ -74,18 +74,24 @@ func (h *Handler) Assign(
 		authorizes.Required
 	}, assign api.AssignEntitlements,
 	_ *struct{ args.Optional }, ctx context.Context,
-) error {
-	pid := assign.PrincipalId.String()
+) miruken.HandleResult {
+	pid := assign.PrincipalId
 	pk := azcosmos.NewPartitionKeyString(assign.Domain)
-	_, _, err := azure.ReplaceItem(ctx, func(principal *model.Principal) (bool, error) {
-		add := assign.EntitlementNames
-		updated, changed := model.Union(principal.EntitlementNames, add...)
+	_, found, err := azure.ReplaceItem(ctx, func(principal *model.Principal) (bool, error) {
+		updated, changed := model.Union(principal.EntitlementNames, assign.EntitlementNames...)
 		if changed {
 			principal.EntitlementNames = updated
 		}
 		return changed, nil
 	}, pid, pk, h.principals, nil)
-	return err
+	switch {
+	case !found:
+		return miruken.NotHandled
+	case err != nil:
+		return miruken.NotHandled.WithError(err)
+	default:
+		return miruken.Handled
+	}
 }
 
 func (h *Handler) Revoke(
@@ -94,18 +100,24 @@ func (h *Handler) Revoke(
 		authorizes.Required
 	}, revoke api.RevokeEntitlements,
 	_ *struct{ args.Optional }, ctx context.Context,
-) error {
-	pid := revoke.PrincipalId.String()
+) miruken.HandleResult {
+	pid := revoke.PrincipalId
 	pk := azcosmos.NewPartitionKeyString(revoke.Domain)
-	_, _, err := azure.ReplaceItem(ctx, func(principal *model.Principal) (bool, error) {
-		remove := revoke.EntitlementNames
-		updated, changed := model.Difference(principal.EntitlementNames, remove...)
+	_, found, err := azure.ReplaceItem(ctx, func(principal *model.Principal) (bool, error) {
+		updated, changed := model.Difference(principal.EntitlementNames, revoke.EntitlementNames...)
 		if changed {
 			principal.EntitlementNames = updated
 		}
 		return changed, nil
 	}, pid, pk, h.principals, nil)
-	return err
+	switch {
+	case !found:
+		return miruken.NotHandled
+	case err != nil:
+		return miruken.NotHandled.WithError(err)
+	default:
+		return miruken.Handled
+	}
 }
 
 func (h *Handler) Remove(
@@ -115,7 +127,7 @@ func (h *Handler) Remove(
 	}, remove api.RemovePrincipal,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) error {
-	pid := remove.PrincipalId.String()
+	pid := remove.PrincipalId
 	pk := azcosmos.NewPartitionKeyString(remove.Domain)
 	_, err := h.principals.DeleteItem(ctx, pk, pid, nil)
 	return err
@@ -125,7 +137,7 @@ func (h *Handler) Get(
 	_ *handles.It, get api.GetPrincipal,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) (api.Principal, miruken.HandleResult) {
-	pid := get.PrincipalId.String()
+	pid := get.PrincipalId
 	pk := azcosmos.NewPartitionKeyString(get.Domain)
 	item, found, err := azure.ReadItem[model.Principal](ctx, pid, pk, h.principals, nil)
 	switch {

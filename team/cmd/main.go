@@ -132,11 +132,7 @@ func main() {
 	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
 	// start http server
-	server := &http.Server{
-		Addr:              ":8080",
-		Handler:           &mux,
-		ReadHeaderTimeout: 5 * time.Second,  // Slowloris attack
-	}
+	server := httpsrv.New(&mux, nil)
 
 	go func() {
 		if err := server.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
