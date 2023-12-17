@@ -30,7 +30,7 @@ func (f *Factory) Constructor(
 	_ *struct {
 		args.Optional
 		args.FromOptions
-	}, opts Options,
+	  }, opts Options,
 ) {
 	f.opts = opts
 }
@@ -38,7 +38,7 @@ func (f *Factory) Constructor(
 func (f *Factory) NewClient(
 	_ *struct {
 		provides.Single `mode:"covariant"`
-	}, p *provides.It,
+	  }, p *provides.It,
 	_ *struct{ args.Optional }, ctx context.Context,
 	hc miruken.HandleContext,
 ) (client *mongo.Client, err error) {

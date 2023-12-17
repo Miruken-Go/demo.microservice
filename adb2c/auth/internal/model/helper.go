@@ -12,9 +12,9 @@ func NewId() string {
 
 func Union[T ~[]E, E comparable](items T, add ...E) (T, bool) {
 	added := false
-	for _, value := range add {
-		if !slices.Contains(items, value) {
-			items = append(items, value)
+	for _, item := range add {
+		if !slices.Contains(items, item) {
+			items = append(items, item)
 			added = true
 		}
 	}
@@ -38,3 +38,4 @@ func Difference[T ~[]E, E comparable](items T, remove ...E) (T, bool) {
 	}
 	return items, removed
 }
+

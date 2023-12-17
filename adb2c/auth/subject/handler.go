@@ -1,7 +1,7 @@
 package subject
 
 import (
-	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -45,7 +45,7 @@ func (h *Handler) Constructor(
 	client *azcosmos.Client,
 	_ *struct{ args.Optional }, translator ut.Translator,
 ) {
-	h.db = db
+	h.db       = db
 	h.subjects = azure.Container(client, database, container)
 	h.setValidationRules(translator)
 }
@@ -54,19 +54,19 @@ func (h *Handler) Create(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	}, create api.CreateSubject,
+	  }, create api.CreateSubject,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) (s api.SubjectCreated, err error) {
-	id := model.NewId()
-	subject := model.Subject{
-		Id:           id,
-		ObjectId:     create.ObjectId,
-		PrincipalIds: create.PrincipalIds,
-		CreatedAt:    time.Now().UTC(),
+	id := create.SubjectId
+	if id == "" {
+		id = model.NewId()
 	}
-	pk := azcosmos.NewPartitionKeyString(subject.Id)
-	_, err = azure.CreateItem(ctx, &subject, pk, h.subjects, nil)
-	if err == nil {
+	subject := model.Subject{
+		Id:        id,
+		CreatedAt: time.Now().UTC(),
+	}
+	pk := azcosmos.NewPartitionKeyString(id)
+	if _, err = azure.CreateItem(ctx, &subject, pk, h.subjects, nil); err == nil {
 		s.SubjectId = id
 	}
 	return
@@ -76,18 +76,29 @@ func (h *Handler) Assign(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	}, assign api.AssignPrincipals,
+	  }, assign api.AssignPrincipals,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) miruken.HandleResult {
 	sid := assign.SubjectId
-	pk := azcosmos.NewPartitionKeyString(sid)
+	pk  := azcosmos.NewPartitionKeyString(sid)
 	_, found, err := azure.ReplaceItem(ctx, func(subject *model.Subject) (bool, error) {
-		updated, changed := model.Union(subject.PrincipalIds, assign.PrincipalIds...)
-		if changed {
-			subject.PrincipalIds = updated
+		var scope *model.Scope
+		idx := slices.IndexFunc(subject.Scopes, func(s model.Scope) bool {
+			return s.Name == assign.Scope
+		})
+		if idx < 0 {
+			subject.Scopes = append(subject.Scopes, model.Scope{Name: assign.Scope})
+			idx = len(subject.Scopes)-1
+		}
+		var changed bool
+		scope = &subject.Scopes[idx]
+		if newPrincipalIds, ok := model.Union(scope.PrincipalIds, assign.PrincipalIds...); ok {
+			scope.PrincipalIds = newPrincipalIds
+			changed = true
 		}
 		return changed, nil
 	}, sid, pk, h.subjects, nil)
+
 	switch {
 	case !found:
 		return miruken.NotHandled
@@ -102,18 +113,32 @@ func (h *Handler) Revoke(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	}, revoke api.RevokePrincipals,
+	  }, revoke api.RevokePrincipals,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) miruken.HandleResult {
 	sid := revoke.SubjectId
 	pk := azcosmos.NewPartitionKeyString(sid)
 	_, found, err := azure.ReplaceItem(ctx, func(subject *model.Subject) (bool, error) {
-		updated, changed := model.Difference(subject.PrincipalIds, revoke.PrincipalIds...)
-		if changed {
-			subject.PrincipalIds = updated
+		var changed bool
+		idx := slices.IndexFunc(subject.Scopes, func(scope model.Scope) bool {
+			return scope.Name == revoke.Scope
+		})
+		if idx >= 0 {
+			if newPrincipalIds, ok := model.Difference(
+				subject.Scopes[idx].PrincipalIds,
+				revoke.PrincipalIds...,
+			); ok {
+				if len(newPrincipalIds) == 0 {
+					subject.Scopes = slices.Delete(subject.Scopes, idx, idx+1)
+				} else {
+					subject.Scopes[idx].PrincipalIds = newPrincipalIds
+				}
+				changed = true
+			}
 		}
 		return changed, nil
 	}, sid, pk, h.subjects, nil)
+
 	switch {
 	case !found:
 		return miruken.NotHandled
@@ -128,11 +153,11 @@ func (h *Handler) Remove(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	}, remove api.RemoveSubject,
+	  }, remove api.RemoveSubject,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) error {
 	sid := remove.SubjectId
-	pk := azcosmos.NewPartitionKeyString(sid)
+	pk  := azcosmos.NewPartitionKeyString(sid)
 	_, err := h.subjects.DeleteItem(ctx, pk, sid, nil)
 	return err
 }
@@ -141,7 +166,7 @@ func (h *Handler) Get(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	}, get api.GetSubject,
+	  }, get api.GetSubject,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) (api.Subject, miruken.HandleResult) {
 	sid := get.SubjectId
@@ -161,34 +186,24 @@ func (h *Handler) Find(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	}, find api.FindSubjects,
+	  }, find api.FindSubjects,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) ([]api.Subject, error) {
 	var params []any
 	var sql strings.Builder
-	sql.WriteString("SELECT CROSS PARTITION * FROM s")
+	sql.WriteString("SELECT CROSS PARTITION s.id, s.scopes FROM s")
 	sql.WriteString("")
 
-	cond := " WHERE"
-
-	if objectId := find.ObjectId; objectId != "" {
-		sql.WriteString(" WHERE s.objectId = :1")
-		params = append(params, objectId)
-		cond = " AND"
-	}
-
-	if principalIds := find.Principals.Ids; len(principalIds) > 0 {
-		sql.WriteString(cond)
-		if all := find.Principals.All; all {
-			sql.WriteString(fmt.Sprintf(
-				"%s ARRAY_LENGTH(SetIntersect(s.principalIds, :%d)) = :%d",
-				cond, len(params)+1, len(params)+2))
-			params = append(params, principalIds, len(principalIds))
-		} else {
-			sql.WriteString(fmt.Sprintf(
-				"%s ARRAY_LENGTH(SetIntersect(s.principalIds, :%d)) != 0",
-				cond, len(params)+1))
-			params = append(params, principalIds)
+	if filter := find.Principals; filter != nil {
+		if principalIds := filter.Ids; len(principalIds) > 0 {
+			params = []any{filter.Scope, principalIds}
+			sql.WriteString(" JOIN p IN s.scopes WHERE p.name = :1")
+			if all := find.Principals.All; all {
+				sql.WriteString(" AND ARRAY_LENGTH(SetIntersect(p.principalIds, :2)) = :3")
+				params = append(params, len(principalIds))
+			} else {
+				sql.WriteString(" AND ARRAY_LENGTH(SetIntersect(p.principalIds, :2)) != 0")
+			}
 		}
 	}
 
@@ -223,7 +238,7 @@ func (h *Handler) setValidationRules(
 	_ = h.Validates1.WithRules(
 		play.Rules{
 			play.Type[api.CreateSubject](play.Constraints{
-				"ObjectId": "required",
+				"SubjectId": "required",
 			}),
 		}, nil, translator)
 
@@ -231,7 +246,8 @@ func (h *Handler) setValidationRules(
 		play.Rules{
 			play.Type[api.AssignPrincipals](play.Constraints{
 				"SubjectId":    "required",
-				"PrincipalIds": "gt=0,required",
+				"Scope":        "required",
+				"PrincipalIds": "gt=0",
 			}),
 		}, nil, translator)
 
@@ -239,7 +255,8 @@ func (h *Handler) setValidationRules(
 		play.Rules{
 			play.Type[api.RevokePrincipals](play.Constraints{
 				"SubjectId":    "required",
-				"PrincipalIds": "gt=0,required",
+				"Scope":        "required",
+				"PrincipalIds": "gt=0",
 			}),
 		}, nil, translator)
 
@@ -254,6 +271,18 @@ func (h *Handler) setValidationRules(
 		play.Rules{
 			play.Type[api.GetSubject](play.Constraints{
 				"SubjectId": "required",
+			}),
+		}, nil, translator)
+
+	_ = h.Validates6.WithRules(
+		play.Rules{
+			play.Type[struct{
+				Scope  string
+				Ids    []string
+				All    bool
+			}](play.Constraints{
+				"Scope": "required",
+				"Ids":   "gt=0",
 			}),
 		}, nil, translator)
 }

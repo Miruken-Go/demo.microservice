@@ -55,7 +55,7 @@ func (h *Handler) Create(
 		handles.It
 		authorizes.Required
 		jwt.Scope `name:"Team.Create"`
-	}, create *commands.CreateTeam,
+	  }, create *commands.CreateTeam,
 	ctx miruken.HandleContext,
 ) *promise.Promise[data.Team] {
 	composer := ctx.Composer

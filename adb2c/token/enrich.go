@@ -48,8 +48,8 @@ func (e *EnrichHandler) ServeHTTP(
 	}
 
 	e.logger.Info("Enrich token",
-		"ObjectId", request.ObjectId,
-		"Domain", request.Scope)
+		"SubjectId", request.ObjectId,
+		"Scope", request.Scope)
 
 	claims := map[string]any{
 		"Group":       []string{"oncall"},

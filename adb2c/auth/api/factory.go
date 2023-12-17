@@ -11,7 +11,6 @@ func (F *Factory) New(
 	_ *struct {
 		s creates.It `key:"api.Subject"`
 		p creates.It `key:"api.Principal"`
-		e creates.It `key:"api.Entitlement"`
 
 		cs creates.It `key:"api.CreateSubject"`
 		ap creates.It `key:"api.AssignPrincipals"`
@@ -21,16 +20,12 @@ func (F *Factory) New(
 		fs creates.It `key:"api.FindSubjects"`
 
 		cp creates.It `key:"api.CreatePrincipal"`
-		ae creates.It `key:"api.AssignEntitlements"`
-		re creates.It `key:"api.RevokeEntitlements"`
+		ip creates.It `key:"api.IncludePrincipals"`
+		ep creates.It `key:"api.ExcludePrincipals"`
 		dp creates.It `key:"api.RemovePrincipal"`
 		gp creates.It `key:"api.GetPrincipal"`
 		fp creates.It `key:"api.FindPrincipals"`
-
-		ce creates.It `key:"api.CreateEntitlement"`
-		de creates.It `key:"api.RemoveEntitlement"`
-		ge creates.It `key:"api.GetEntitlement"`
-		fe creates.It `key:"api.FindEntitlements"`
+	    xp creates.It `key:"api.FlattenPrincipals"`
 	}, create *creates.It,
 ) any {
 	switch create.Key() {
@@ -38,8 +33,6 @@ func (F *Factory) New(
 		return new(Subject)
 	case "api.Principal":
 		return new(Principal)
-	case "api.Entitlement":
-		return new(Entitlement)
 
 	case "api.CreateSubject":
 		return new(CreateSubject)
@@ -56,25 +49,18 @@ func (F *Factory) New(
 
 	case "api.CreatePrincipal":
 		return new(CreatePrincipal)
-	case "api.AssignEntitlements":
-		return new(AssignEntitlements)
-	case "api.RevokeEntitlements":
-		return new(RevokeEntitlements)
+	case "api.IncludePrincipals":
+		return new(IncludePrincipals)
+	case "api.ExcludePrincipals":
+		return new(ExcludePrincipals)
 	case "api.RemovePrincipal":
 		return new(RemovePrincipal)
 	case "api.GetPrincipal":
 		return new(GetPrincipal)
 	case "api.FindPrincipals":
 		return new(FindPrincipals)
-
-	case "api.CreateEntitlement":
-		return new(CreateEntitlement)
-	case "api.RemoveEntitlement":
-		return new(RemoveEntitlement)
-	case "api.GetEntitlement":
-		return new(GetEntitlement)
-	case "api.FindEntitlements":
-		return new(FindEntitlements)
+	case "api.FlattenPrincipals":
+		return new(FlattenPrincipals)
 	}
 
 	return nil

@@ -7,90 +7,81 @@ import (
 )
 
 type (
+	Scope struct {
+		Name         string   `json:"name"`
+		PrincipalIds []string `json:"principalIds"`
+	}
+
 	Subject struct {
-		Id           string    `json:"id"`
-		ObjectId     string    `json:"objectId"`
-		PrincipalIds []string  `json:"principalIds"`
-		CreatedAt    time.Time `json:"createdAt"`
+		Id        string    `json:"id"`
+		Scopes    []Scope   `json:"scopes"`
+		CreatedAt time.Time `json:"createdAt"`
 	}
 	SubjectMap map[string]any
 
 	Principal struct {
-		Id               string   `json:"id"`
-		Type             string   `json:"type"`
-		Name             string   `json:"name"`
-		Scope            string   `json:"scope"`
-		EntitlementNames []string `json:"entitlementNames"`
-	}
-
-	Entitlement struct {
-		Id          string `json:"id"`
-		Type        string `json:"type"` // always Entitlement
-		Name        string `json:"name"`
-		Scope       string `json:"scope"`
-		Description string `json:"description"`
+		Id          string   `json:"id"`
+		Type        string   `json:"type"`
+		Name        string   `json:"name"`
+		Scope       string   `json:"scope"`
+		IncludedIds []string `json:"includedIds"`
 	}
 )
 
 // Subject
 
 func (m *Subject) ToApi() api.Subject {
-	ps := m.PrincipalIds
-	principals := make([]api.Principal, len(ps))
-	for i, pid := range ps {
-		principals[i] = api.Principal{Id: pid}
+	scopes   := m.Scopes
+	scopedPs := make([]api.ScopedPrincipals, len(scopes))
+	for i, scope := range scopes {
+		principals := make([]api.Principal, len(scope.PrincipalIds))
+		for j, pid := range scope.PrincipalIds {
+			principals[j] = api.Principal{Id: pid}
+		}
+		scopedPs[i] = api.ScopedPrincipals{Scope: scope.Name, Principals: principals}
 	}
 	return api.Subject{
-		Id:         m.Id,
-		ObjectId:   m.ObjectId,
-		Principals: principals,
+		Id:     m.Id,
+		Scopes: scopedPs,
 	}
 }
 
 func (m SubjectMap) ToApi() api.Subject {
-	var principals []api.Principal
-	if val, ok := m["principalIds"]; ok && val != nil {
-		ps := val.([]any)
-		principals = make([]api.Principal, len(ps))
-		for i, pid := range ps {
-			principals[i] = api.Principal{
-				Id: pid.(string),
+	var scopedPs []api.ScopedPrincipals
+	if val, ok := m["scopes"]; ok && val != nil {
+		scopes := val.([]any)
+		scopedPs = make([]api.ScopedPrincipals, len(scopes))
+		for i, scope := range scopes {
+			scopeMap     := scope.(map[string]any)
+			scopeName    := scopeMap["name"].(string)
+			principalIds := scopeMap["principalIds"].([]any)
+			ps  := make([]api.Principal, len(principalIds))
+			for j, pid := range principalIds {
+				ps[j] = api.Principal{Id: pid.(string)}
 			}
+			scopedPs[i] = api.ScopedPrincipals{Scope: scopeName, Principals: ps}
 		}
 	}
+
 	return api.Subject{
-		Id:         m["id"].(string),
-		ObjectId:   m["objectId"].(string),
-		Principals: principals,
+		Id:     m["id"].(string),
+		Scopes: scopedPs,
 	}
 }
 
 // Principal
 
 func (m *Principal) ToApi() api.Principal {
-	es := m.EntitlementNames
-	entitlements := make([]api.Entitlement, len(es))
-	for i, e := range es {
-		entitlements[i] = api.Entitlement{Name: e}
+	ids      := m.IncludedIds
+	included := make([]api.Principal, len(ids))
+	for i, id := range ids {
+		included[i] = api.Principal{Id: id}
 	}
 	return api.Principal{
-		Id:           m.Id,
-		Type:         m.Type,
-		Name:         m.Name,
-		Domain:       m.Scope,
-		Entitlements: entitlements,
+		Id:       m.Id,
+		Type:     m.Type,
+		Name:     m.Name,
+		Includes: included,
 	}
 }
 
-// Entitlement
-
-func (m *Entitlement) ToApi() api.Entitlement {
-	return api.Entitlement{
-		Id:          m.Id,
-		Name:        m.Name,
-		Domain:      m.Scope,
-		Description: m.Description,
-	}
-}
-
-const EntitlementType = "$E"

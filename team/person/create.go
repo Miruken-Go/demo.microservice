@@ -46,7 +46,7 @@ func (h *Handler) Create(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	}, create *commands.CreatePerson,
+	  }, create *commands.CreatePerson,
 	_ *struct{ args.Optional }, parts api.PartContainer,
 ) (any, error) {
 	person := data.Person{

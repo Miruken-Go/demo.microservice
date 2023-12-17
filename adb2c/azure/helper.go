@@ -27,6 +27,25 @@ func Container(
 	return container
 }
 
+func ReadItem[T any](
+	ctx       context.Context,
+	id        string,
+	pk        azcosmos.PartitionKey,
+	container *azcosmos.ContainerClient,
+	opts      *azcosmos.ItemOptions,
+) (T, bool, error) {
+	var item T
+	var resError *azcore.ResponseError
+	res, err := container.ReadItem(ctx, pk, id, opts)
+	if errors.As(err, &resError) {
+		if resError.StatusCode == http.StatusNotFound {
+			return item, false, nil
+		}
+	}
+	err = json.Unmarshal(res.Value, &item)
+	return item, true, err
+}
+
 func CreateItem[T any](
 	ctx       context.Context,
 	item      *T,
@@ -83,23 +102,4 @@ func ReplaceItem[T any](
 	}
 	res, err = container.ReplaceItem(ctx, pk, id, bytes, opts)
 	return res, true, err
-}
-
-func ReadItem[T any](
-	ctx       context.Context,
-	id        string,
-	pk        azcosmos.PartitionKey,
-	container *azcosmos.ContainerClient,
-	opts      *azcosmos.ItemOptions,
-) (T, bool, error) {
-	var item T
-	var resError *azcore.ResponseError
-	res, err := container.ReadItem(ctx, pk, id, opts)
-	if errors.As(err, &resError) {
-		if resError.StatusCode == http.StatusNotFound {
-			return item, false, nil
-		}
-	}
-	err = json.Unmarshal(res.Value, &item)
-	return item, true, err
 }

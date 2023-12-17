@@ -6,31 +6,26 @@ type (
 	}
 
 	FindSubjects struct {
-		ObjectId   string
-		Principals struct {
-			All bool
-			Ids []string
+		Principals *struct{
+			Scope  string
+			Ids    []string
+			All    bool
 		}
 	}
 
 	GetPrincipal struct {
 		PrincipalId string
-		Domain      string
+		Scope       string
 	}
 
 	FindPrincipals struct {
-		Type   string
-		Name   string
-		Domain string
+		Type  string
+		Name  string
+		Scope string
 	}
 
-	GetEntitlement struct {
-		EntitlementId string
-		Domain        string
-	}
-
-	FindEntitlements struct {
-		Name   string
-		Domain string
+	FlattenPrincipals struct {
+		Scope        string
+		PrincipalIds []string
 	}
 )

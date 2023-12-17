@@ -30,7 +30,7 @@ func (f *Factory) Constructor(
 	_ *struct {
 		args.Optional
 		args.FromOptions
-	}, options Options,
+	  }, options Options,
 ) {
 	f.opts = options
 }
@@ -38,7 +38,7 @@ func (f *Factory) Constructor(
 func (f *Factory) NewClient(
 	_ *struct {
 		provides.Single `mode:"covariant"`
-	}, p *provides.It,
+	  }, p *provides.It,
 	hc miruken.HandleContext,
 ) (client *azcosmos.Client, err error) {
 	typ := p.Key().(reflect.Type)
@@ -64,7 +64,7 @@ func (f *Factory) NewClient(
 func (f *Factory) NewSqlClient(
 	_ *struct {
 		provides.Single `mode:"covariant"`
-	}, p *provides.It,
+	  }, p *provides.It,
 	hc miruken.HandleContext,
 ) (db *sqlx.DB, err error) {
 	typ := p.Key().(reflect.Type)

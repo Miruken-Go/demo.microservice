@@ -1,24 +1,20 @@
 package api
 
 type (
-	Subject struct {
-		Id         string
-		ObjectId   string
+	ScopedPrincipals struct {
+		Scope      string
 		Principals []Principal
 	}
 
-	Principal struct {
-		Id           string
-		Type         string
-		Name         string
-		Domain       string
-		Entitlements []Entitlement
+	Subject struct {
+		Id     string
+		Scopes []ScopedPrincipals
 	}
 
-	Entitlement struct {
-		Id          string
-		Name        string
-		Domain      string
-		Description string
+	Principal struct {
+		Id       string
+		Type     string
+		Name     string
+		Includes []Principal
 	}
 )
