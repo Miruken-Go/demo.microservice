@@ -135,11 +135,18 @@ func (h *Handler) Remove(
 		authorizes.Required
 	  }, remove api.RemovePrincipal,
 	_ *struct{ args.Optional }, ctx context.Context,
-) error {
+) miruken.HandleResult {
 	pid := remove.PrincipalId
 	pk := azcosmos.NewPartitionKeyString(remove.Scope)
-	_, err := h.principals.DeleteItem(ctx, pk, pid, nil)
-	return err
+	_, found, err := azure.DeleteItem(ctx, pid, pk, h.principals, nil)
+	switch {
+	case !found:
+		return miruken.NotHandled
+	case err != nil:
+		return miruken.NotHandled.WithError(err)
+	default:
+		return miruken.Handled
+	}
 }
 
 func (h *Handler) Get(
@@ -148,7 +155,7 @@ func (h *Handler) Get(
 ) (api.Principal, miruken.HandleResult) {
 	pid := get.PrincipalId
 	pk := azcosmos.NewPartitionKeyString(get.Scope)
-	item, found, err := azure.ReadItem[model.Principal](ctx, pid, pk, h.principals, nil)
+	_, item, found, err := azure.ReadItem[model.Principal](ctx, pid, pk, h.principals, nil)
 	switch {
 	case !found:
 		return api.Principal{}, miruken.NotHandled
@@ -180,6 +187,10 @@ func (h *Handler) Find(
 		sql.WriteString(cond)
 		sql.WriteString(" CONTAINS(p.name, @name, true)")
 		params = append(params, azcosmos.QueryParameter{Name: "@name", Value: name})
+	}
+
+	if ctx == nil {
+		ctx = context.Background()
 	}
 
 	pk := azcosmos.NewPartitionKeyString(find.Scope)
@@ -214,6 +225,10 @@ func (h *Handler) Flatten(
 			if _, ok := queue[id]; !ok {
 				queue[id] = []string{id}
 			}
+		}
+
+		if ctx == nil {
+			ctx = context.Background()
 		}
 
 		pk := azcosmos.NewPartitionKeyString(flatten.Scope)
@@ -292,7 +307,7 @@ func (h *Handler) setValidationRules(
 			play.Type[api.IncludePrincipals](play.Constraints{
 				"PrincipalId": "required",
 				"Scope":       "required",
-				"IncludedIds": "gt=0",
+				"IncludedIds": "gt=0,dive,required",
 			}),
 		}, nil, translator)
 
@@ -301,7 +316,7 @@ func (h *Handler) setValidationRules(
 			play.Type[api.ExcludePrincipals](play.Constraints{
 				"PrincipalId": "required",
 				"Scope":       "required",
-				"IncludedIds": "gt=0",
+				"ExcludedIds": "gt=0,dive,required",
 			}),
 		}, nil, translator)
 
@@ -333,7 +348,7 @@ func (h *Handler) setValidationRules(
 		play.Rules{
 			play.Type[api.FlattenPrincipals](play.Constraints{
 				"Scope":        "required",
-				"PrincipalIds": "gt=0",
+				"PrincipalIds": "gt=0,dive,required",
 			}),
 		}, nil, translator)
 }

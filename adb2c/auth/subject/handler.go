@@ -41,7 +41,7 @@ const (
 )
 
 func (h *Handler) Constructor(
-	db *sqlx.DB,
+	db     *sqlx.DB,
 	client *azcosmos.Client,
 	_ *struct{ args.Optional }, translator ut.Translator,
 ) {
@@ -155,11 +155,18 @@ func (h *Handler) Remove(
 		authorizes.Required
 	  }, remove api.RemoveSubject,
 	_ *struct{ args.Optional }, ctx context.Context,
-) error {
+) miruken.HandleResult {
 	sid := remove.SubjectId
 	pk  := azcosmos.NewPartitionKeyString(sid)
-	_, err := h.subjects.DeleteItem(ctx, pk, sid, nil)
-	return err
+	_, found, err := azure.DeleteItem(ctx, sid, pk, h.subjects, nil)
+	switch {
+	case !found:
+		return miruken.NotHandled
+	case err != nil:
+		return miruken.NotHandled.WithError(err)
+	default:
+		return miruken.Handled
+	}
 }
 
 func (h *Handler) Get(
@@ -171,7 +178,7 @@ func (h *Handler) Get(
 ) (api.Subject, miruken.HandleResult) {
 	sid := get.SubjectId
 	pk  := azcosmos.NewPartitionKeyString(sid)
-	item, found, err := azure.ReadItem[model.Subject](ctx, sid, pk, h.subjects, nil)
+	_, item, found, err := azure.ReadItem[model.Subject](ctx, sid, pk, h.subjects, nil)
 	switch {
 	case !found:
 		return api.Subject{}, miruken.NotHandled
@@ -194,11 +201,11 @@ func (h *Handler) Find(
 	sql.WriteString("SELECT CROSS PARTITION s.id, s.scopes FROM s")
 	sql.WriteString("")
 
-	if filter := find.Principals; filter != nil {
-		if principalIds := filter.Ids; len(principalIds) > 0 {
+	if filter := find.Filter; filter != nil {
+		if principalIds := filter.PrincipalIds; len(principalIds) > 0 {
 			params = []any{filter.Scope, principalIds}
 			sql.WriteString(" JOIN p IN s.scopes WHERE p.name = :1")
-			if all := find.Principals.All; all {
+			if all := filter.All; all {
 				sql.WriteString(" AND ARRAY_LENGTH(SetIntersect(p.principalIds, :2)) = :3")
 				params = append(params, len(principalIds))
 			} else {
@@ -212,6 +219,9 @@ func (h *Handler) Find(
 	sql.WriteString(" WITH collection=")
 	sql.WriteString(container)
 
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	rows, err := h.db.QueryxContext(ctx, sql.String(), params...)
 	if err != nil {
 		return nil, err
@@ -247,7 +257,7 @@ func (h *Handler) setValidationRules(
 			play.Type[api.AssignPrincipals](play.Constraints{
 				"SubjectId":    "required",
 				"Scope":        "required",
-				"PrincipalIds": "gt=0",
+				"PrincipalIds": "gt=0,dive,required",
 			}),
 		}, nil, translator)
 
@@ -256,7 +266,7 @@ func (h *Handler) setValidationRules(
 			play.Type[api.RevokePrincipals](play.Constraints{
 				"SubjectId":    "required",
 				"Scope":        "required",
-				"PrincipalIds": "gt=0",
+				"PrincipalIds": "gt=0,dive,required",
 			}),
 		}, nil, translator)
 
@@ -277,12 +287,12 @@ func (h *Handler) setValidationRules(
 	_ = h.Validates6.WithRules(
 		play.Rules{
 			play.Type[struct{
-				Scope  string
-				Ids    []string
-				All    bool
+				Scope        string
+				PrincipalIds []string
+				All          bool
 			}](play.Constraints{
-				"Scope": "required",
-				"Ids":   "gt=0",
+				"Scope":        "required",
+				"PrincipalIds": "gt=0,dive,required",
 			}),
 		}, nil, translator)
 }

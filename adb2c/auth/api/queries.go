@@ -6,10 +6,10 @@ type (
 	}
 
 	FindSubjects struct {
-		Principals *struct{
-			Scope  string
-			Ids    []string
-			All    bool
+		Filter *struct{
+			Scope        string
+			PrincipalIds []string
+			All          bool
 		}
 	}
 

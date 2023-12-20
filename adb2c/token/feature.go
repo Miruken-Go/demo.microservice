@@ -1,6 +1,7 @@
 package token
 
 import (
+	auth2 "github.com/miruken-go/demo.microservice/adb2c/auth"
 	"github.com/miruken-go/miruken/security/password"
 	"github.com/miruken-go/miruken/setup"
 )
@@ -9,7 +10,7 @@ import (
 type Installer struct{}
 
 func (i *Installer) DependsOn() []setup.Feature {
-	return []setup.Feature{password.Feature()}
+	return []setup.Feature{auth2.Feature, password.Feature()}
 }
 
 func (i *Installer) Install(b *setup.Builder) error {

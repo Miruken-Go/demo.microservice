@@ -33,17 +33,22 @@ func ReadItem[T any](
 	pk        azcosmos.PartitionKey,
 	container *azcosmos.ContainerClient,
 	opts      *azcosmos.ItemOptions,
-) (T, bool, error) {
+) (azcosmos.ItemResponse, T, bool, error) {
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	var item T
 	var resError *azcore.ResponseError
 	res, err := container.ReadItem(ctx, pk, id, opts)
 	if errors.As(err, &resError) {
 		if resError.StatusCode == http.StatusNotFound {
-			return item, false, nil
+			return res, item, false, nil
 		}
+	} else if err != nil {
+		return res, item, false, err
 	}
 	err = json.Unmarshal(res.Value, &item)
-	return item, true, err
+	return res, item, true, err
 }
 
 func CreateItem[T any](
@@ -57,6 +62,9 @@ func CreateItem[T any](
 	if err != nil {
 		return azcosmos.ItemResponse{}, err
 	}
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	return container.CreateItem(ctx, pk, bytes, opts)
 }
 
@@ -68,6 +76,9 @@ func ReplaceItem[T any](
 	container *azcosmos.ContainerClient,
 	opts      *azcosmos.ItemOptions,
 ) (azcosmos.ItemResponse, bool, error) {
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	var resError *azcore.ResponseError
 	res, err := container.ReadItem(ctx, pk, id, nil)
 	if errors.As(err, &resError) {
@@ -101,5 +112,25 @@ func ReplaceItem[T any](
 		}
 	}
 	res, err = container.ReplaceItem(ctx, pk, id, bytes, opts)
+	return res, true, err
+}
+
+func DeleteItem(
+	ctx       context.Context,
+	id        string,
+	pk        azcosmos.PartitionKey,
+	container *azcosmos.ContainerClient,
+	opts      *azcosmos.ItemOptions,
+) (azcosmos.ItemResponse, bool, error) {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	var resError *azcore.ResponseError
+	res, err := container.DeleteItem(ctx, pk, id, opts)
+	if errors.As(err, &resError) {
+		if resError.StatusCode == http.StatusNotFound {
+			return res, false, nil
+		}
+	}
 	return res, true, err
 }
