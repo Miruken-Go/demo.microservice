@@ -27,6 +27,7 @@ handle(async () => {
     logging.header(`Deploying ${application.name}`)
 
     const envVars = [
+        `Databases__Azure__ConnectionUri='secretref:cosmos-connection-string'`,
         `Login__Adb2c__0__Module='login.pwd'`,
         `Login__Adb2c__0__Options__Credentials__0__Username='${variables.authorizationServiceUsername}'`,
         `Login__Adb2c__0__Options__Credentials__0__Password='secretref:authorization-service-password'`,
