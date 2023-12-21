@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/go-logr/logr"
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/args"
 )
