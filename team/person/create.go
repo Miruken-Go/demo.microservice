@@ -37,8 +37,8 @@ func (h *Handler) AuthorizeCreate(
 	subject security.Subject,
 ) bool {
 	return principal.Any(subject,
-		principal.Role("admin"),
-		principal.Entitlement("createPerson"),
+		principal.Role("Manager"),
+		principal.Entitlement("Player.Add"),
 	)
 }
 

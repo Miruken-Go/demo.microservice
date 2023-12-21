@@ -93,7 +93,6 @@ func (e *EnrichHandler) ServeHTTP(
 
 	if err == nil {
 		e.logger.Info("Enriched token", "Claims", claims)
-
 		w.Header().Set("Content-Type", "application/json")
 		err = json.NewEncoder(w).Encode(claims)
 	}
