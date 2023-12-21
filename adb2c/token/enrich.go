@@ -2,6 +2,7 @@ package token
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	api2 "github.com/miruken-go/demo.microservice/adb2c/auth/api"
 	"github.com/miruken-go/miruken/api"
@@ -81,7 +82,12 @@ func (e *EnrichHandler) ServeHTTP(
 		s, err = ps.Await()
 	}
 
-	if err == nil {
+	var nh *miruken.NotHandledError
+	if errors.As(err, &nh) {
+		// return nothing if subject not found
+		w.WriteHeader(http.StatusOK)
+		return
+	} else if err == nil {
 		claims, err = e.getClaims(domain, principals, s.Scopes, h)
 	}
 
