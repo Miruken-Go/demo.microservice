@@ -6,8 +6,8 @@ require (
 	github.com/getkin/kin-openapi v0.122.0
 	github.com/go-logr/zerologr v1.2.3
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/demo.microservice/team v0.6.0-alpha.77
-	github.com/miruken-go/miruken v0.30.88
+	github.com/miruken-go/demo.microservice/team v0.6.0-alpha.97
+	github.com/miruken-go/miruken v0.30.89
 	github.com/rs/zerolog v1.31.0
 )
 
@@ -16,7 +16,7 @@ require (
 	github.com/MicahParks/keyfunc/v2 v2.1.0 // indirect
 	github.com/Rican7/conjson v0.1.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
-	github.com/go-logr/logr v1.3.0 // indirect
+	github.com/go-logr/logr v1.4.0 // indirect
 	github.com/go-openapi/jsonpointer v0.20.1 // indirect
 	github.com/go-openapi/swag v0.22.5 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
@@ -31,7 +31,7 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/miruken-go/demo.microservice/team-api v0.6.0-alpha.42 // indirect
+	github.com/miruken-go/demo.microservice/team-api v0.6.0-alpha.61 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
