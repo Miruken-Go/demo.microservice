@@ -15,7 +15,8 @@ export const organization = new Organization({
             name:      'adb2c-api-connector-srv', 
             enrichApi: true,  
             secrets: [
-                'authorization-service-password'
+                'authorization-service-password',
+                'cosmos-connection-string',
             ]
         },
         {
