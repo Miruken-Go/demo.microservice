@@ -219,7 +219,7 @@ func (h *Handler) Flatten(
 	_ *handles.It, flatten api.FlattenPrincipals,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) *promise.Promise[[]api.Principal] {
-	return promise.New(func(resolve func([]api.Principal), reject func(error)) {
+	return promise.New(nil, func(resolve func([]api.Principal), reject func(error), onCancel func(func())) {
 		queue := make(map[string][]string, len(flatten.PrincipalIds))
 		for _, id := range flatten.PrincipalIds {
 			if _, ok := queue[id]; !ok {

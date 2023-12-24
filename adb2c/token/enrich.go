@@ -26,8 +26,8 @@ type (
 	// EnrichRequest is the request body sent to the Api Connector.
 	// It receives a set et of InputClaims and returns a set of OutputClaims.
 	EnrichRequest struct {
-		ObjectId string
-		Scope    string
+		ObjectId string `json:"objectId"`
+		Scope    string `json:"scope"`
 	}
 )
 
@@ -55,13 +55,13 @@ func (e *EnrichHandler) ServeHTTP(
 
 	objectId := request.ObjectId
 	if objectId == "" {
-		http.Error(w, "ObjectId is required", http.StatusUnprocessableEntity)
+		http.Error(w, "objectId is required", http.StatusUnprocessableEntity)
 		return
 	}
 
 	scope := request.Scope
 	if scope == "" {
-		http.Error(w, "Scope is required", http.StatusUnprocessableEntity)
+		http.Error(w, "scope is required", http.StatusUnprocessableEntity)
 		return
 	}
 
