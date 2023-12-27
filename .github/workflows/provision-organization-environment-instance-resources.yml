@@ -4,7 +4,11 @@ on:
   workflow_call:
     inputs:
       env:
+        type:     string
+        required: true
       instance:
+        type:     string
+        required: true
   workflow_dispatch:
     inputs:
       env:
