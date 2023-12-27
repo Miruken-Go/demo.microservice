@@ -44,13 +44,13 @@ jobs:
       env:   dev
     secrets: inherit
   provision-domain-environment-instance-resources-dev:
-    needs: [provision-domain-environment-instance-resources, build-default-container-images]
+    needs: [provision-domain-environment-common-resources, build-default-container-images]
     uses:  ./.github/workflows/provision-domain-environment-instance-resources.yml
     with:
       env:   dev
     secrets: inherit
   provision-domain-environment-instance-resources-dev-ci:
-    needs: [provision-domain-environment-instance-resources, build-default-container-images]
+    needs: [provision-domain-environment-common-resources, build-default-container-images]
     uses:  ./.github/workflows/provision-domain-environment-instance-resources.yml
     with:
       env:      dev
