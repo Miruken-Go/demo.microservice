@@ -27,15 +27,15 @@ handle(async () => {
     const bicepFile = new URL('bicep/organizationGlobalResources.bicep', import.meta.url).pathname
 
     await bash.json(`
-        az deployment group create                                              \
-            --name           OrgGlobal${Math.floor(Date.now()/1000)}            \
-            --template-file  ${bicepFile}                                       \
-            --subscription   ${variables.subscriptionId}                        \
-            --resource-group ${organization.resourceGroups.global}              \
-            --mode complete                                                     \
-            --parameters                                                        \
-                containerRepositoryName=${organization.containerRepositoryName} \
-                location=${organization.location}                               \
+        az deployment group create                                                     \
+            --name           organizationGlobalResources${Math.floor(Date.now()/1000)} \
+            --template-file  ${bicepFile}                                              \
+            --subscription   ${variables.subscriptionId}                               \
+            --resource-group ${organization.resourceGroups.global}                     \
+            --mode complete                                                            \
+            --parameters                                                               \
+                containerRepositoryName=${organization.containerRepositoryName}        \
+                location=${organization.location}                                      \
     `)
 
     await gh.sendRepositoryDispatch(`provisioned-organization-global-resources`)

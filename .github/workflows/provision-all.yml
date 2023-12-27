@@ -32,7 +32,7 @@ jobs:
     secrets: inherit
   provision-organization-environment-manual-resource-configuration:
     needs: provision-organization-environment-common-resources
-    uses:  ./.github/workflows/provision-organization-environment-instance-resources.yml
+    uses:  ./.github/workflows/provision-organization-environment-manual-resource-configuration.yml
     with:
       env:   dev
     secrets: inherit

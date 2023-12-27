@@ -23,16 +23,16 @@ handle(async () => {
     const bicepFile = new URL('bicep/organizationEnvironmentCommonResources.bicep', import.meta.url).pathname
 
     await bash.json(`
-        az deployment group create                                   \
-            --name           OrgCommon${Math.floor(Date.now()/1000)} \
-            --template-file  ${bicepFile}                            \
-            --subscription   ${variables.subscriptionId}             \
-            --resource-group ${organization.resourceGroups.common}   \
-            --mode complete                                          \
-            --parameters                                             \
-                prefix=${organization.resourceGroups.common}         \
-                keyVaultName=${organization.keyVaultName}            \
-                location=${organization.location}                    \
+        az deployment group create                                                                \
+            --name           organizationEnvironmentCommonResources${Math.floor(Date.now()/1000)} \
+            --template-file  ${bicepFile}                                                         \
+            --subscription   ${variables.subscriptionId}                                          \
+            --resource-group ${organization.resourceGroups.common}                                \
+            --mode complete                                                                       \
+            --parameters                                                                          \
+                prefix=${organization.resourceGroups.common}                                      \
+                keyVaultName=${organization.keyVaultName}                                         \
+                location=${organization.location}                                                 \
     `)
 
     await gh.sendRepositoryDispatch(`provisioned-organization-environment-common-resources`, {
