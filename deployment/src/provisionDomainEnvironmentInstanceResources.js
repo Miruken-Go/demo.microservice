@@ -47,12 +47,13 @@ handle(async () => {
         })
 
         const results = await bash.json(`
-            az deployment group create                                   \
-                --template-file  ${bicepFile}                            \
-                --subscription   ${variables.subscriptionId}             \
-                --resource-group ${domain.resourceGroups.instance} \
-                --mode           complete                                \
-                --parameters     '${params}'                             \
+            az deployment group create                                        \
+                --name           DomainInstance${Math.floor(Date.now()/1000)} \                   
+                --template-file  ${bicepFile}                                 \
+                --subscription   ${variables.subscriptionId}                  \
+                --resource-group ${domain.resourceGroups.instance}            \
+                --mode           complete                                     \
+                --parameters     '${params}'                                  \
         `)
 
         logging.printObject("Bicep Outputs", results.properties.outputs)

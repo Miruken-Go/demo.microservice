@@ -24,13 +24,14 @@ handle(async () => {
         const bicepFile = new URL('bicep/domainEnvironmentCommonResources.bicep', import.meta.url).pathname
 
         const results = await bash.json(`
-            az deployment group create                                 \
-                --template-file  ${bicepFile}                          \
-                --subscription   ${variables.subscriptionId}           \
-                --resource-group ${domain.resourceGroups.common}       \
-                --mode complete                                        \
-                --parameters                                           \
-                    location=${domain.location}                  \
+            az deployment group create                                      \
+                --name           DomainCommon${Math.floor(Date.now()/1000)} \                   
+                --template-file  ${bicepFile}                               \
+                --subscription   ${variables.subscriptionId}                \
+                --resource-group ${domain.resourceGroups.common}            \
+                --mode complete                                             \
+                --parameters                                                \
+                    location=${domain.location}                             \
         `)
             
         logging.printObject("Bicep Outputs", results.properties.outputs)
