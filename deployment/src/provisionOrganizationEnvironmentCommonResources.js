@@ -24,7 +24,7 @@ handle(async () => {
 
     await bash.json(`
         az deployment group create                                   \
-            --name           OrgCommon${Math.floor(Date.now()/1000)} \                   
+            --name           OrgCommon${Math.floor(Date.now()/1000)} \
             --template-file  ${bicepFile}                            \
             --subscription   ${variables.subscriptionId}             \
             --resource-group ${organization.resourceGroups.common}   \

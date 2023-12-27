@@ -48,7 +48,7 @@ handle(async () => {
 
         const results = await bash.json(`
             az deployment group create                                        \
-                --name           DomainInstance${Math.floor(Date.now()/1000)} \                   
+                --name           DomainInstance${Math.floor(Date.now()/1000)} \
                 --template-file  ${bicepFile}                                 \
                 --subscription   ${variables.subscriptionId}                  \
                 --resource-group ${domain.resourceGroups.instance}            \
