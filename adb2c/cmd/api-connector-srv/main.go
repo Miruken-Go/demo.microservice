@@ -2,10 +2,6 @@ package main
 
 import (
 	"errors"
-	"net/http"
-	"os"
-	"time"
-
 	"github.com/go-logr/zerologr"
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/providers/env"
@@ -17,6 +13,8 @@ import (
 	"github.com/miruken-go/miruken/logs"
 	"github.com/miruken-go/miruken/setup"
 	"github.com/rs/zerolog"
+	"net/http"
+	"os"
 )
 
 func main() {
@@ -54,19 +52,7 @@ func main() {
 		auth.WithFlowAlias("Login.Adb2c").Basic().Required()))
 
 	// start http server
-	port := k.String("App.Port")
-	if port == "" {
-		port = "8080"
-	}
-	server := &http.Server{
-		Addr:              ":"+port,
-		Handler:           &mux,
-		ReadTimeout:       1 * time.Second,
-		ReadHeaderTimeout: 1 * time.Second,
-		WriteTimeout:      2 * time.Second,
-		IdleTimeout:       30 * time.Second,
-		MaxHeaderBytes:    1024,
-	}
+	server := httpsrv.New(&mux, nil)
 
 	if err := server.ListenAndServe(); err != nil {
 		if errors.Is(err, http.ErrServerClosed) {

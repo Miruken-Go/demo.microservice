@@ -46,7 +46,7 @@ func main() {
 	}
 
 	// openapi generator
-	openapiGen := openapi.Feature(openapi3.T{
+	openapiGen := openapi.Feature(&openapi3.T{
 		Info: &openapi3.Info{
 			Title:       "Team Api",
 			Description: "REST Api for managing Teams",
@@ -120,7 +120,7 @@ func main() {
 	mux.Handle("/publish", h)
 	mux.Handle("/publish/", h)
 	mux.Handle("/openapi", openapi.Handler(docs, true))
-	mux.Handle("/", ui.Handler("", docs, openapi.Config{
+	mux.Handle("/", ui.Handler("", docs, &openapi.Config{
 		ClientId: "35aacb63-777d-4320-9905-92a106af4558",
 	}))
 
@@ -132,11 +132,7 @@ func main() {
 	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
 	// start http server
-	server := &http.Server{
-		Addr:              ":8080",
-		Handler:           &mux,
-		ReadHeaderTimeout: 5 * time.Second,  // Slowloris attack
-	}
+	server := httpsrv.New(&mux, nil)
 
 	go func() {
 		if err := server.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {

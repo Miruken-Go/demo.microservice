@@ -1,6 +1,9 @@
 name: provision organization environment manual resource configuration
 
 on: 
+  workflow_call:
+    inputs:
+      env:
   workflow_dispatch:
     inputs:
       env:

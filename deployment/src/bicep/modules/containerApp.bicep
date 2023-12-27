@@ -67,7 +67,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' ={
 }
 
 module keyVaultRoleAssignment 'keyVaultSecretsUserRoleAssignment.bicep' = {
-  name:  'keyVaultRoleAssignment${prefix}${containerAppName}'
+  name:  'kvra${prefix}${containerAppName}'
 
   scope: resourceGroup(keyVaultResourceGroup)
   params: {

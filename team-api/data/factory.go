@@ -12,7 +12,7 @@ type Factory struct{}
 func (f *Factory) New(
 	_ *struct {
 		p creates.It `key:"data.Person"`
-	}, create *creates.It,
+	  }, create *creates.It,
 ) any {
 	switch create.Key() {
 	case "data.Person":

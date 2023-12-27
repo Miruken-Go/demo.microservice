@@ -1,6 +1,9 @@
 name: provision domain environment common resources
 
 on: 
+  workflow_call:
+    inputs:
+      env:
   workflow_dispatch:
     inputs:
       env:

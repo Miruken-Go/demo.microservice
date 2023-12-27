@@ -2,13 +2,11 @@ package main
 
 import (
 	"errors"
-	"net/http"
-	"os"
-	"time"
-
 	auth2 "github.com/miruken-go/demo.microservice/adb2c/auth"
 	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
 	"github.com/miruken-go/miruken/setup"
+	"net/http"
+	"os"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/go-logr/zerologr"
@@ -23,7 +21,6 @@ import (
 	koanfp "github.com/miruken-go/miruken/config/koanf"
 	"github.com/miruken-go/miruken/logs"
 	"github.com/miruken-go/miruken/security/jwt"
-	play "github.com/miruken-go/miruken/validates/play"
 	"github.com/rs/zerolog"
 )
 
@@ -33,8 +30,8 @@ type Config struct {
 		Source  struct {
 			Url string
 		}
-		Port string
 	}
+	Server  httpsrv.Config
 	OpenApi openapi.Config
 }
 
@@ -60,7 +57,7 @@ func main() {
 	}
 
 	// openapi generator
-	openapiGen := openapi.Feature(openapi3.T{
+	openapiGen := openapi.Feature(&openapi3.T{
 		Info: &openapi3.Info{
 			Title:       "Authorization Api",
 			Description: "REST Api for managing User Authorization",
@@ -101,7 +98,7 @@ func main() {
 
 	// initialize context
 	ctx, err := setup.New(
-		auth2.Feature, jwt.Feature(), play.Feature(),
+		auth2.Feature, jwt.Feature(),
 		config.Feature(koanfp.P(k)), stdjson.Feature(),
 		logs.Feature(logger), openapiGen).
 		Specs(&api.GoPolymorphism{}).
@@ -130,22 +127,10 @@ func main() {
 	// OpenAPI document and swagger endpoints
 	docs := openapiGen.Docs()
 	mux.Handle("/openapi", openapi.Handler(docs, true))
-	mux.Handle("/", ui.Handler("", docs, appConfig.OpenApi))
+	mux.Handle("/", ui.Handler("", docs, &appConfig.OpenApi))
 
 	// start http server
-	port := appConfig.App.Port
-	if port == "" {
-		port = "8080"
-	}
-	server := &http.Server{
-		Addr:              ":"+port,
-		Handler:           &mux,
-		ReadTimeout:       1 * time.Second,
-		ReadHeaderTimeout: 1 * time.Second,
-		WriteTimeout:      2 * time.Second,
-		IdleTimeout:       30 * time.Second,
-		MaxHeaderBytes:    1024,
-	}
+	server := httpsrv.New(&mux, &appConfig.Server)
 
 	if err := server.ListenAndServe(); err != nil {
 		if errors.Is(err, http.ErrServerClosed) {

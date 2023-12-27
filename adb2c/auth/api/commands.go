@@ -1,71 +1,55 @@
 package api
 
-import "github.com/google/uuid"
-
 type (
 	// CreateSubject creates a new subject.
 	CreateSubject struct {
-		ObjectId     string
-		PrincipalIds []uuid.UUID
+		SubjectId string
 	}
 	SubjectCreated struct {
-		SubjectId uuid.UUID
+		SubjectId string
 	}
 
 	AssignPrincipals struct {
-		SubjectId    uuid.UUID
-		PrincipalIds []uuid.UUID
+		SubjectId    string
+		Scope        string
+		PrincipalIds []string
 	}
 
 	RevokePrincipals struct {
-		SubjectId    uuid.UUID
-		PrincipalIds []uuid.UUID
+		SubjectId    string
+		Scope        string
+		PrincipalIds []string
 	}
 
 	RemoveSubject struct {
-		SubjectId uuid.UUID
+		SubjectId string
 	}
 
 	// CreatePrincipal creates a new principal.
 	CreatePrincipal struct {
-		Type             string
-		Name             string
-		Domain           string
-		EntitlementNames []string
+		Type        string
+		Name        string
+		Scope       string
+		IncludedIds []string
 	}
 	PrincipalCreated struct {
-		PrincipalId uuid.UUID
+		PrincipalId string
 	}
 
-	AssignEntitlements struct {
-		PrincipalId      uuid.UUID
-		Domain           string
-		EntitlementNames []string
+	IncludePrincipals struct {
+		PrincipalId string
+		Scope       string
+		IncludedIds []string
 	}
 
-	RevokeEntitlements struct {
-		PrincipalId      uuid.UUID
-		Domain           string
-		EntitlementNames []string
+	ExcludePrincipals struct {
+		PrincipalId string
+		Scope       string
+		ExcludedIds []string
 	}
 
 	RemovePrincipal struct {
-		PrincipalId uuid.UUID
-		Domain      string
-	}
-
-	// CreateEntitlement creates a new entitlement.
-	CreateEntitlement struct {
-		Name        string
-		Domain      string
-		Description string
-	}
-	EntitlementCreated struct {
-		EntitlementId uuid.UUID
-	}
-
-	RemoveEntitlement struct {
-		EntitlementId uuid.UUID
-		Domain        string
+		PrincipalId string
+		Scope       string
 	}
 )

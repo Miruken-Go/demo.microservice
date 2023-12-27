@@ -1,38 +1,31 @@
 package api
 
-import "github.com/google/uuid"
-
 type (
 	GetSubject struct {
-		SubjectId uuid.UUID
+		SubjectId string
 	}
 
 	FindSubjects struct {
-		ObjectId   string
-		Principals struct {
-			All bool
-			Ids []uuid.UUID
+		Filter *struct{
+			Scope        string
+			PrincipalIds []string
+			All          bool
 		}
 	}
 
 	GetPrincipal struct {
-		PrincipalId uuid.UUID
-		Domain      string
+		PrincipalId string
+		Scope       string
 	}
 
 	FindPrincipals struct {
-		Type   string
-		Name   string
-		Domain string
+		Type  string
+		Name  string
+		Scope string
 	}
 
-	GetEntitlement struct {
-		EntitlementId uuid.UUID
-		Domain        string
-	}
-
-	FindEntitlements struct {
-		Name   string
-		Domain string
+	FlattenPrincipals struct {
+		Scope        string
+		PrincipalIds []string
 	}
 )

@@ -1,26 +1,20 @@
 package api
 
-import "github.com/google/uuid"
-
 type (
-	Subject struct {
-		Id         uuid.UUID
-		ObjectId   string
+	ScopedPrincipals struct {
+		Scope      string
 		Principals []Principal
 	}
 
-	Principal struct {
-		Id           uuid.UUID
-		Type         string
-		Name         string
-		Domain       string
-		Entitlements []Entitlement
+	Subject struct {
+		Id     string
+		Scopes []ScopedPrincipals
 	}
 
-	Entitlement struct {
-		Id          uuid.UUID
-		Name        string
-		Domain      string
-		Description string
+	Principal struct {
+		Id       string
+		Type     string
+		Name     string
+		Includes []Principal
 	}
 )

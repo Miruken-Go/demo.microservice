@@ -65,3 +65,10 @@ resource cosmosdb 'Microsoft.DocumentDb/databaseAccounts@2023-11-15-preview' = {
   }
 }
 
+resource cosmosConnectionString 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+  parent: keyVault
+  name: 'cosmos-connection-string'
+  properties: {
+    value: cosmosdb.listConnectionStrings().connectionStrings[0].connectionString
+  }
+}

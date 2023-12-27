@@ -1,49 +1,20 @@
 package model
 
 import (
-	"fmt"
 	"slices"
 
 	"github.com/google/uuid"
 )
 
-func NewId() uuid.UUID {
-	return uuid.New()
-}
-
-func ParseId(value string) uuid.UUID {
-	id, _ := uuid.Parse(value)
-	return id
-}
-
-func Strings[T fmt.Stringer](values []T) []string {
-	if values == nil {
-		return nil
-	}
-	strings := make([]string, len(values))
-	for i, value := range values {
-		strings[i] = value.String()
-	}
-	return strings
-}
-
-func ParseIds(values []string) []uuid.UUID {
-	if values == nil {
-		return nil
-	}
-	uuids := make([]uuid.UUID, len(values))
-	for i, value := range values {
-		id, _ := uuid.Parse(value)
-		uuids[i] = id
-	}
-	return uuids
+func NewId() string {
+	return uuid.New().String()
 }
 
 func Union[T ~[]E, E comparable](items T, add ...E) (T, bool) {
 	added := false
-	for _, value := range add {
-		if !slices.Contains(items, value) {
-			items = append(items, value)
+	for _, item := range add {
+		if !slices.Contains(items, item) {
+			items = append(items, item)
 			added = true
 		}
 	}
@@ -67,3 +38,4 @@ func Difference[T ~[]E, E comparable](items T, remove ...E) (T, bool) {
 	}
 	return items, removed
 }
+
