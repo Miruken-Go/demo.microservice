@@ -8,7 +8,7 @@ on:
         required: true
       instance:
         type:     string
-        required: true
+        required: false
   workflow_dispatch:
     inputs:
       env:

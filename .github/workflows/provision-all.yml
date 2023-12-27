@@ -12,18 +12,19 @@ jobs:
     uses: ./.github/workflows/build-default-container-images.yml
     secrets: inherit
   provision-organization-environment-common-resources:
+    needs: provision-organization-global-resources
     uses: ./.github/workflows/provision-organization-environment-common-resources.yml
     with:
       env: dev
     secrets: inherit
   provision-organization-environment-instance-resources-dev:
-    needs: provision-organization-environment-common-resources
+    needs: [provision-organization-environment-common-resources, build-default-container-images]
     uses: ./.github/workflows/provision-organization-environment-instance-resources.yml
     with:
       env:  dev
     secrets: inherit
   provision-organization-environment-instance-resources-dev-ci:
-    needs: provision-organization-environment-common-resources
+    needs: [provision-organization-environment-common-resources, build-default-container-images]
     uses: ./.github/workflows/provision-organization-environment-instance-resources.yml
     with:
       env:  dev
