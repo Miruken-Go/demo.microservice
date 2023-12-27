@@ -6,3 +6,4 @@ on:
 jobs:
   provision-organization-global-resources:
     uses: ./.github/workflows/provision-organization-global-resources.yml
+    secrets: inherit
