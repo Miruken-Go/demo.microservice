@@ -1,0 +1,11 @@
+name: provision organization global resources
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  provision-organization-global-resources:
+    runs-on: ubuntu-latest
+    uses: ./.github/workflows/provision-organization-global-resources.yml
+    with:
+      secrets: inherit

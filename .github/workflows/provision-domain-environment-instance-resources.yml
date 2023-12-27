@@ -1,6 +1,10 @@
 name: provision domain environment instance resources
 
 on: 
+  workflow_call:
+    inputs:
+      env:
+      instance:
   workflow_dispatch:
     inputs:
       env:
