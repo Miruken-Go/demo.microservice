@@ -5,34 +5,34 @@ on:
 
 jobs:
   provision-organization-global-resources:
-    uses: ./.github/workflows/provision-organization-global-resources.yml
+    uses:    ./.github/workflows/provision-organization-global-resources.yml
     secrets: inherit
   build-default-container-images:
     needs: provision-organization-global-resources
-    uses: ./.github/workflows/build-default-container-images.yml
+    uses:  ./.github/workflows/build-default-container-images.yml
     secrets: inherit
   provision-organization-environment-common-resources:
     needs: provision-organization-global-resources
-    uses: ./.github/workflows/provision-organization-environment-common-resources.yml
+    uses:  ./.github/workflows/provision-organization-environment-common-resources.yml
     with:
-      env: dev
+      env:   dev
     secrets: inherit
   provision-organization-environment-instance-resources-dev:
     needs: [provision-organization-environment-common-resources, build-default-container-images]
-    uses: ./.github/workflows/provision-organization-environment-instance-resources.yml
+    uses:  ./.github/workflows/provision-organization-environment-instance-resources.yml
     with:
-      env:  dev
+      env:   dev
     secrets: inherit
   provision-organization-environment-instance-resources-dev-ci:
     needs: [provision-organization-environment-common-resources, build-default-container-images]
-    uses: ./.github/workflows/provision-organization-environment-instance-resources.yml
+    uses:  ./.github/workflows/provision-organization-environment-instance-resources.yml
     with:
-      env:  dev
-      inst: ci
+      env:      dev
+      instance: ci
     secrets: inherit
   provision-organization-environment-manual-resource-configuration:
     needs: provision-organization-environment-common-resources
-    uses: ./.github/workflows/provision-organization-environment-instance-resources.yml
+    uses:  ./.github/workflows/provision-organization-environment-instance-resources.yml
     with:
-      env:  dev
+      env:   dev
     secrets: inherit
