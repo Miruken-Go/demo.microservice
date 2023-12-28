@@ -15,6 +15,10 @@ export const organization = new Domain({
     name:             'MajorLeagueMiruken',
     location:         'CentralUs',
     gitRepositoryUrl: 'https://github.com/Miruken-Go/demo.microservice',
+    bootstrapUsers: [
+        'provenstyle.testing@gmail.com',
+        'cneuwirt@gmail.com',
+    ],
     resources: {
         b2c:                 B2C,
         containerRepository: ContainerRepository,
