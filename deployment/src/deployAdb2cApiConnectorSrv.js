@@ -20,7 +20,7 @@ variables.requireEnvFileVariables(configDirectory, [
 
 handle(async () => {
     logging.printEnvironmentVariables(variables)
-    logging.printOrganization(organization)
+    logging.printDomain(organization)
 
     const application = organization.getApplicationByName("adb2c-api-connector-srv")
 

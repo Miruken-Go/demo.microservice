@@ -11,7 +11,7 @@ import { organization } from './config.js'
 handle(async () => {
     logging.printEnvironmentVariables(variables)
     logging.printEnvironmentSecrets(secrets)
-    logging.printOrganization(organization)
+    logging.printDomain(organization)
 
     const appName = 'team-srv'
 
@@ -39,7 +39,7 @@ handle(async () => {
             .                                          \
     `)
 
-    await az.loginToACR(organization.containerRepositoryName)
+    await az.loginToACR(organization.containerRepository.name)
     
     await bash.execute(`
         docker push ${imageName}

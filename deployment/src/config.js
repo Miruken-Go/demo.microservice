@@ -1,15 +1,25 @@
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url'
 import { dirname }       from 'node:path'
-import { Organization }  from '#infrastructure/config.js'
+import { 
+    Domain,
+    B2C,
+    ContainerRepository,
+    KeyVault,
+} from '#infrastructure/config.js'
 
 export const configDirectory = dirname(fileURLToPath(import.meta.url))
 
-export const organization = new Organization({
+export const organization = new Domain({
     env:              process.env.env,
     instance:         process.env.instance,
     name:             'MajorLeagueMiruken',
     location:         'CentralUs',
     gitRepositoryUrl: 'https://github.com/Miruken-Go/demo.microservice',
+    resources: {
+        b2c:                 B2C,
+        containerRepository: ContainerRepository,
+        keyVault:            KeyVault,
+    },
     applications: [
         {
             name:      'adb2c-api-connector-srv', 

@@ -12,7 +12,7 @@ variables.requireEnvVariables([
 
 handle(async () => {
     logging.printEnvironmentVariables(variables)
-    logging.printOrganization(organization)
+    logging.printDomain(organization)
 
     logging.header("Deploying Organization Global Resources")
 
@@ -34,7 +34,7 @@ handle(async () => {
             --resource-group ${organization.resourceGroups.global}                     \
             --mode complete                                                            \
             --parameters                                                               \
-                containerRepositoryName=${organization.containerRepositoryName}        \
+                containerRepositoryName=${organization.containerRepository.name}       \
                 location=${organization.location}                                      \
     `)
 

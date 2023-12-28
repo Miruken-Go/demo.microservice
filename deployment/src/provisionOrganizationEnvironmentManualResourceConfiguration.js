@@ -20,7 +20,7 @@ variables.requireEnvFileVariables(configDirectory, [
 
 handle(async () => {
     logging.printEnvironmentVariables(variables)
-    logging.printOrganization(organization)
+    logging.printDomain(organization)
 
     logging.header(`Deploying Manual Resource Configuration for ${variables.env}`)
 

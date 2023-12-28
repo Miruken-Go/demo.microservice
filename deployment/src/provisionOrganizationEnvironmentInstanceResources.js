@@ -12,7 +12,7 @@ variables.requireEnvVariables([
 
 handle(async () => {
     logging.printEnvironmentVariables(variables)
-    logging.printOrganization(organization)
+    logging.printDomain(organization)
 
     logging.header("Deploying Organization Instance Resources")
 
@@ -22,7 +22,7 @@ handle(async () => {
     //Resources Groups
     await az.createResourceGroup(organization.resourceGroups.instance, organization.location)
 
-    const containerRepositoryPassword = await az.getAzureContainerRepositoryPassword(organization.containerRepositoryName)
+    const containerRepositoryPassword = await az.getAzureContainerRepositoryPassword(organization.containerRepository.name)
     const bicepFile                   = new URL('bicep/organizationEnvironmentInstanceResources.bicep', import.meta.url).pathname
 
     const applications = organization.applications.map(a => {
@@ -35,10 +35,10 @@ handle(async () => {
 
     const params = JSON.stringify({ 
         prefix:                      { value: organization.resourceGroups.instance },
-        containerRepositoryName:     { value: organization.containerRepositoryName },
+        containerRepositoryName:     { value: organization.containerRepository.name },
         location:                    { value: organization.location },
         keyVaultResourceGroup:       { value: organization.resourceGroups.common },
-        keyVaultName:                { value: organization.keyVaultName },
+        keyVaultName:                { value: organization.keyVault.name },
         containerRepositoryPassword: { value: containerRepositoryPassword },
         applications:                { value: applications },
     })

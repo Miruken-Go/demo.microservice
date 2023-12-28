@@ -12,7 +12,7 @@ variables.requireEnvVariables([
 
 handle(async () => {
     logging.printEnvironmentVariables(variables)
-    logging.printOrganization(organization)
+    logging.printDomain(organization)
 
     logging.header("Deploying Organization Common Resources")
 
@@ -31,7 +31,7 @@ handle(async () => {
             --mode complete                                                                       \
             --parameters                                                                          \
                 prefix=${organization.resourceGroups.common}                                      \
-                keyVaultName=${organization.keyVaultName}                                         \
+                keyVaultName=${organization.keyVault.name}                                         \
                 location=${organization.location}                                                 \
     `)
 

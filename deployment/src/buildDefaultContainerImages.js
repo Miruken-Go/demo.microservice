@@ -15,7 +15,7 @@ async function tagContainerImageAndPush(imageName, app) {
 }
 
 handle(async () => {
-    logging.printOrganization(organization)
+    logging.printDomain(organization)
 
     logging.header("Building defaultContainerImage")
 
@@ -32,7 +32,7 @@ handle(async () => {
             defaultContainerImage \
     `)
 
-    await az.loginToACR(organization.containerRepositoryName)
+    await az.loginToACR(organization.containerRepository.name)
 
     //Push the default container for all the configured apps
     for (const app of organization.applications) {

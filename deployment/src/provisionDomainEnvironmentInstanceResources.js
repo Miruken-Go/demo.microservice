@@ -12,14 +12,14 @@ variables.requireEnvVariables([
 
 handle(async () => {
     logging.printEnvironmentVariables(variables)
-    logging.printOrganization(organization)
+    logging.printDomain(organization)
 
     logging.header("Deploying Organization Instance Resources")
 
     //Clean up from any deleted resources
     await az.deleteOrphanedApplicationSecurityPrincipals()
 
-    const containerRepositoryPassword = await az.getAzureContainerRepositoryPassword(organization.containerRepositoryName)
+    const containerRepositoryPassword = await az.getAzureContainerRepositoryPassword(organization.containerRepository.name)
     const bicepFile                   = new URL('bicep/domainEnvironmentInstanceResources.bicep', import.meta.url).pathname
     const tags                        = `organization=${organization.name}`
 
@@ -38,9 +38,9 @@ handle(async () => {
 
         const params = JSON.stringify({ 
             containerRepositoryPassword: { value: containerRepositoryPassword },
-            containerRepositoryName:     { value: organization.containerRepositoryName },
+            containerRepositoryName:     { value: organization.containerRepository.name },
             keyVaultResourceGroup:       { value: organization.resourceGroups.common },
-            keyVaultName:                { value: organization.keyVaultName },
+            keyVaultName:                { value: organization.keyVault.name },
             prefix:                      { value: domain.resourceGroups.instance },
             location:                    { value: domain.location },
             applications:                { value: applications },

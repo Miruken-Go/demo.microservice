@@ -12,7 +12,7 @@ variables.requireEnvVariables([
 
 handle(async () => {
     logging.printEnvironmentVariables(variables)
-    logging.printOrganization(organization)
+    logging.printDomain(organization)
 
     logging.header("Deploying Domain Common Resources")
 
