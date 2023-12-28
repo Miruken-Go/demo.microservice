@@ -9,6 +9,7 @@ param keyVaultResourceGroup          string
 param applications {
     name:             string 
     containerAppName: string 
+    imageTag:         string
     secrets:          string[]
 }[]
 
@@ -38,6 +39,7 @@ module containerApps 'modules/containerApp.bicep' = [for app in applications: {
     location:                    location
     containerRepositoryName:     containerRepositoryName
     containerRepositoryPassword: containerRepositoryPassword
+    imageTag:                    app.imageTag
     keyVaultName:                keyVaultName
     keyVaultResourceGroup:       keyVaultResourceGroup
     secrets:                     app.secrets

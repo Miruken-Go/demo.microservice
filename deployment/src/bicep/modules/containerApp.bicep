@@ -7,6 +7,7 @@ param containerAppName            string
 param location                    string 
 param containerAppsEnvironmentId  string
 param containerRepositoryName     string 
+param imageTag                    string
 param keyVaultName                string
 param keyVaultResourceGroup       string
 param secrets                     array
@@ -48,7 +49,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' ={
     template: {
       containers: [
         {
-          image: '${containerRepositoryName}.azurecr.io/${appName}:default' 
+          image: '${containerRepositoryName}.azurecr.io/${appName}:${imageTag}' 
           name:  appName
           env: [
             {

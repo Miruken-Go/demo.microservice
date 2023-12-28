@@ -1,10 +1,11 @@
-import * as az          from '#infrastructure/az.js'
-import * as bash        from '#infrastructure/bash.js'
-import * as logging     from '#infrastructure/logging.js'
-import * as gh          from '#infrastructure/gh.js'
-import { handle }       from '#infrastructure/handler.js'
-import { variables }    from '#infrastructure/envVariables.js'
-import { organization } from './config.js'
+import * as az                          from '#infrastructure/az.js'
+import * as bash                        from '#infrastructure/bash.js'
+import * as logging                     from '#infrastructure/logging.js'
+import * as gh                          from '#infrastructure/gh.js'
+import { handle }                       from '#infrastructure/handler.js'
+import { variables }                    from '#infrastructure/envVariables.js'
+import { getImageTagForActiveRevision } from '#infrastructure/containerApp.js'
+import { organization }                 from './config.js'
 
 variables.requireEnvVariables([
     'subscriptionId',
@@ -25,13 +26,16 @@ handle(async () => {
     const containerRepositoryPassword = await az.getAzureContainerRepositoryPassword(organization.containerRepository.name)
     const bicepFile                   = new URL('bicep/organizationEnvironmentInstanceResources.bicep', import.meta.url).pathname
 
-    const applications = organization.applications.map(a => {
-        return { 
+    const applications = []
+    for(const a of organization.applications) {
+        const imageTag = (await getImageTagForActiveRevision(a)) || 'default'
+        applications.push({ 
             name:             a.name, 
             containerAppName: a.containerAppName, 
-            secrets:          a.secrets
-        }
-    })
+            secrets:          a.secrets,
+            imageTag,
+        })
+    }
 
     const params = JSON.stringify({ 
         prefix:                      { value: organization.resourceGroups.instance },
