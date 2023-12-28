@@ -124,12 +124,12 @@ func (e *EnrichHandler) getClaims(
 		return claims, nil
 	}
 
-	fp, fpp, err := api.Send[[]api2.Principal](h, api2.FlattenPrincipals{
+	ep, epp, err := api.Send[[]api2.Principal](h, api2.ExpandPrincipals{
 		Scope:        domain,
 		PrincipalIds: principalIds,
 	})
-	if fpp != nil {
-		fp, err = fpp.Await()
+	if epp != nil {
+		ep, err = epp.Await()
 	}
 	if err != nil {
 		return nil, err
@@ -140,7 +140,7 @@ func (e *EnrichHandler) getClaims(
 		principalTypeMap[strings.ToLower(typ)] = typ
 	}
 
-	for _, principal := range fp {
+	for _, principal := range ep {
 		pt := strings.ToLower(principal.Type)
 		if principalType, ok := principalTypeMap[pt]; ok {
 			if claim, ok := claims[principalType]; ok {

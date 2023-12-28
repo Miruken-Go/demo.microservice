@@ -25,7 +25,8 @@ func (F *Factory) New(
 		dp creates.It `key:"api.RemovePrincipal"`
 		gp creates.It `key:"api.GetPrincipal"`
 		fp creates.It `key:"api.FindPrincipals"`
-	    xp creates.It `key:"api.FlattenPrincipals"`
+	    xp creates.It `key:"api.ExpandPrincipals"`
+	    sp creates.It `key:"api.SatisfyPrincipals"`
 	}, create *creates.It,
 ) any {
 	switch create.Key() {
@@ -59,8 +60,10 @@ func (F *Factory) New(
 		return new(GetPrincipal)
 	case "api.FindPrincipals":
 		return new(FindPrincipals)
-	case "api.FlattenPrincipals":
-		return new(FlattenPrincipals)
+	case "api.ExpandPrincipals":
+		return new(ExpandPrincipals)
+	case "api.SatisfyPrincipals":
+		return new(SatisfyPrincipals)
 	}
 
 	return nil

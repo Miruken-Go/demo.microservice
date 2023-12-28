@@ -9,7 +9,7 @@ type (
 		Filter *struct{
 			Scope        string
 			PrincipalIds []string
-			All          bool
+			Exact        bool
 		}
 	}
 
@@ -24,7 +24,12 @@ type (
 		Scope string
 	}
 
-	FlattenPrincipals struct {
+	ExpandPrincipals struct {
+		Scope        string
+		PrincipalIds []string
+	}
+
+	SatisfyPrincipals struct {
 		Scope        string
 		PrincipalIds []string
 	}

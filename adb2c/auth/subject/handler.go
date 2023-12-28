@@ -1,6 +1,8 @@
 package subject
 
 import (
+	api2 "github.com/miruken-go/miruken/api"
+	"github.com/miruken-go/miruken/promise"
 	"slices"
 	"strings"
 	"time"
@@ -195,51 +197,67 @@ func (h *Handler) Find(
 		authorizes.Required
 	  }, find api.FindSubjects,
 	_ *struct{ args.Optional }, ctx context.Context,
-) ([]api.Subject, error) {
-	var params []any
-	var sql strings.Builder
-	sql.WriteString("SELECT CROSS PARTITION s.id, s.scopes FROM s")
-	sql.WriteString("")
+	hc miruken.HandleContext,
+) *promise.Promise[[]api.Subject] {
+	return promise.New(nil, func(
+		resolve func([]api.Subject), reject func(error), onCancel func(func())) {
 
-	if filter := find.Filter; filter != nil {
-		if principalIds := filter.PrincipalIds; len(principalIds) > 0 {
-			params = []any{filter.Scope, principalIds}
-			sql.WriteString(" JOIN p IN s.scopes WHERE p.name = :1")
-			if all := filter.All; all {
-				sql.WriteString(" AND ARRAY_LENGTH(SetIntersect(p.principalIds, :2)) = :3")
-				params = append(params, len(principalIds))
-			} else {
+		var params []any
+		var sql strings.Builder
+		sql.WriteString("SELECT CROSS PARTITION s.id, s.scopes FROM s")
+		sql.WriteString("")
+
+		if filter := find.Filter; filter != nil {
+			if principalIds := filter.PrincipalIds; len(principalIds) > 0 {
+				if !filter.Exact {
+					sp, spp, err := api2.Send[[]string](hc, api.SatisfyPrincipals{
+						Scope:        filter.Scope,
+						PrincipalIds: principalIds,
+					})
+					if spp != nil {
+						sp, err = spp.Await()
+					}
+					if err != nil {
+						reject(err)
+						return
+					}
+					principalIds = sp
+				}
+				params = []any{filter.Scope, principalIds}
+				sql.WriteString(" JOIN p IN s.scopes WHERE p.name = :1")
 				sql.WriteString(" AND ARRAY_LENGTH(SetIntersect(p.principalIds, :2)) != 0")
 			}
 		}
-	}
 
-	sql.WriteString(" WITH database=")
-	sql.WriteString(database)
-	sql.WriteString(" WITH collection=")
-	sql.WriteString(container)
+		sql.WriteString(" WITH database=")
+		sql.WriteString(database)
+		sql.WriteString(" WITH collection=")
+		sql.WriteString(container)
 
-	if ctx == nil {
-		ctx = context.Background()
-	}
-	rows, err := h.db.QueryxContext(ctx, sql.String(), params...)
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		_ = rows.Close()
-	}()
-
-	results := make([]api.Subject, 0)
-	for rows.Next() {
-		row := make(model.SubjectMap)
-		if err := rows.MapScan(row); err != nil {
-			return nil, err
+		if ctx == nil {
+			ctx = context.Background()
 		}
-		results = append(results, row.ToApi())
-	}
+		rows, err := h.db.QueryxContext(ctx, sql.String(), params...)
+		if err != nil {
+			reject(err)
+			return
+		}
+		defer func() {
+			_ = rows.Close()
+		}()
 
-	return results, nil
+		results := make([]api.Subject, 0)
+		for rows.Next() {
+			row := make(model.SubjectMap)
+			if err := rows.MapScan(row); err != nil {
+				reject(err)
+				return
+			}
+			results = append(results, row.ToApi())
+		}
+
+		resolve(results)
+	})
 }
 
 func (h *Handler) setValidationRules(
@@ -289,7 +307,7 @@ func (h *Handler) setValidationRules(
 			play.Type[struct{
 				Scope        string
 				PrincipalIds []string
-				All          bool
+				Exact        bool
 			}](play.Constraints{
 				"Scope":        "required",
 				"PrincipalIds": "gt=0,dive,required",

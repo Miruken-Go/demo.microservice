@@ -51,10 +51,7 @@ func main() {
 		httpsrv.H[*token.EnrichHandler](),
 		auth.WithFlowAlias("Login.Adb2c").Basic().Required()))
 
-	// start http server
-	server := httpsrv.New(&mux, nil)
-
-	if err := server.ListenAndServe(); err != nil {
+	if err := httpsrv.ListenAndServe(&mux, nil); err != nil {
 		if errors.Is(err, http.ErrServerClosed) {
 			logger.Info("server closed")
 		} else if err != nil {

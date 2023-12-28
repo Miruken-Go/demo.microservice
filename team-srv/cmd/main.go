@@ -131,9 +131,7 @@ func main() {
 	mux.Handle("/", ui.Handler("", docs, &appConfig.OpenApi))
 
 	// start http server
-	server := httpsrv.New(&mux, &appConfig.Server)
-
-	if err := server.ListenAndServe(); err != nil {
+	if err := httpsrv.ListenAndServe(&mux, &appConfig.Server); err != nil {
 		if errors.Is(err, http.ErrServerClosed) {
 			logger.Info("server closed")
 		} else if err != nil {

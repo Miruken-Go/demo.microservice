@@ -5,7 +5,6 @@ package principal
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/miruken-go/miruken/promise"
 	"strings"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
@@ -16,6 +15,7 @@ import (
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/args"
 	"github.com/miruken-go/miruken/handles"
+	"github.com/miruken-go/miruken/promise"
 	"github.com/miruken-go/miruken/security/authorizes"
 	play "github.com/miruken-go/miruken/validates/play"
 	"golang.org/x/net/context"
@@ -29,7 +29,8 @@ type (
 		play.Validates4[api.RemovePrincipal]
 		play.Validates5[api.GetPrincipal]
 		play.Validates6[api.FindPrincipals]
-		play.Validates7[api.FlattenPrincipals]
+		play.Validates7[api.ExpandPrincipals]
+		play.Validates8[api.SatisfyPrincipals]
 
 		principals *azcosmos.ContainerClient
 	}
@@ -215,15 +216,15 @@ func (h *Handler) Find(
 	return principals, nil
 }
 
-func (h *Handler) Flatten(
-	_ *handles.It, flatten api.FlattenPrincipals,
+func (h *Handler) Expand(
+	_ *handles.It, expand api.ExpandPrincipals,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) *promise.Promise[[]api.Principal] {
 	return promise.New(nil, func(resolve func([]api.Principal), reject func(error), onCancel func(func())) {
-		queue := make(map[string][]string, len(flatten.PrincipalIds))
-		for _, id := range flatten.PrincipalIds {
-			if _, ok := queue[id]; !ok {
-				queue[id] = []string{id}
+		queue := make(map[string][]string, len(expand.PrincipalIds))
+		for _, pid := range expand.PrincipalIds {
+			if _, ok := queue[pid]; !ok {
+				queue[pid] = []string{pid}
 			}
 		}
 
@@ -231,8 +232,8 @@ func (h *Handler) Flatten(
 			ctx = context.Background()
 		}
 
-		pk := azcosmos.NewPartitionKeyString(flatten.Scope)
-		principals := make(map[string]api.Principal, len(flatten.PrincipalIds))
+		pk := azcosmos.NewPartitionKeyString(expand.Scope)
+		principals := make(map[string]api.Principal, len(expand.PrincipalIds))
 
 		for len(queue) > 0 {
 			ids := make([]string, 0, len(queue))
@@ -251,7 +252,8 @@ func (h *Handler) Flatten(
 			queryPager := h.principals.NewQueryItemsPager(
 				"SELECT * FROM p WHERE ARRAY_CONTAINS(@ids, p.id)",
 				pk, &azcosmos.QueryOptions{QueryParameters: []azcosmos.QueryParameter{
-					{Name: "@ids", Value: ids}}})
+					{Name: "@ids", Value: ids}},
+				})
 
 			for queryPager.More() {
 				queryResponse, err := queryPager.NextPage(ctx)
@@ -285,6 +287,67 @@ func (h *Handler) Flatten(
 		result := make([]api.Principal, 0, len(principals))
 		for _, p := range principals {
 			result = append(result, p)
+		}
+		resolve(result)
+	})
+}
+
+func (h *Handler) Satisfy(
+	_ *handles.It, satisfy api.SatisfyPrincipals,
+	_ *struct{ args.Optional }, ctx context.Context,
+) *promise.Promise[[]string] {
+	return promise.New(nil, func(
+		resolve func([]string), reject func(error), onCancel func(func())) {
+
+		if ctx == nil {
+			ctx = context.Background()
+		}
+
+		queue := satisfy.PrincipalIds
+		pk := azcosmos.NewPartitionKeyString(satisfy.Scope)
+		principals := make(map[string]struct{}, len(queue))
+
+		for len(queue) > 0 {
+			ids := make([]string, 0, len(queue))
+			for _, pid := range queue {
+				if _, found := principals[pid]; found {
+					continue
+				}
+				principals[pid] = struct{}{}
+				ids = append(ids, pid)
+			}
+
+			if len(ids) == 0 {
+				break
+			}
+
+			queryPager := h.principals.NewQueryItemsPager(
+				"SELECT * FROM p WHERE ARRAY_LENGTH(SetIntersect(p.includedIds, @ids)) != 0",
+				pk, &azcosmos.QueryOptions{QueryParameters: []azcosmos.QueryParameter{
+					{Name: "@ids", Value: ids}},
+				})
+
+			for queryPager.More() {
+				queryResponse, err := queryPager.NextPage(ctx)
+				if err != nil {
+					reject(err)
+					return
+				}
+				queue := queue[:0]
+				for _, item := range queryResponse.Items {
+					var principal model.Principal
+					if err := json.Unmarshal(item, &principal); err != nil {
+						reject(err)
+						return
+					}
+					queue = append(queue, principal.Id)
+				}
+			}
+		}
+
+		result := make([]string, 0, len(principals))
+		for pid := range principals {
+			result = append(result, pid)
 		}
 		resolve(result)
 	})
@@ -346,7 +409,15 @@ func (h *Handler) setValidationRules(
 
 	_ = h.Validates7.WithRules(
 		play.Rules{
-			play.Type[api.FlattenPrincipals](play.Constraints{
+			play.Type[api.ExpandPrincipals](play.Constraints{
+				"Scope":        "required",
+				"PrincipalIds": "gt=0,dive,required",
+			}),
+		}, nil, translator)
+
+	_ = h.Validates8.WithRules(
+		play.Rules{
+			play.Type[api.SatisfyPrincipals](play.Constraints{
 				"Scope":        "required",
 				"PrincipalIds": "gt=0,dive,required",
 			}),
