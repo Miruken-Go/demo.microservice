@@ -232,11 +232,11 @@ func (h *Handler) Expand(
 			ctx = context.Background()
 		}
 
-		pk := azcosmos.NewPartitionKeyString(expand.Scope)
+		ids := make([]string, 0, len(queue))
 		principals := make(map[string]api2.Principal, len(expand.PrincipalIds))
+		pk := azcosmos.NewPartitionKeyString(expand.Scope)
 
 		for len(queue) > 0 {
-			ids := make([]string, 0, len(queue))
 			for pid := range queue {
 				if _, found := principals[pid]; found {
 					continue
@@ -282,6 +282,7 @@ func (h *Handler) Expand(
 			}
 
 			queue = next
+			ids = ids[:0]
 		}
 
 		result := make([]api2.Principal, 0, len(principals))
@@ -304,11 +305,11 @@ func (h *Handler) Satisfy(
 		}
 
 		queue := satisfy.PrincipalIds
-		pk := azcosmos.NewPartitionKeyString(satisfy.Scope)
+		ids := make([]string, 0, len(queue))
 		principals := make(map[string]struct{}, len(queue))
+		pk := azcosmos.NewPartitionKeyString(satisfy.Scope)
 
 		for len(queue) > 0 {
-			ids := make([]string, 0, len(queue))
 			for _, pid := range queue {
 				if _, found := principals[pid]; found {
 					continue
@@ -343,6 +344,7 @@ func (h *Handler) Satisfy(
 					queue = append(queue, principal.Id)
 				}
 			}
+			ids = ids[:0]
 		}
 
 		result := make([]string, 0, len(principals))

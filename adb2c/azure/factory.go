@@ -58,10 +58,10 @@ func (f *Factory) NewClient(
 			return
 		}
 	}
-	return newClient(cfg)
+	return newAzClient(cfg)
 }
 
-func (f *Factory) NewSqlClient(
+func (f *Factory) NewSqlxClient(
 	_ *struct {
 		provides.Single `mode:"covariant"`
 	  }, p *provides.It,
@@ -87,7 +87,7 @@ func (f *Factory) NewSqlClient(
 	return newSqlxClient(cfg)
 }
 
-func newClient(
+func newAzClient(
 	cfg Config,
 ) (*azcosmos.Client, error) {
 	if uri := cfg.ConnectionUri; uri == "" {

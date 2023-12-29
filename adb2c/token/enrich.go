@@ -24,7 +24,9 @@ type (
 	}
 
 	// EnrichRequest is the request body sent to the Api Connector.
-	// It receives a set et of InputClaims and returns a set of OutputClaims.
+	// It receives a set of InputClaims and returns a set of OutputClaims.
+	//   objectId - the objectId of the user in ADB2C
+	//   scope - the scope of the token to enrich
 	EnrichRequest struct {
 		ObjectId string `json:"objectId"`
 		Scope    string `json:"scope"`
