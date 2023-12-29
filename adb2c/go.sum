@@ -118,6 +118,8 @@ github.com/go-openapi/swag v0.22.5 h1:fVS63IE3M0lsuWRzuom3RLwUMVI2peDH01s6M70ugy
 github.com/go-openapi/swag v0.22.5/go.mod h1:Gl91UqO+btAM0plGGxHqJcQZ1ZTy6jbmridBTsDy8A0=
 github.com/go-openapi/swag v0.22.6 h1:dnqg1XfHXL9aBxSbktBqFR5CxVyVI+7fYWhAf1JOeTw=
 github.com/go-openapi/swag v0.22.6/go.mod h1:Gl91UqO+btAM0plGGxHqJcQZ1ZTy6jbmridBTsDy8A0=
+github.com/go-openapi/swag v0.22.7 h1:JWrc1uc/P9cSomxfnsFSVWoE1FW6bNbrVPmpQYpCcR8=
+github.com/go-openapi/swag v0.22.7/go.mod h1:Gl91UqO+btAM0plGGxHqJcQZ1ZTy6jbmridBTsDy8A0=
 github.com/go-playground/assert/v2 v2.2.0 h1:JvknZsQTYeFEAhQwI4qEt9cyV5ONwRHC+lYKSsYSR8s=
 github.com/go-playground/assert/v2 v2.2.0/go.mod h1:VDjEfimB/XKnb+ZQfWdccd7VUvScMdVu0Titje2rxJ4=
 github.com/go-playground/locales v0.14.1 h1:EWaQ/wswjilfKLTECiXz7Rh+3BjFhfDFKv/oXslEjJA=
@@ -291,6 +293,8 @@ github.com/miruken-go/miruken v0.30.91 h1:t6cGw4K52wYsIyjMukF+pZ75mwWgDUyEhN/fn8
 github.com/miruken-go/miruken v0.30.91/go.mod h1:a43KQYkJUz11FIovxrpgolMvwqpJE/fx1r7rd3BQyWQ=
 github.com/miruken-go/miruken v0.30.92 h1:Mcd25TMYqsv1DtloKEux3gP57oCT1O1JVohMRVxaGcI=
 github.com/miruken-go/miruken v0.30.92/go.mod h1:WHfPNpDnFwocwzRU6XTwIkzzc7HeImTxqesBMdZ7tZ4=
+github.com/miruken-go/miruken v0.30.93 h1:MAAtiMp6xHvkqE3vPde6SLkNw0LNz9u3nYxNBVgq/38=
+github.com/miruken-go/miruken v0.30.93/go.mod h1:qPFOWy6iC1aCQQJJ6Y7qWky1UiFXr1c+HBLbgyltSbg=
 github.com/mitchellh/cli v1.0.0/go.mod h1:hNIlj7HEI86fIcpObd7a0FcrxTWetlwJDGcceTlRvqc=
 github.com/mitchellh/cli v1.1.0/go.mod h1:xcISNoH86gajksDmfB23e/pu+B+GeFRMYmoHXxx3xhI=
 github.com/mitchellh/copystructure v1.0.0/go.mod h1:SNtv71yrdKgLRyLFxmLdkAbkKEFWgYaq1OVrnRcwhnw=
