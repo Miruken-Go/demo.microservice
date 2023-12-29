@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
+	"github.com/miruken-go/demo.microservice/adb2c/api"
 )
 
 type (

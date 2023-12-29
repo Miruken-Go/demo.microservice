@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"github.com/miruken-go/demo.microservice/adb2c/auth/api"
+	"github.com/miruken-go/demo.microservice/adb2c/api"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/principal"
 	"github.com/miruken-go/demo.microservice/adb2c/auth/subject"
 	"github.com/miruken-go/demo.microservice/adb2c/azure"

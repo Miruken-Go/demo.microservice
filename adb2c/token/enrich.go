@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	api2 "github.com/miruken-go/demo.microservice/adb2c/auth/api"
-	"github.com/miruken-go/miruken/api"
 	"net/http"
 	"path/filepath"
 	"strings"
 
 	"github.com/go-logr/logr"
+	api3 "github.com/miruken-go/demo.microservice/adb2c/api"
 	"github.com/miruken-go/miruken"
+	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/args"
 )
 
@@ -77,7 +77,7 @@ func (e *EnrichHandler) ServeHTTP(
 
 	var claims map[string]any
 
-	s, ps, err := api.Send[api2.Subject](h, api2.GetSubject{SubjectId: objectId})
+	s, ps, err := api.Send[api3.Subject](h, api3.GetSubject{SubjectId: objectId})
 	if ps != nil {
 		s, err = ps.Await()
 	}
@@ -105,7 +105,7 @@ func (e *EnrichHandler) ServeHTTP(
 func (e *EnrichHandler) getClaims(
 	domain           string,
 	principalTypes   []string,
-	scopedPrincipals []api2.ScopedPrincipals,
+	scopedPrincipals []api3.ScopedPrincipals,
 	h                miruken.Handler,
 ) (map[string]any, error) {
 	claims := make(map[string]any)
@@ -124,7 +124,7 @@ func (e *EnrichHandler) getClaims(
 		return claims, nil
 	}
 
-	ep, epp, err := api.Send[[]api2.Principal](h, api2.ExpandPrincipals{
+	ep, epp, err := api.Send[[]api3.Principal](h, api3.ExpandPrincipals{
 		Scope:        domain,
 		PrincipalIds: principalIds,
 	})
