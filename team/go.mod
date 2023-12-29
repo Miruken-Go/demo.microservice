@@ -8,8 +8,8 @@ require (
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.16.0
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/demo.microservice/team-api v0.7.0-alpha.24
-	github.com/miruken-go/miruken v0.30.92
+	github.com/miruken-go/demo.microservice/team-api v0.7.0-alpha.54
+	github.com/miruken-go/miruken v0.30.93
 	github.com/rs/zerolog v1.31.0
 	golang.org/x/net v0.19.0
 )
@@ -22,7 +22,7 @@ require (
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-openapi/jsonpointer v0.20.2 // indirect
-	github.com/go-openapi/swag v0.22.6 // indirect
+	github.com/go-openapi/swag v0.22.7 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/golang-jwt/jwt/v5 v5.2.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
