@@ -9,6 +9,7 @@ type Factory struct{}
 
 func (F *Factory) New(
 	_ *struct {
+	    u creates.It `key:"api.User"`
 		s creates.It `key:"api.Subject"`
 		p creates.It `key:"api.Principal"`
 
@@ -30,6 +31,7 @@ func (F *Factory) New(
 	  }, create *creates.It,
 ) any {
 	switch create.Key() {
+	case "api.User": return new(User)
 	case "api.Subject": return new(Subject)
 	case "api.Principal": return new(Principal)
 

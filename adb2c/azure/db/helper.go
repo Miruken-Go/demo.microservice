@@ -1,4 +1,4 @@
-package azure
+package db
 
 import (
 	"encoding/json"
@@ -18,7 +18,7 @@ func Container(
 ) *azcosmos.ContainerClient {
 	database, err := azure.NewDatabase(databaseId)
 	if err != nil {
-		panic(fmt.Errorf("error creating %q database client: %w", databaseId, err))
+		panic(fmt.Errorf("error creating %q db client: %w", databaseId, err))
 	}
 	container, err := database.NewContainer(containerId)
 	if err != nil {

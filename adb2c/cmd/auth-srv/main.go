@@ -2,9 +2,6 @@ package main
 
 import (
 	"errors"
-	auth2 "github.com/miruken-go/demo.microservice/adb2c/auth"
-	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
-	"github.com/miruken-go/miruken/setup"
 	"net/http"
 	"os"
 
@@ -12,8 +9,11 @@ import (
 	"github.com/go-logr/zerologr"
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/providers/env"
+	"github.com/miruken-go/demo.microservice/adb2c/azure"
+	"github.com/miruken-go/demo.microservice/adb2c/graph"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
+	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
 	"github.com/miruken-go/miruken/api/http/httpsrv/openapi"
 	"github.com/miruken-go/miruken/api/http/httpsrv/openapi/ui"
 	"github.com/miruken-go/miruken/api/json/stdjson"
@@ -21,6 +21,7 @@ import (
 	koanfp "github.com/miruken-go/miruken/config/koanf"
 	"github.com/miruken-go/miruken/logs"
 	"github.com/miruken-go/miruken/security/jwt"
+	"github.com/miruken-go/miruken/setup"
 	"github.com/rs/zerolog"
 )
 
@@ -98,7 +99,7 @@ func main() {
 
 	// initialize context
 	ctx, err := setup.New(
-		auth2.Feature, jwt.Feature(),
+		azure.Feature, graph.Feature, jwt.Feature(),
 		config.Feature(koanfp.P(k)), stdjson.Feature(),
 		logs.Feature(logger), openapiGen).
 		Specs(&api.GoPolymorphism{}).

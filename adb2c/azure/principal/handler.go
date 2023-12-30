@@ -9,9 +9,9 @@ import (
 
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	ut "github.com/go-playground/universal-translator"
-	api2 "github.com/miruken-go/demo.microservice/adb2c/api"
-	"github.com/miruken-go/demo.microservice/adb2c/auth/internal/model"
-	"github.com/miruken-go/demo.microservice/adb2c/azure"
+	"github.com/miruken-go/demo.microservice/adb2c/api"
+	"github.com/miruken-go/demo.microservice/adb2c/azure/db"
+	"github.com/miruken-go/demo.microservice/adb2c/azure/internal/model"
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/args"
 	"github.com/miruken-go/miruken/handles"
@@ -23,14 +23,14 @@ import (
 
 type (
 	Handler struct {
-		play.Validates1[api2.CreatePrincipal]
-		play.Validates2[api2.IncludePrincipals]
-		play.Validates3[api2.ExcludePrincipals]
-		play.Validates4[api2.RemovePrincipal]
-		play.Validates5[api2.GetPrincipal]
-		play.Validates6[api2.FindPrincipals]
-		play.Validates7[api2.ExpandPrincipals]
-		play.Validates8[api2.SatisfyPrincipals]
+		play.Validates1[api.CreatePrincipal]
+		play.Validates2[api.IncludePrincipals]
+		play.Validates3[api.ExcludePrincipals]
+		play.Validates4[api.RemovePrincipal]
+		play.Validates5[api.GetPrincipal]
+		play.Validates6[api.FindPrincipals]
+		play.Validates7[api.ExpandPrincipals]
+		play.Validates8[api.SatisfyPrincipals]
 
 		principals *azcosmos.ContainerClient
 	}
@@ -45,7 +45,7 @@ func (h *Handler) Constructor(
 	client *azcosmos.Client,
 	_ *struct{ args.Optional }, translator ut.Translator,
 ) {
-	h.principals = azure.Container(client, database, container)
+	h.principals = db.Container(client, database, container)
 	h.setValidationRules(translator)
 }
 
@@ -53,9 +53,9 @@ func (h *Handler) Create(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, create api2.CreatePrincipal,
+	  }, create api.CreatePrincipal,
 	_ *struct{ args.Optional }, ctx context.Context,
-) (p api2.PrincipalCreated, err error) {
+) (p api.PrincipalCreated, err error) {
 	id := model.NewId()
 	principal := model.Principal{
 		Id:    id,
@@ -67,7 +67,7 @@ func (h *Handler) Create(
 		principal.IncludedIds = included
 	}
 	pk := azcosmos.NewPartitionKeyString(principal.Scope)
-	_, err = azure.CreateItem(ctx, &principal, pk, h.principals, nil)
+	_, err = db.CreateItem(ctx, &principal, pk, h.principals, nil)
 	if err == nil {
 		p.PrincipalId = id
 	}
@@ -78,12 +78,12 @@ func (h *Handler) Include(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, assign api2.IncludePrincipals,
+	  }, assign api.IncludePrincipals,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) miruken.HandleResult {
 	pid := assign.PrincipalId
 	pk  := azcosmos.NewPartitionKeyString(assign.Scope)
-	_, found, err := azure.ReplaceItem(ctx, func(principal *model.Principal) (bool, error) {
+	_, found, err := db.ReplaceItem(ctx, func(principal *model.Principal) (bool, error) {
 		updated, changed := model.Union(principal.IncludedIds, assign.IncludedIds...)
 		if changed {
 			principal.IncludedIds = updated
@@ -104,12 +104,12 @@ func (h *Handler) Exclude(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, revoke api2.ExcludePrincipals,
+	  }, revoke api.ExcludePrincipals,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) miruken.HandleResult {
 	pid := revoke.PrincipalId
 	pk := azcosmos.NewPartitionKeyString(revoke.Scope)
-	_, found, err := azure.ReplaceItem(ctx, func(principal *model.Principal) (bool, error) {
+	_, found, err := db.ReplaceItem(ctx, func(principal *model.Principal) (bool, error) {
 		updated, changed := model.Difference(principal.IncludedIds, revoke.ExcludedIds...)
 		if changed {
 			if len(updated) == 0 {
@@ -134,12 +134,12 @@ func (h *Handler) Remove(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, remove api2.RemovePrincipal,
+	  }, remove api.RemovePrincipal,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) miruken.HandleResult {
 	pid := remove.PrincipalId
 	pk := azcosmos.NewPartitionKeyString(remove.Scope)
-	_, found, err := azure.DeleteItem(ctx, pid, pk, h.principals, nil)
+	_, found, err := db.DeleteItem(ctx, pid, pk, h.principals, nil)
 	switch {
 	case !found:
 		return miruken.NotHandled
@@ -151,26 +151,26 @@ func (h *Handler) Remove(
 }
 
 func (h *Handler) Get(
-	_ *handles.It, get api2.GetPrincipal,
+	_ *handles.It, get api.GetPrincipal,
 	_ *struct{ args.Optional }, ctx context.Context,
-) (api2.Principal, miruken.HandleResult) {
+) (api.Principal, miruken.HandleResult) {
 	pid := get.PrincipalId
 	pk := azcosmos.NewPartitionKeyString(get.Scope)
-	_, item, found, err := azure.ReadItem[model.Principal](ctx, pid, pk, h.principals, nil)
+	_, item, found, err := db.ReadItem[model.Principal](ctx, pid, pk, h.principals, nil)
 	switch {
 	case !found:
-		return api2.Principal{}, miruken.NotHandled
+		return api.Principal{}, miruken.NotHandled
 	case err != nil:
-		return api2.Principal{}, miruken.NotHandled.WithError(err)
+		return api.Principal{}, miruken.NotHandled.WithError(err)
 	default:
 		return item.ToApi(), miruken.Handled
 	}
 }
 
 func (h *Handler) Find(
-	_ *handles.It, find api2.FindPrincipals,
+	_ *handles.It, find api.FindPrincipals,
 	_ *struct{ args.Optional }, ctx context.Context,
-) ([]api2.Principal, error) {
+) ([]api.Principal, error) {
 	var sql strings.Builder
 	sql.WriteString("SELECT * FROM principal p")
 
@@ -198,7 +198,7 @@ func (h *Handler) Find(
 	queryPager := h.principals.NewQueryItemsPager(sql.String(),
 		pk, &azcosmos.QueryOptions{QueryParameters: params})
 
-	principals := make([]api2.Principal, 0)
+	principals := make([]api.Principal, 0)
 	for queryPager.More() {
 		queryResponse, err := queryPager.NextPage(ctx)
 		if err != nil {
@@ -217,10 +217,10 @@ func (h *Handler) Find(
 }
 
 func (h *Handler) Expand(
-	_ *handles.It, expand api2.ExpandPrincipals,
+	_ *handles.It, expand api.ExpandPrincipals,
 	_ *struct{ args.Optional }, ctx context.Context,
-) *promise.Promise[[]api2.Principal] {
-	return promise.New(nil, func(resolve func([]api2.Principal), reject func(error), onCancel func(func())) {
+) *promise.Promise[[]api.Principal] {
+	return promise.New(nil, func(resolve func([]api.Principal), reject func(error), onCancel func(func())) {
 		queue := make(map[string][]string, len(expand.PrincipalIds))
 		for _, pid := range expand.PrincipalIds {
 			if _, ok := queue[pid]; !ok {
@@ -233,7 +233,7 @@ func (h *Handler) Expand(
 		}
 
 		ids := make([]string, 0, len(queue))
-		principals := make(map[string]api2.Principal, len(expand.PrincipalIds))
+		principals := make(map[string]api.Principal, len(expand.PrincipalIds))
 		pk := azcosmos.NewPartitionKeyString(expand.Scope)
 
 		for len(queue) > 0 {
@@ -285,7 +285,7 @@ func (h *Handler) Expand(
 			ids = ids[:0]
 		}
 
-		result := make([]api2.Principal, 0, len(principals))
+		result := make([]api.Principal, 0, len(principals))
 		for _, p := range principals {
 			result = append(result, p)
 		}
@@ -294,7 +294,7 @@ func (h *Handler) Expand(
 }
 
 func (h *Handler) Satisfy(
-	_ *handles.It, satisfy api2.SatisfyPrincipals,
+	_ *handles.It, satisfy api.SatisfyPrincipals,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) *promise.Promise[[]string] {
 	return promise.New(nil, func(
@@ -360,7 +360,7 @@ func (h *Handler) setValidationRules(
 ) {
 	_ = h.Validates1.WithRules(
 		play.Rules{
-			play.Type[api2.CreatePrincipal](play.Constraints{
+			play.Type[api.CreatePrincipal](play.Constraints{
 				"Type":  "required,alphanum",
 				"Name":  "required",
 				"Scope": "required",
@@ -369,7 +369,7 @@ func (h *Handler) setValidationRules(
 
 	_ = h.Validates2.WithRules(
 		play.Rules{
-			play.Type[api2.IncludePrincipals](play.Constraints{
+			play.Type[api.IncludePrincipals](play.Constraints{
 				"PrincipalId": "required",
 				"Scope":       "required",
 				"IncludedIds": "gt=0,dive,required",
@@ -378,7 +378,7 @@ func (h *Handler) setValidationRules(
 
 	_ = h.Validates3.WithRules(
 		play.Rules{
-			play.Type[api2.ExcludePrincipals](play.Constraints{
+			play.Type[api.ExcludePrincipals](play.Constraints{
 				"PrincipalId": "required",
 				"Scope":       "required",
 				"ExcludedIds": "gt=0,dive,required",
@@ -387,7 +387,7 @@ func (h *Handler) setValidationRules(
 
 	_ = h.Validates4.WithRules(
 		play.Rules{
-			play.Type[api2.RemovePrincipal](play.Constraints{
+			play.Type[api.RemovePrincipal](play.Constraints{
 				"PrincipalId": "required",
 				"Scope":       "required",
 			}),
@@ -395,7 +395,7 @@ func (h *Handler) setValidationRules(
 
 	_ = h.Validates5.WithRules(
 		play.Rules{
-			play.Type[api2.GetPrincipal](play.Constraints{
+			play.Type[api.GetPrincipal](play.Constraints{
 				"PrincipalId": "required",
 				"Scope":       "required",
 			}),
@@ -403,7 +403,7 @@ func (h *Handler) setValidationRules(
 
 	_ = h.Validates6.WithRules(
 		play.Rules{
-			play.Type[api2.FindPrincipals](play.Constraints{
+			play.Type[api.FindPrincipals](play.Constraints{
 				"Type":  "omitempty,alphanum",
 				"Scope": "required",
 			}),
@@ -411,7 +411,7 @@ func (h *Handler) setValidationRules(
 
 	_ = h.Validates7.WithRules(
 		play.Rules{
-			play.Type[api2.ExpandPrincipals](play.Constraints{
+			play.Type[api.ExpandPrincipals](play.Constraints{
 				"Scope":        "required",
 				"PrincipalIds": "gt=0,dive,required",
 			}),
@@ -419,7 +419,7 @@ func (h *Handler) setValidationRules(
 
 	_ = h.Validates8.WithRules(
 		play.Rules{
-			play.Type[api2.SatisfyPrincipals](play.Constraints{
+			play.Type[api.SatisfyPrincipals](play.Constraints{
 				"Scope":        "required",
 				"PrincipalIds": "gt=0,dive,required",
 			}),

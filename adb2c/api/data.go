@@ -1,6 +1,10 @@
 package api
 
 type (
+	User struct {
+
+	}
+
 	ScopedPrincipals struct {
 		Scope      string
 		Principals []Principal

@@ -8,9 +8,9 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/jmoiron/sqlx"
-	api3 "github.com/miruken-go/demo.microservice/adb2c/api"
-	"github.com/miruken-go/demo.microservice/adb2c/auth/internal/model"
-	"github.com/miruken-go/demo.microservice/adb2c/azure"
+	"github.com/miruken-go/demo.microservice/adb2c/api"
+	db2 "github.com/miruken-go/demo.microservice/adb2c/azure/db"
+	"github.com/miruken-go/demo.microservice/adb2c/azure/internal/model"
 	"github.com/miruken-go/miruken"
 	api2 "github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/args"
@@ -25,12 +25,12 @@ import (
 
 type (
 	Handler struct {
-		play.Validates1[api3.CreateSubject]
-		play.Validates2[api3.AssignPrincipals]
-		play.Validates3[api3.RevokePrincipals]
-		play.Validates4[api3.RemoveSubject]
-		play.Validates5[api3.GetSubject]
-		play.Validates6[api3.FindSubjects]
+		play.Validates1[api.CreateSubject]
+		play.Validates2[api.AssignPrincipals]
+		play.Validates3[api.RevokePrincipals]
+		play.Validates4[api.RemoveSubject]
+		play.Validates5[api.GetSubject]
+		play.Validates6[api.FindSubjects]
 
 		subjects *azcosmos.ContainerClient
 		db       *sqlx.DB
@@ -48,7 +48,7 @@ func (h *Handler) Constructor(
 	_ *struct{ args.Optional }, translator ut.Translator,
 ) {
 	h.db       = db
-	h.subjects = azure.Container(client, database, container)
+	h.subjects = db2.Container(client, database, container)
 	h.setValidationRules(translator)
 }
 
@@ -56,9 +56,9 @@ func (h *Handler) Create(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, create api3.CreateSubject,
+	  }, create api.CreateSubject,
 	_ *struct{ args.Optional }, ctx context.Context,
-) (s api3.SubjectCreated, err error) {
+) (s api.SubjectCreated, err error) {
 	id := create.SubjectId
 	if id == "" {
 		id = model.NewId()
@@ -68,7 +68,7 @@ func (h *Handler) Create(
 		CreatedAt: time.Now().UTC(),
 	}
 	pk := azcosmos.NewPartitionKeyString(id)
-	if _, err = azure.CreateItem(ctx, &subject, pk, h.subjects, nil); err == nil {
+	if _, err = db2.CreateItem(ctx, &subject, pk, h.subjects, nil); err == nil {
 		s.SubjectId = id
 	}
 	return
@@ -78,12 +78,12 @@ func (h *Handler) Assign(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, assign api3.AssignPrincipals,
+	  }, assign api.AssignPrincipals,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) miruken.HandleResult {
 	sid := assign.SubjectId
 	pk  := azcosmos.NewPartitionKeyString(sid)
-	_, found, err := azure.ReplaceItem(ctx, func(subject *model.Subject) (bool, error) {
+	_, found, err := db2.ReplaceItem(ctx, func(subject *model.Subject) (bool, error) {
 		var scope *model.Scope
 		idx := slices.IndexFunc(subject.Scopes, func(s model.Scope) bool {
 			return s.Name == assign.Scope
@@ -115,12 +115,12 @@ func (h *Handler) Revoke(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, revoke api3.RevokePrincipals,
+	  }, revoke api.RevokePrincipals,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) miruken.HandleResult {
 	sid := revoke.SubjectId
 	pk := azcosmos.NewPartitionKeyString(sid)
-	_, found, err := azure.ReplaceItem(ctx, func(subject *model.Subject) (bool, error) {
+	_, found, err := db2.ReplaceItem(ctx, func(subject *model.Subject) (bool, error) {
 		var changed bool
 		idx := slices.IndexFunc(subject.Scopes, func(scope model.Scope) bool {
 			return scope.Name == revoke.Scope
@@ -155,12 +155,12 @@ func (h *Handler) Remove(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, remove api3.RemoveSubject,
+	  }, remove api.RemoveSubject,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) miruken.HandleResult {
 	sid := remove.SubjectId
 	pk  := azcosmos.NewPartitionKeyString(sid)
-	_, found, err := azure.DeleteItem(ctx, sid, pk, h.subjects, nil)
+	_, found, err := db2.DeleteItem(ctx, sid, pk, h.subjects, nil)
 	switch {
 	case !found:
 		return miruken.NotHandled
@@ -175,17 +175,17 @@ func (h *Handler) Get(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, get api3.GetSubject,
+	  }, get api.GetSubject,
 	_ *struct{ args.Optional }, ctx context.Context,
-) (api3.Subject, miruken.HandleResult) {
+) (api.Subject, miruken.HandleResult) {
 	sid := get.SubjectId
 	pk  := azcosmos.NewPartitionKeyString(sid)
-	_, item, found, err := azure.ReadItem[model.Subject](ctx, sid, pk, h.subjects, nil)
+	_, item, found, err := db2.ReadItem[model.Subject](ctx, sid, pk, h.subjects, nil)
 	switch {
 	case !found:
-		return api3.Subject{}, miruken.NotHandled
+		return api.Subject{}, miruken.NotHandled
 	case err != nil:
-		return api3.Subject{}, miruken.NotHandled.WithError(err)
+		return api.Subject{}, miruken.NotHandled.WithError(err)
 	default:
 		return item.ToApi(), miruken.Handled
 	}
@@ -195,12 +195,12 @@ func (h *Handler) Find(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, find api3.FindSubjects,
+	  }, find api.FindSubjects,
 	_ *struct{ args.Optional }, ctx context.Context,
 	hc miruken.HandleContext,
-) *promise.Promise[[]api3.Subject] {
+) *promise.Promise[[]api.Subject] {
 	return promise.New(nil, func(
-		resolve func([]api3.Subject), reject func(error), onCancel func(func())) {
+		resolve func([]api.Subject), reject func(error), onCancel func(func())) {
 
 		var params []any
 		var sql strings.Builder
@@ -210,7 +210,7 @@ func (h *Handler) Find(
 		if filter := find.Filter; filter != nil {
 			if principalIds := filter.PrincipalIds; len(principalIds) > 0 {
 				if !filter.Exact {
-					sp, spp, err := api2.Send[[]string](hc, api3.SatisfyPrincipals{
+					sp, spp, err := api2.Send[[]string](hc, api.SatisfyPrincipals{
 						Scope:        filter.Scope,
 						PrincipalIds: principalIds,
 					})
@@ -229,7 +229,7 @@ func (h *Handler) Find(
 			}
 		}
 
-		sql.WriteString(" WITH database=")
+		sql.WriteString(" WITH db=")
 		sql.WriteString(database)
 		sql.WriteString(" WITH collection=")
 		sql.WriteString(container)
@@ -246,7 +246,7 @@ func (h *Handler) Find(
 			_ = rows.Close()
 		}()
 
-		results := make([]api3.Subject, 0)
+		results := make([]api.Subject, 0)
 		for rows.Next() {
 			row := make(model.SubjectMap)
 			if err := rows.MapScan(row); err != nil {
@@ -265,14 +265,14 @@ func (h *Handler) setValidationRules(
 ) {
 	_ = h.Validates1.WithRules(
 		play.Rules{
-			play.Type[api3.CreateSubject](play.Constraints{
+			play.Type[api.CreateSubject](play.Constraints{
 				"SubjectId": "required",
 			}),
 		}, nil, translator)
 
 	_ = h.Validates2.WithRules(
 		play.Rules{
-			play.Type[api3.AssignPrincipals](play.Constraints{
+			play.Type[api.AssignPrincipals](play.Constraints{
 				"SubjectId":    "required",
 				"Scope":        "required",
 				"PrincipalIds": "gt=0,dive,required",
@@ -281,7 +281,7 @@ func (h *Handler) setValidationRules(
 
 	_ = h.Validates3.WithRules(
 		play.Rules{
-			play.Type[api3.RevokePrincipals](play.Constraints{
+			play.Type[api.RevokePrincipals](play.Constraints{
 				"SubjectId":    "required",
 				"Scope":        "required",
 				"PrincipalIds": "gt=0,dive,required",
@@ -290,14 +290,14 @@ func (h *Handler) setValidationRules(
 
 	_ = h.Validates4.WithRules(
 		play.Rules{
-			play.Type[api3.RemoveSubject](play.Constraints{
+			play.Type[api.RemoveSubject](play.Constraints{
 				"SubjectId": "required",
 			}),
 		}, nil, translator)
 
 	_ = h.Validates5.WithRules(
 		play.Rules{
-			play.Type[api3.GetSubject](play.Constraints{
+			play.Type[api.GetSubject](play.Constraints{
 				"SubjectId": "required",
 			}),
 		}, nil, translator)
