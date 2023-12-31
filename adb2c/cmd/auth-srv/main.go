@@ -10,7 +10,6 @@ import (
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/providers/env"
 	"github.com/miruken-go/demo.microservice/adb2c/azure"
-	"github.com/miruken-go/demo.microservice/adb2c/graph"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
 	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
@@ -99,7 +98,7 @@ func main() {
 
 	// initialize context
 	ctx, err := setup.New(
-		azure.Feature, graph.Feature, jwt.Feature(),
+		azure.Feature, jwt.Feature(),
 		config.Feature(koanfp.P(k)), stdjson.Feature(),
 		logs.Feature(logger), openapiGen).
 		Specs(&api.GoPolymorphism{}).
@@ -115,7 +114,7 @@ func main() {
 
 	// Polymorphic api endpoints
 	poly := httpsrv.Api(ctx,
-		auth.WithFlowAlias("Login.OAuth").Bearer(),
+		auth.WithFlowAlias("Login.OAuth").Bearer().Required(),
 	)
 
 	// configure routes

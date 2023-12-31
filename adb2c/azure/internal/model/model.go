@@ -24,6 +24,7 @@ type (
 		Type        string   `json:"type"`
 		Name        string   `json:"name"`
 		Scope       string   `json:"scope"`
+		Description string   `json:"description"`
 		IncludedIds []string `json:"includedIds"`
 	}
 )
@@ -78,10 +79,11 @@ func (m *Principal) ToApi() api.Principal {
 		included[i] = api.Principal{Id: id}
 	}
 	return api.Principal{
-		Id:       m.Id,
-		Type:     m.Type,
-		Name:     m.Name,
-		Includes: included,
+		Id:          m.Id,
+		Type:        m.Type,
+		Name:        m.Name,
+		Description: m.Description,
+		Includes:    included,
 	}
 }
 

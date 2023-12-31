@@ -16,9 +16,10 @@ type (
 	}
 
 	Principal struct {
-		Id       string
-		Type     string
-		Name     string
-		Includes []Principal
+		Id          string
+		Type        string
+		Name        string
+		Description string
+		Includes    []Principal
 	}
 )

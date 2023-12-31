@@ -28,6 +28,8 @@ func (F *Factory) New(
 		fp creates.It `key:"api.FindPrincipals"`
 	    xp creates.It `key:"api.ExpandPrincipals"`
 	    sp creates.It `key:"api.SatisfyPrincipals"`
+
+		lu creates.It `key:"api.ListUsers"`
 	  }, create *creates.It,
 ) any {
 	switch create.Key() {
@@ -50,6 +52,8 @@ func (F *Factory) New(
 	case "api.FindPrincipals": return new(FindPrincipals)
 	case "api.ExpandPrincipals": return new(ExpandPrincipals)
 	case "api.SatisfyPrincipals": return new(SatisfyPrincipals)
+
+	case "api.ListUsers": return new(ListUsers)
 	}
 	return nil
 }

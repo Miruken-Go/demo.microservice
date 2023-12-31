@@ -8,13 +8,12 @@ import (
 	"github.com/miruken-go/miruken/setup"
 )
 
-type (
-	// Installer enables configuration support.
-	Installer struct {
-		aliases map[reflect.Type]string
-		clients map[reflect.Type]Config
-	}
-)
+// Installer enables azure cosmos support.
+type Installer struct {
+	aliases map[reflect.Type]string
+	clients map[reflect.Type]Config
+}
+
 
 func (i *Installer) Install(b *setup.Builder) error {
 	if b.Tag(&featureTag) {

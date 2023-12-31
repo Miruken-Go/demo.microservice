@@ -26,6 +26,7 @@ type (
 	}
 )
 
+
 func (f *Factory) Constructor(
 	_ *struct {
 		args.Optional
@@ -106,6 +107,7 @@ func newSqlxClient(
 		return sqlx.Open("gocosmos", uri)
 	}
 }
+
 
 var (
 	ClientType = reflect.TypeOf((*azcosmos.Client)(nil))
