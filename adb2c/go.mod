@@ -13,7 +13,7 @@ require (
 	github.com/google/uuid v1.5.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/miruken v0.30.95
+	github.com/miruken-go/miruken v0.30.96
 	github.com/rs/zerolog v1.31.0
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/net v0.19.0
