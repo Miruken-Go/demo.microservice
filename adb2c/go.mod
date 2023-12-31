@@ -27,7 +27,7 @@ require (
 	dario.cat/mergo v1.0.0 // indirect
 	github.com/Azure/azure-sdk-for-go v68.0.0+incompatible // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.5.1 // indirect
-	github.com/AzureAD/microsoft-authentication-library-for-go v1.1.1 // indirect
+	github.com/AzureAD/microsoft-authentication-library-for-go v1.2.0 // indirect
 	github.com/MicahParks/keyfunc/v2 v2.1.0 // indirect
 	github.com/Rican7/conjson v0.1.0 // indirect
 	github.com/btnguyen2k/consu/checksum v1.1.0 // indirect
@@ -67,7 +67,7 @@ require (
 	github.com/perimeterx/marshmallow v1.1.5 // indirect
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/std-uritemplate/std-uritemplate/go v0.0.47 // indirect
+	github.com/std-uritemplate/std-uritemplate/go v0.0.49 // indirect
 	github.com/timewasted/go-accept-headers v0.0.0-20130320203746-c78f304b1b09 // indirect
 	go.opentelemetry.io/otel v1.21.0 // indirect
 	go.opentelemetry.io/otel/metric v1.21.0 // indirect
