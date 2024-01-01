@@ -27,7 +27,7 @@ func (h *Handler) List(
 ) ([]api.User, error) {
 	configuration := &graphusers.UsersRequestBuilderGetRequestConfiguration{
 		QueryParameters: &graphusers.UsersRequestBuilderGetQueryParameters{
-			Select: [] string {"id", "displayName","givenName","surname"},
+			Select: []string {"id", "displayName","givenName","surname"},
 		},
 	}
 	result, err := client.Users().Get(ctx, configuration)

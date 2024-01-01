@@ -30,7 +30,7 @@ type (
 		play.Validates5[api.GetPrincipal]
 		play.Validates6[api.FindPrincipals]
 		play.Validates7[api.ExpandPrincipals]
-		play.Validates8[api.SatisfyPrincipals]
+		play.Validates8[api.ImpliedPrincipals]
 
 		principals *azcosmos.ContainerClient
 	}
@@ -220,7 +220,9 @@ func (h *Handler) Expand(
 	_ *handles.It, expand api.ExpandPrincipals,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) *promise.Promise[[]api.Principal] {
-	return promise.New(nil, func(resolve func([]api.Principal), reject func(error), onCancel func(func())) {
+	return promise.New(nil, func(
+		resolve func([]api.Principal), reject func(error), onCancel func(func())) {
+
 		queue := make(map[string][]string, len(expand.PrincipalIds))
 		for _, pid := range expand.PrincipalIds {
 			if _, ok := queue[pid]; !ok {
@@ -293,8 +295,8 @@ func (h *Handler) Expand(
 	})
 }
 
-func (h *Handler) Satisfy(
-	_ *handles.It, satisfy api.SatisfyPrincipals,
+func (h *Handler) Implied(
+	_ *handles.It, implied api.ImpliedPrincipals,
 	_ *struct{ args.Optional }, ctx context.Context,
 ) *promise.Promise[[]string] {
 	return promise.New(nil, func(
@@ -304,10 +306,10 @@ func (h *Handler) Satisfy(
 			ctx = context.Background()
 		}
 
-		queue := satisfy.PrincipalIds
+		queue := implied.PrincipalIds
 		ids := make([]string, 0, len(queue))
 		principals := make(map[string]struct{}, len(queue))
-		pk := azcosmos.NewPartitionKeyString(satisfy.Scope)
+		pk := azcosmos.NewPartitionKeyString(implied.Scope)
 
 		for len(queue) > 0 {
 			for _, pid := range queue {
@@ -419,7 +421,7 @@ func (h *Handler) setValidationRules(
 
 	_ = h.Validates8.WithRules(
 		play.Rules{
-			play.Type[api.SatisfyPrincipals](play.Constraints{
+			play.Type[api.ImpliedPrincipals](play.Constraints{
 				"Scope":        "required",
 				"PrincipalIds": "gt=0,dive,required",
 			}),

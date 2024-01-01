@@ -17,7 +17,7 @@ type Installer struct {
 
 func (i *Installer) Install(b *setup.Builder) error {
 	if b.Tag(&featureTag) {
-		b.Specs(&Factory{})
+		b.Specs(&Factory{}, &Bootstrap{})
 		if i.aliases != nil {
 			b.Options(Options{Aliases: i.aliases, Clients: i.clients})
 		}

@@ -1,4 +1,4 @@
-package token
+package enrich
 
 import (
 	auth2 "github.com/miruken-go/demo.microservice/adb2c/azure"
@@ -15,7 +15,7 @@ func (i *Installer) DependsOn() []setup.Feature {
 
 func (i *Installer) Install(b *setup.Builder) error {
 	if b.Tag(&featureTag) {
-		b.Specs(&EnrichHandler{})
+		b.Specs(&Handler{})
 	}
 	return nil
 }

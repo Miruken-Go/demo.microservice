@@ -27,7 +27,7 @@ func (F *Factory) New(
 		gp creates.It `key:"api.GetPrincipal"`
 		fp creates.It `key:"api.FindPrincipals"`
 	    xp creates.It `key:"api.ExpandPrincipals"`
-	    sp creates.It `key:"api.SatisfyPrincipals"`
+	    mp creates.It `key:"api.ImpliedPrincipals"`
 
 		lu creates.It `key:"api.ListUsers"`
 	  }, create *creates.It,
@@ -51,7 +51,7 @@ func (F *Factory) New(
 	case "api.GetPrincipal": return new(GetPrincipal)
 	case "api.FindPrincipals": return new(FindPrincipals)
 	case "api.ExpandPrincipals": return new(ExpandPrincipals)
-	case "api.SatisfyPrincipals": return new(SatisfyPrincipals)
+	case "api.ImpliedPrincipals": return new(ImpliedPrincipals)
 
 	case "api.ListUsers": return new(ListUsers)
 	}

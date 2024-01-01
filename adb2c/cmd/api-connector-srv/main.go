@@ -8,7 +8,7 @@ import (
 	"github.com/go-logr/zerologr"
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/providers/env"
-	"github.com/miruken-go/demo.microservice/adb2c/token"
+	"github.com/miruken-go/demo.microservice/adb2c/enrich"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
 	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
 	"github.com/miruken-go/miruken/config"
@@ -35,7 +35,7 @@ func main() {
 
 	// initialize context
 	ctx, err := setup.New(
-		token.Feature(),
+		enrich.Feature(),
 		config.Feature(koanfp.P(k)),
 		logs.Feature(logger),
 	).Context()
@@ -49,7 +49,7 @@ func main() {
 
 	var mux http.ServeMux
 	mux.Handle("/enrich", httpsrv.Use(ctx,
-		httpsrv.H[*token.EnrichHandler](),
+		httpsrv.H[*enrich.Handler](),
 		auth.WithFlowAlias("Login.Adb2c").Basic().Required()))
 
 	if err := httpsrv.ListenAndServe(&mux, nil); err != nil {

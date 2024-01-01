@@ -1,4 +1,4 @@
-package token
+package enrich
 
 import (
 	"encoding/json"
@@ -9,31 +9,31 @@ import (
 	"strings"
 
 	"github.com/go-logr/logr"
-	api3 "github.com/miruken-go/demo.microservice/adb2c/api"
+	api2 "github.com/miruken-go/demo.microservice/adb2c/api"
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/args"
 )
 
 type (
-	// EnrichHandler is an Azure ADB2C Api Connector that provides
+	// Handler is an Azure ADB2C Api Connector that provides
 	// an external source of claims to enrich tokens during user flows.
 	// https://learn.microsoft.com/en-us/azure/active-directory-b2c/add-api-connector-token-enrichment?pivots=b2c-custom-policy
-	EnrichHandler struct {
+	Handler struct {
 		logger logr.Logger
 	}
 
-	// EnrichRequest is the request body sent to the Api Connector.
+	// Request is the request body sent to the Api Connector.
 	// It receives a set of InputClaims and returns a set of OutputClaims.
 	//   objectId - the objectId of the user in ADB2C
 	//   scope - the scope of the token to enrich
-	EnrichRequest struct {
+	Request struct {
 		ObjectId string `json:"objectId"`
 		Scope    string `json:"scope"`
 	}
 )
 
-func (e *EnrichHandler) Constructor(
+func (e *Handler) Constructor(
 	_ *struct{ args.Optional }, logger logr.Logger,
 ) {
 	if logger == e.logger {
@@ -43,12 +43,12 @@ func (e *EnrichHandler) Constructor(
 	}
 }
 
-func (e *EnrichHandler) ServeHTTP(
+func (e *Handler) ServeHTTP(
 	w http.ResponseWriter,
 	r *http.Request,
 	h miruken.Handler,
 ) {
-	var request EnrichRequest
+	var request Request
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
@@ -67,7 +67,7 @@ func (e *EnrichHandler) ServeHTTP(
 		return
 	}
 
-	e.logger.Info("Enrich token", "ObjectId", objectId, "Scope", scope)
+	e.logger.Info("Enrich enrich", "ObjectId", objectId, "Scope", scope)
 
 	domain, principals, err := e.parseScope(scope)
 	if err != nil {
@@ -79,7 +79,7 @@ func (e *EnrichHandler) ServeHTTP(
 
 	var claims map[string]any
 
-	s, ps, err := api.Send[api3.Subject](h, api3.GetSubject{SubjectId: objectId})
+	s, ps, err := api.Send[api2.Subject](h, api2.GetSubject{SubjectId: objectId})
 	if ps != nil {
 		s, err = ps.Await()
 	}
@@ -94,7 +94,7 @@ func (e *EnrichHandler) ServeHTTP(
 	}
 
 	if err == nil {
-		e.logger.Info("Enriched token", "Claims", claims)
+		e.logger.Info("Enriched enrich", "Claims", claims)
 		w.Header().Set("Content-Type", "application/json")
 		err = json.NewEncoder(w).Encode(claims)
 	}
@@ -104,10 +104,10 @@ func (e *EnrichHandler) ServeHTTP(
 	}
 }
 
-func (e *EnrichHandler) getClaims(
+func (e *Handler) getClaims(
 	domain           string,
 	principalTypes   []string,
-	scopedPrincipals []api3.ScopedPrincipals,
+	scopedPrincipals []api2.ScopedPrincipals,
 	h                miruken.Handler,
 ) (map[string]any, error) {
 	claims := make(map[string]any)
@@ -126,7 +126,7 @@ func (e *EnrichHandler) getClaims(
 		return claims, nil
 	}
 
-	ep, epp, err := api.Send[[]api3.Principal](h, api3.ExpandPrincipals{
+	ep, epp, err := api.Send[[]api2.Principal](h, api2.ExpandPrincipals{
 		Scope:        domain,
 		PrincipalIds: principalIds,
 	})
@@ -156,7 +156,7 @@ func (e *EnrichHandler) getClaims(
 	return claims, nil
 }
 
-func (e *EnrichHandler) parseScope(
+func (e *Handler) parseScope(
 	scope string,
 ) (string, []string, error) {
 	var domain string

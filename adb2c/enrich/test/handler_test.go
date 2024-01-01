@@ -3,6 +3,9 @@ package test
 import (
 	"bytes"
 	json2 "encoding/json"
+	api2 "github.com/miruken-go/demo.microservice/adb2c/api"
+	"github.com/miruken-go/miruken/handles"
+	"github.com/miruken-go/miruken/security/authorizes"
 	"io"
 	http2 "net/http"
 	"net/http/httptest"
@@ -11,7 +14,7 @@ import (
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/parsers/json"
 	"github.com/knadh/koanf/providers/file"
-	"github.com/miruken-go/demo.microservice/adb2c/token"
+	"github.com/miruken-go/demo.microservice/adb2c/enrich"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/api/http"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
@@ -25,12 +28,12 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type ADB2CTestSuite struct {
+type EnrichTestSuite struct {
 	suite.Suite
 	srv *httptest.Server
 }
 
-func (suite *ADB2CTestSuite) Setup() *context.Context {
+func (suite *EnrichTestSuite) Setup() *context.Context {
 	ctx, _ := setup.New(
 		http.Feature(), stdjson.Feature()).
 		Specs(&api.GoPolymorphism{}).
@@ -38,33 +41,34 @@ func (suite *ADB2CTestSuite) Setup() *context.Context {
 	return ctx
 }
 
-func (suite *ADB2CTestSuite) SetupTest() {
+func (suite *EnrichTestSuite) SetupTest() {
 	var k = koanf.New(".")
 	err := k.Load(file.Provider("./login.json"), json.Parser())
 	suite.Nil(err)
 
 	ctx, _ := setup.New(
 		httpsrv.Feature(), stdjson.Feature(),
-		token.Feature(), password.Feature(),
+		enrich.Feature(), password.Feature(),
 		config.Feature(koanfp.P(k))).
-		Specs(&api.GoPolymorphism{}).
+		Specs(&api.GoPolymorphism{}, &EnrichTestSuite{}).
+		Handlers(suite).
 		Context()
 
 	suite.srv = httptest.NewServer(
 		httpsrv.Use(ctx,
-			httpsrv.H[*token.EnrichHandler](),
+			httpsrv.H[*enrich.Handler](),
 			auth.WithFlowAlias("login.adb2c").Basic().Required()),
 	)
 }
 
-func (suite *ADB2CTestSuite) TearDownTest() {
+func (suite *EnrichTestSuite) TearDownTest() {
 	suite.srv.CloseClientConnections()
 	suite.srv.Close()
 }
 
-func (suite *ADB2CTestSuite) TestEnrichHandler() {
+func (suite *EnrichTestSuite) TestHandler() {
 	suite.Run("Enrich Claims", func() {
-		enrichRequest := token.EnrichRequest{
+		enrichRequest := enrich.Request{
 			ObjectId: "123456789",
 			Scope:    "domain1/Roles domain1/Groups domain1/Entitlements",
 		}
@@ -97,7 +101,7 @@ func (suite *ADB2CTestSuite) TestEnrichHandler() {
 	})
 
 	suite.Run("Unauthorized", func() {
-		request, _ := json2.Marshal(token.EnrichRequest{})
+		request, _ := json2.Marshal(enrich.Request{})
 		reqBytes := bytes.NewReader(request)
 		req, _ := http2.NewRequest("POST", suite.srv.URL, reqBytes)
 		req.Header.Set("Content-Type", "application/json")
@@ -106,6 +110,15 @@ func (suite *ADB2CTestSuite) TestEnrichHandler() {
 	})
 }
 
-func TestADB2CTestSuite(t *testing.T) {
-	suite.Run(t, new(ADB2CTestSuite))
+func (suite *EnrichTestSuite) Get(
+	_ *struct {
+		handles.It
+		authorizes.Required
+	  }, get api2.GetSubject,
+) api2.Subject {
+	return api2.Subject{Id: get.SubjectId}
+}
+
+func TestEnrichTestSuite(t *testing.T) {
+	suite.Run(t, new(EnrichTestSuite))
 }

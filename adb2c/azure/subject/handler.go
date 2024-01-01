@@ -210,7 +210,7 @@ func (h *Handler) Find(
 		if filter := find.Filter; filter != nil {
 			if principalIds := filter.PrincipalIds; len(principalIds) > 0 {
 				if !filter.Exact {
-					sp, spp, err := api2.Send[[]string](hc, api.SatisfyPrincipals{
+					sp, spp, err := api2.Send[[]string](hc, api.ImpliedPrincipals{
 						Scope:        filter.Scope,
 						PrincipalIds: principalIds,
 					})

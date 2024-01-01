@@ -52,9 +52,9 @@ type (
 		PrincipalIds []string
 	}
 
-	// SatisfyPrincipals returns all Principal ids that are ancestors
-	// of the provided Principal ids.
-	SatisfyPrincipals struct {
+	// ImpliedPrincipals returns all Principal ids that directly
+	// or indirectly include the provided Principal ids.
+	ImpliedPrincipals struct {
 		Scope        string
 		PrincipalIds []string
 	}
