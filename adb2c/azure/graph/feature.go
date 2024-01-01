@@ -1,4 +1,4 @@
-package cred
+package graph
 
 import (
 	"github.com/miruken-go/miruken/setup"

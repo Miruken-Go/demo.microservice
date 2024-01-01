@@ -1,4 +1,4 @@
-package cred
+package graph
 
 // Config is the configuration for the azure credentials.
 type Config struct {
