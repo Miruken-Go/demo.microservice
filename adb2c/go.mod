@@ -17,7 +17,7 @@ require (
 	github.com/knadh/koanf v1.5.0
 	github.com/microsoftgraph/msgraph-sdk-go v1.28.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v1.0.1
-	github.com/miruken-go/miruken v0.30.96
+	github.com/miruken-go/miruken v0.30.97
 	github.com/rs/zerolog v1.31.0
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/net v0.19.0
