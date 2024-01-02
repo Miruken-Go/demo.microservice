@@ -6,6 +6,7 @@ type (
 		FirstName   string
 		LastName    string
 		DisplayName string
+		Email       string
 	}
 
 	ScopedPrincipals struct {

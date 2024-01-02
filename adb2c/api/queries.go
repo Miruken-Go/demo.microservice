@@ -5,9 +5,8 @@ type (
 
 	// ListUsers returns all users.
 	ListUsers struct {
-
+		Filter string
 	}
-
 
 	// Subjects
 

@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	graphusers "github.com/microsoftgraph/msgraph-sdk-go/users"
@@ -21,14 +22,24 @@ func (h *Handler) List(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, _ api.ListUsers,
+	  }, list api.ListUsers,
 	client *graph.Client[*azidentity.ClientSecretCredential],
 	_ *struct{ args.Optional }, ctx context.Context,
 ) ([]api.User, error) {
+	query := graphusers.UsersRequestBuilderGetQueryParameters{
+		Select: userFields,
+	}
+	if filter := list.Filter; filter != "" {
+		criteria := fmt.Sprintf(`
+			startsWith(displayName,'%s') or
+			startsWith(givenName,'%s') or
+			startsWith(surname,'%s') or
+			startsWith(mail,'%s')`,
+			filter, filter, filter, filter)
+		query.Filter = &criteria
+	}
 	configuration := &graphusers.UsersRequestBuilderGetRequestConfiguration{
-		QueryParameters: &graphusers.UsersRequestBuilderGetQueryParameters{
-			Select: []string {"id", "displayName","givenName","surname"},
-		},
+		QueryParameters: &query,
 	}
 	result, err := client.Users().Get(ctx, configuration)
 	if err != nil {
@@ -45,3 +56,6 @@ func (h *Handler) List(
 }
 
 
+var (
+	userFields = []string {"id","givenName","surname","displayName","mail"}
+)

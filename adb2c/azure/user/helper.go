@@ -18,4 +18,7 @@ func ToApi(from models.Userable, to *api.User) {
 	if displayName := from.GetDisplayName(); displayName != nil {
 		to.DisplayName = *displayName
 	}
+	if email := from.GetMail(); email != nil {
+		to.Email = *email
+	}
 }
