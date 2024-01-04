@@ -222,6 +222,8 @@ github.com/miruken-go/demo.microservice/team-api v0.7.0-alpha.207 h1:WrPQB9rP9zp
 github.com/miruken-go/demo.microservice/team-api v0.7.0-alpha.207/go.mod h1:/spdaxBQcXIUOetfRZD1JkYzM5Y81Td5ykBb3JIN+rk=
 github.com/miruken-go/demo.microservice/team-api v0.7.0-alpha.259 h1:tpUxN/93w1ct9w+6M78874GSgorrAFHzVhewjp7CvNM=
 github.com/miruken-go/demo.microservice/team-api v0.7.0-alpha.259/go.mod h1:EC9IeWRs768LIhLWpIeq02l1B/c/w+ptTddumNCeoAc=
+github.com/miruken-go/demo.microservice/team-api v0.7.0-alpha.316 h1:cOkHA9Q5y7b6DK3Zp9lendGVzGlDZ5KRLpNJFBX3YcY=
+github.com/miruken-go/demo.microservice/team-api v0.7.0-alpha.316/go.mod h1:RKASq/Lx0PT4LwWI4ZZGYcPJzlXFImEbq1pKus3IPSk=
 github.com/miruken-go/miruken v0.30.94 h1:siimWQV34cYkmPNMv+A/MzXN92UxY2nDhYA6PvTgk3A=
 github.com/miruken-go/miruken v0.30.94/go.mod h1:qPFOWy6iC1aCQQJJ6Y7qWky1UiFXr1c+HBLbgyltSbg=
 github.com/miruken-go/miruken v0.30.95 h1:Gq0e5tti7noKvr3Ym0eLYyauwgcNcyhh9AdKgsjV+o0=
@@ -230,6 +232,8 @@ github.com/miruken-go/miruken v0.30.96 h1:E/mRERmafugBpfxq2kV4JFDCJrQrmzfaVe8/yw
 github.com/miruken-go/miruken v0.30.96/go.mod h1:qPFOWy6iC1aCQQJJ6Y7qWky1UiFXr1c+HBLbgyltSbg=
 github.com/miruken-go/miruken v0.30.97 h1:JKd3dqG7vZoPdOf2jmDgcTnWjoJsNPCHixEja0NHpik=
 github.com/miruken-go/miruken v0.30.97/go.mod h1:qPFOWy6iC1aCQQJJ6Y7qWky1UiFXr1c+HBLbgyltSbg=
+github.com/miruken-go/miruken v0.30.98 h1:d/thkQ/r5+LO1c6wuPUZeDdxh1vXSZkpx6AsOlMhlFw=
+github.com/miruken-go/miruken v0.30.98/go.mod h1:b6haHZhFNDkZ/bOckCbqJ6F547XwiCtVdY0O07lRduM=
 github.com/mitchellh/cli v1.0.0/go.mod h1:hNIlj7HEI86fIcpObd7a0FcrxTWetlwJDGcceTlRvqc=
 github.com/mitchellh/cli v1.1.0/go.mod h1:xcISNoH86gajksDmfB23e/pu+B+GeFRMYmoHXxx3xhI=
 github.com/mitchellh/copystructure v1.0.0/go.mod h1:SNtv71yrdKgLRyLFxmLdkAbkKEFWgYaq1OVrnRcwhnw=
@@ -410,6 +414,8 @@ golang.org/x/sys v0.6.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.12.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.15.0 h1:h48lPFYpsTvQJZF4EKyI4aLHaev3CxivZmv7yZig9pc=
 golang.org/x/sys v0.15.0/go.mod h1:/VUhepiaJMQUp4+oa/7Zr1D23ma6VTLIYjOOTFZPUcA=
+golang.org/x/sys v0.16.0 h1:xWw16ngr6ZMtmxDyKyIgsE93KNKz5HKmMa3b8ALHidU=
+golang.org/x/sys v0.16.0/go.mod h1:/VUhepiaJMQUp4+oa/7Zr1D23ma6VTLIYjOOTFZPUcA=
 golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.1-0.20181227161524-e6919f6577db/go.mod h1:bEr9sfX3Q8Zfm5fL9x+3itogRgK3+ptLWKqgva+5dAk=
