@@ -1,7 +1,10 @@
 package db
 
 import (
+	"errors"
 	"fmt"
+	"github.com/miruken-go/miruken/promise"
+	"golang.org/x/net/context"
 	"reflect"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
@@ -16,8 +19,9 @@ import (
 type (
 	// Options for azure cosmosdb resources.
 	Options struct {
-		Aliases map[reflect.Type]string
-		Clients map[reflect.Type]Config
+		Aliases   map[reflect.Type]string
+		Clients   map[reflect.Type]Config
+		Provision []reflect.Type
 	}
 
 	// Factory of azure cosmosdb resources.
@@ -36,30 +40,18 @@ func (f *Factory) Constructor(
 	f.opts = options
 }
 
-func (f *Factory) NewClient(
+func (f *Factory) NewAzClient(
 	_ *struct {
 		provides.Single `mode:"covariant"`
 	  }, p *provides.It,
 	hc miruken.HandleContext,
-) (client *azcosmos.Client, err error) {
+) (*azcosmos.Client, error) {
 	typ := p.Key().(reflect.Type)
-	cfg, ok := f.opts.Clients[typ]
-	if !ok {
-		var key string
-		if key, ok = f.opts.Aliases[typ]; !ok {
-			if typ == ClientType {
-				key = "Azure"
-			} else {
-				key = typ.Name()
-			}
-		}
-		path := fmt.Sprintf("Databases.%s", key)
-		cfg, _, ok, err = provides.Type[Config](hc, &config.Load{Path: path})
-		if !ok || err != nil {
-			return
-		}
+	if cfg, err := f.config(typ, clientType, hc); err != nil {
+		return nil, err
+	} else {
+		return newAzClient(cfg, false)
 	}
-	return newAzClient(cfg)
 }
 
 func (f *Factory) NewSqlxClient(
@@ -67,31 +59,84 @@ func (f *Factory) NewSqlxClient(
 		provides.Single `mode:"covariant"`
 	  }, p *provides.It,
 	hc miruken.HandleContext,
-) (db *sqlx.DB, err error) {
+) (*sqlx.DB, error) {
 	typ := p.Key().(reflect.Type)
-	cfg, ok := f.opts.Clients[typ]
-	if !ok {
-		var key string
-		if key, ok = f.opts.Aliases[typ]; !ok {
-			if typ == SqlxDbType {
-				key = "Azure"
-			} else {
-				key = typ.Name()
-			}
-		}
-		path := fmt.Sprintf("Databases.%s", key)
-		cfg, _, ok, err = provides.Type[Config](hc, &config.Load{Path: path})
-		if !ok || err != nil {
-			return
-		}
+	if cfg, err := f.config(typ, sqlxDbType, hc); err != nil {
+		return nil, err
+	} else {
+		return newSqlxClient(cfg, false)
 	}
-	return newSqlxClient(cfg)
 }
 
+func (f *Factory) Startup(
+	ctx context.Context,
+	h   miruken.Handler,
+) *promise.Promise[struct{}] {
+	for _, typ := range f.opts.Provision {
+		if err := f.provision(ctx, typ, h); err != nil {
+			return promise.RejectEmpty(err)
+		}
+	}
+	return promise.Empty()
+}
+
+
+func (f *Factory) Shutdown(
+	ctx context.Context,
+) *promise.Promise[struct{}] {
+	return promise.Empty()
+}
+
+func (f *Factory) config(
+	typ, defTyp reflect.Type,
+	h    miruken.Handler,
+) (*Config, error) {
+	cfg, ok := f.opts.Clients[typ]
+	if ok {
+		return &cfg, nil
+	}
+	var key string
+	if key, ok = f.opts.Aliases[typ]; !ok {
+		if typ == defTyp {
+			key = "Azure"
+		} else {
+			key = typ.Name()
+		}
+	}
+	path := fmt.Sprintf("Databases.%s", key)
+	cfg, _, ok, err := provides.Type[Config](h, &config.Load{Path: path})
+	if !ok || err != nil {
+		return nil, err
+	}
+	return &cfg, nil
+}
+
+func (f *Factory) provision(
+	ctx context.Context,
+	typ reflect.Type,
+	h   miruken.Handler,
+) error {
+	cfg, err := f.config(typ, clientType, h)
+	if err != nil {
+		return err
+	}
+	client, err := newAzClient(cfg, true)
+	if err != nil {
+		return err
+	}
+	err = ProvisionDatabase(ctx, client, cfg)
+	return nil
+}
+
+
 func newAzClient(
-	cfg Config,
+	cfg     *Config,
+	require bool,
 ) (*azcosmos.Client, error) {
 	if uri := cfg.ConnectionUri; uri == "" {
+		if require {
+			return nil, errors.New("missing connection uri")
+		}
 		return nil, nil
 	} else {
 		return azcosmos.NewClientFromConnectionString(uri, nil)
@@ -99,9 +144,13 @@ func newAzClient(
 }
 
 func newSqlxClient(
-	cfg Config,
+	cfg     *Config,
+	require bool,
 ) (*sqlx.DB, error) {
 	if uri := cfg.ConnectionUri; uri == "" {
+		if require {
+			return nil, errors.New("missing connection uri")
+		}
 		return nil, nil
 	} else {
 		return sqlx.Open("gocosmos", uri)
@@ -110,6 +159,6 @@ func newSqlxClient(
 
 
 var (
-	ClientType = reflect.TypeOf((*azcosmos.Client)(nil))
-	SqlxDbType = reflect.TypeOf((*sqlx.DB)(nil))
+	clientType = reflect.TypeOf((*azcosmos.Client)(nil))
+	sqlxDbType = reflect.TypeOf((*sqlx.DB)(nil))
 )

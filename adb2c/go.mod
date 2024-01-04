@@ -15,7 +15,7 @@ require (
 	github.com/google/uuid v1.5.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/knadh/koanf v1.5.0
-	github.com/microsoftgraph/msgraph-sdk-go v1.28.0
+	github.com/microsoftgraph/msgraph-sdk-go v1.29.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v1.0.1
 	github.com/miruken-go/miruken v0.30.98
 	github.com/rs/zerolog v1.31.0
@@ -27,7 +27,7 @@ require (
 	dario.cat/mergo v1.0.0 // indirect
 	github.com/Azure/azure-sdk-for-go v68.0.0+incompatible // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.5.1 // indirect
-	github.com/AzureAD/microsoft-authentication-library-for-go v1.2.0 // indirect
+	github.com/AzureAD/microsoft-authentication-library-for-go v1.2.1 // indirect
 	github.com/MicahParks/keyfunc/v2 v2.1.0 // indirect
 	github.com/Rican7/conjson v0.1.0 // indirect
 	github.com/btnguyen2k/consu/checksum v1.1.0 // indirect

@@ -14,6 +14,8 @@ github.com/Azure/azure-sdk-for-go/sdk/internal v1.5.1 h1:6oNBlSdi1QqM1PNW7FPA6xO
 github.com/Azure/azure-sdk-for-go/sdk/internal v1.5.1/go.mod h1:s4kgfzA0covAXNicZHDMN58jExvcng2mC/DepXiF1EI=
 github.com/AzureAD/microsoft-authentication-library-for-go v1.2.0 h1:hVeq+yCyUi+MsoO/CU95yqCIcdzra5ovzk8Q2BBpV2M=
 github.com/AzureAD/microsoft-authentication-library-for-go v1.2.0/go.mod h1:wP83P5OoQ5p6ip3ScPr0BAq0BvuPAvacpEuSzyouqAI=
+github.com/AzureAD/microsoft-authentication-library-for-go v1.2.1 h1:DzHpqpoJVaCgOUdVHxE8QB52S6NiVdDQvGlny1qvPqA=
+github.com/AzureAD/microsoft-authentication-library-for-go v1.2.1/go.mod h1:wP83P5OoQ5p6ip3ScPr0BAq0BvuPAvacpEuSzyouqAI=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/MicahParks/keyfunc/v2 v2.1.0 h1:6ZXKb9Rp6qp1bDbJefnG7cTH8yMN1IC/4nf+GVjO99k=
 github.com/MicahParks/keyfunc/v2 v2.1.0/go.mod h1:rW42fi+xgLJ2FRRXAfNx9ZA8WpD4OeE/yHVMteCkw9k=
@@ -275,6 +277,8 @@ github.com/microsoft/kiota-serialization-text-go v1.0.0 h1:XOaRhAXy+g8ZVpcq7x7a0
 github.com/microsoft/kiota-serialization-text-go v1.0.0/go.mod h1:sM1/C6ecnQ7IquQOGUrUldaO5wj+9+v7G2W3sQ3fy6M=
 github.com/microsoftgraph/msgraph-sdk-go v1.28.0 h1:WjisgYSVVx0HtHU6EckLog8i0v+i87OpUZgP+wnL2jM=
 github.com/microsoftgraph/msgraph-sdk-go v1.28.0/go.mod h1:quVwiVQY6sxPiPR/O0Zli2iqXis1TPQBSEtq/uOcc+4=
+github.com/microsoftgraph/msgraph-sdk-go v1.29.0 h1:/8xt1KqmXzOWjLb6Q/R8bqaQe4GcAfzCXHkYC9b+KSI=
+github.com/microsoftgraph/msgraph-sdk-go v1.29.0/go.mod h1:quVwiVQY6sxPiPR/O0Zli2iqXis1TPQBSEtq/uOcc+4=
 github.com/microsoftgraph/msgraph-sdk-go-core v1.0.1 h1:uq4qZD8VXLiNZY0t4NoRpLDoEiNYJvAQK3hc0ZMmdxs=
 github.com/microsoftgraph/msgraph-sdk-go-core v1.0.1/go.mod h1:HUITyuFN556+0QZ/IVfH5K4FyJM7kllV6ExKi2ImKhE=
 github.com/miekg/dns v1.1.26/go.mod h1:bPDLeHnStXmXAq1m/Ch/hvfNHr14JKNPMBo3VZKjuso=

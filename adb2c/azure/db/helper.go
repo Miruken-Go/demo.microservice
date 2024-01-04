@@ -6,26 +6,11 @@ import (
 	"fmt"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"net/http"
+	"reflect"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	"golang.org/x/net/context"
 )
-
-func Container(
-	azure       *azcosmos.Client,
-	databaseId  string,
-	containerId string,
-) *azcosmos.ContainerClient {
-	database, err := azure.NewDatabase(databaseId)
-	if err != nil {
-		panic(fmt.Errorf("error creating %q db client: %w", databaseId, err))
-	}
-	container, err := database.NewContainer(containerId)
-	if err != nil {
-		panic(fmt.Errorf("error creating %q container client: %w", containerId, err))
-	}
-	return container
-}
 
 func ReadItem[T any](
 	ctx       context.Context,
@@ -34,6 +19,9 @@ func ReadItem[T any](
 	container *azcosmos.ContainerClient,
 	opts      *azcosmos.ItemOptions,
 ) (azcosmos.ItemResponse, T, bool, error) {
+	if container == nil {
+		panic("container cannot be nil")
+	}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -58,6 +46,9 @@ func CreateItem[T any](
 	container *azcosmos.ContainerClient,
 	opts      *azcosmos.ItemOptions,
 ) (azcosmos.ItemResponse, error) {
+	if container == nil {
+		panic("container cannot be nil")
+	}
 	bytes, err := json.Marshal(item)
 	if err != nil {
 		return azcosmos.ItemResponse{}, err
@@ -76,6 +67,9 @@ func ReplaceItem[T any](
 	container *azcosmos.ContainerClient,
 	opts      *azcosmos.ItemOptions,
 ) (azcosmos.ItemResponse, bool, error) {
+	if container == nil {
+		panic("container cannot be nil")
+	}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -122,6 +116,9 @@ func DeleteItem(
 	container *azcosmos.ContainerClient,
 	opts      *azcosmos.ItemOptions,
 ) (azcosmos.ItemResponse, bool, error) {
+	if container == nil {
+		panic("container cannot be nil")
+	}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -133,4 +130,101 @@ func DeleteItem(
 		}
 	}
 	return res, true, err
+}
+
+func Container(
+	azClient    *azcosmos.Client,
+	databaseId  string,
+	containerId string,
+) *azcosmos.ContainerClient {
+	if azClient == nil {
+		panic("azClient cannot be nil")
+	}
+	database, err := azClient.NewDatabase(databaseId)
+	if err != nil {
+		panic(fmt.Errorf("error creating %q db client: %w", databaseId, err))
+	}
+	container, err := database.NewContainer(containerId)
+	if err != nil {
+		panic(fmt.Errorf("error creating %q container client: %w", containerId, err))
+	}
+	return container
+}
+
+func ProvisionDatabase(
+	ctx      context.Context,
+	azClient *azcosmos.Client,
+	cfg      *Config,
+) error {
+	if azClient == nil {
+		panic("azClient cannot be nil")
+	}
+	if cfg == nil {
+		panic("cfg cannot be nil")
+	}
+	var resError *azcore.ResponseError
+	_, err := azClient.CreateDatabase(ctx, azcosmos.DatabaseProperties{
+		ID: cfg.Name,
+	}, nil)
+	if errors.As(err, &resError) {
+		if resError.StatusCode != http.StatusConflict {
+			return err
+		}
+	} else if err != nil {
+		return err
+	}
+	dbClient, err := azClient.NewDatabase(cfg.Name)
+	if err != nil {
+		return nil
+	}
+	for _, cnt := range cfg.Containers {
+		if err = ProvisionContainer(ctx, dbClient, &cnt); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func ProvisionContainer(
+	ctx      context.Context,
+	database *azcosmos.DatabaseClient,
+	cfg      *ContainerConfig,
+) error {
+	if database == nil {
+		panic("database cannot be nil")
+	}
+	if cfg == nil {
+		panic("cfg cannot be nil")
+	}
+	var resError *azcore.ResponseError
+	uk := cfg.UniqueKeys
+	_, err := database.CreateContainer(ctx, azcosmos.ContainerProperties{
+		ID:                     cfg.Name,
+		PartitionKeyDefinition: cfg.PartitionKey,
+		IndexingPolicy:         cfg.Indexes,
+		UniqueKeyPolicy:        uk,
+	}, nil)
+	if errors.As(err, &resError) {
+		if resError.StatusCode != http.StatusConflict {
+			return err
+		}
+	} else {
+		return err
+	}
+	if uk == nil {
+		return nil
+	}
+	container, err := database.NewContainer(cfg.Name)
+	if err != nil {
+		return err
+	}
+	res, err := container.Read(ctx, nil)
+	if err == nil {
+		cp := res.ContainerProperties
+		if !reflect.DeepEqual(uk, cp.UniqueKeyPolicy) {
+			cp.UniqueKeyPolicy = uk
+			_, err = container.Replace(ctx, *cp, nil)
+		}
+	}
+	return err
 }

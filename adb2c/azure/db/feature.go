@@ -10,16 +10,21 @@ import (
 
 // Installer enables azure cosmos support.
 type Installer struct {
-	aliases map[reflect.Type]string
-	clients map[reflect.Type]Config
+	aliases   map[reflect.Type]string
+	clients   map[reflect.Type]Config
+	provision []reflect.Type
 }
 
 
 func (i *Installer) Install(b *setup.Builder) error {
 	if b.Tag(&featureTag) {
 		b.Specs(&Factory{})
-		if i.aliases != nil {
-			b.Options(Options{Aliases: i.aliases, Clients: i.clients})
+		if i.aliases != nil || i.clients != nil || i.provision != nil {
+			b.Options(Options{
+				Aliases:   i.aliases,
+				Clients:   i.clients,
+				Provision: i.provision,
+			})
 		}
 	}
 	return nil
@@ -32,6 +37,10 @@ func Client[T ~*azcosmos.Client](cfg Config) func(*Installer) {
 		}
 		installer.clients[reflect.TypeOf((*T)(nil)).Elem()] = cfg
 	}
+}
+
+func Provision[T ~*azcosmos.Client](installer *Installer) {
+	installer.provision = append(installer.provision, reflect.TypeOf((*T)(nil)).Elem())
 }
 
 func ClientAlias[T ~*azcosmos.Client](path string) func(*Installer) {
