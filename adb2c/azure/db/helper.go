@@ -181,11 +181,11 @@ func ProvisionDatabase(
 		if resError.StatusCode != http.StatusConflict {
 			return err
 		}
-		logger.Info("database exists", "name", cfg.Name)
+		logger.Info("database exists", "database", cfg.Name)
 	} else if err != nil {
 		return err
 	} else {
-		logger.Info("database created", "name", cfg.Name)
+		logger.Info("database created", "database", cfg.Name)
 	}
 	dbClient, err := azClient.NewDatabase(cfg.Name)
 	if err != nil {
@@ -248,11 +248,13 @@ func ProvisionContainer(
 		if resError.StatusCode != http.StatusConflict {
 			return err
 		}
-		logger.Info("container exists", "database", database.ID(), "name", cfg.Name)
+		logger.Info("container exists",
+			"database", database.ID(), "container", cfg.Name)
 	} else if err != nil {
 		return err
 	} else {
-		logger.Info("container created", "database", database.ID(), "name", cfg.Name)
+		logger.Info("container created",
+			"database", database.ID(), "container", cfg.Name)
 		return nil
 	}
 
@@ -276,6 +278,8 @@ func ProvisionContainer(
 			if err != nil {
 				return err
 			}
+			logger.Info("container indexes updated",
+				"database", database.ID(), "container", cfg.Name)
 		}
 	}
 	if th != nil {
@@ -289,6 +293,8 @@ func ProvisionContainer(
 		if err != nil {
 			return err
 		}
+		logger.Info("container throughput updated",
+			"database", database.ID(), "container", cfg.Name)
 	}
 	return nil
 }

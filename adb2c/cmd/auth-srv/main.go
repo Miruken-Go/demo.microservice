@@ -50,7 +50,7 @@ func main() {
 	err := k.Load(file.Provider("./app.yml"), yaml.Parser(),
 		koanf.WithMergeFunc(koanfp.Merge))
 	if err != nil {
-		logger.Error(err, "error loading appconfig.json")
+		logger.Error(err, "error loading app.yml configuration")
 		os.Exit(1)
 	}
 	err = k.Load(env.Provider("", "__", nil), nil,
