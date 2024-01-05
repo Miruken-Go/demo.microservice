@@ -30,6 +30,7 @@ func (h *Handler) List(
 		Select: userFields,
 	}
 	if filter := list.Filter; filter != "" {
+		// The Users resource does not support the 'contains' operator.
 		criteria := fmt.Sprintf(`
 			startsWith(displayName,'%s') or
 			startsWith(givenName,'%s') or

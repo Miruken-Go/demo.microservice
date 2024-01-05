@@ -162,10 +162,19 @@ func ProvisionDatabase(
 	if cfg == nil {
 		panic("cfg cannot be nil")
 	}
+	var options *azcosmos.CreateDatabaseOptions
+	th := cfg.ThroughputChoice()
+	if th != nil {
+		options = &azcosmos.CreateDatabaseOptions{
+			ThroughputProperties: th,
+		}
+	}
+
+	// Create database
 	var resError *azcore.ResponseError
 	_, err := azClient.CreateDatabase(ctx, azcosmos.DatabaseProperties{
 		ID: cfg.Name,
-	}, nil)
+	}, options)
 	if errors.As(err, &resError) {
 		if resError.StatusCode != http.StatusConflict {
 			return err
@@ -177,6 +186,22 @@ func ProvisionDatabase(
 	if err != nil {
 		return nil
 	}
+
+	// Update database
+	if th != nil {
+		res, err := dbClient.ReadThroughput(ctx, nil)
+		if err == nil {
+			tp := res.ThroughputProperties
+			if !reflect.DeepEqual(th, tp) {
+				_, err = dbClient.ReplaceThroughput(ctx, *th, nil)
+			}
+		}
+		if err != nil {
+			return err
+		}
+	}
+
+	// Provision containers
 	for _, cnt := range cfg.Containers {
 		if err = ProvisionContainer(ctx, dbClient, &cnt); err != nil {
 			return err
@@ -196,6 +221,15 @@ func ProvisionContainer(
 	if cfg == nil {
 		panic("cfg cannot be nil")
 	}
+	var options *azcosmos.CreateContainerOptions
+	th := cfg.ThroughputChoice()
+	if th != nil {
+		options = &azcosmos.CreateContainerOptions{
+			ThroughputProperties: th,
+		}
+	}
+
+	// Create container
 	var resError *azcore.ResponseError
 	uk := cfg.UniqueKeys
 	_, err := database.CreateContainer(ctx, azcosmos.ContainerProperties{
@@ -203,7 +237,7 @@ func ProvisionContainer(
 		PartitionKeyDefinition: cfg.PartitionKey,
 		IndexingPolicy:         cfg.Indexes,
 		UniqueKeyPolicy:        uk,
-	}, nil)
+	}, options)
 	if errors.As(err, &resError) {
 		if resError.StatusCode != http.StatusConflict {
 			return err
@@ -211,7 +245,9 @@ func ProvisionContainer(
 	} else {
 		return err
 	}
-	if uk == nil {
+
+	// Update container
+	if uk == nil && th == nil {
 		return nil
 	}
 	container, err := database.NewContainer(cfg.Name)
@@ -219,12 +255,30 @@ func ProvisionContainer(
 		return err
 	}
 	res, err := container.Read(ctx, nil)
-	if err == nil {
+	if err != nil {
+		return err
+	}
+	if uk != nil {
 		cp := res.ContainerProperties
 		if !reflect.DeepEqual(uk, cp.UniqueKeyPolicy) {
 			cp.UniqueKeyPolicy = uk
 			_, err = container.Replace(ctx, *cp, nil)
+			if err != nil {
+				return err
+			}
 		}
 	}
-	return err
+	if th != nil {
+		res, err := container.ReadThroughput(ctx, nil)
+		if err == nil {
+			tp := res.ThroughputProperties
+			if !reflect.DeepEqual(th, tp) {
+				_, err = container.ReplaceThroughput(ctx, *th, nil)
+			}
+		}
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

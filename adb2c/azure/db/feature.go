@@ -11,7 +11,7 @@ import (
 // Installer enables azure cosmos support.
 type Installer struct {
 	aliases   map[reflect.Type]string
-	clients   map[reflect.Type]Config
+	clients   map[reflect.Type]*Config
 	provision []reflect.Type
 }
 
@@ -30,10 +30,10 @@ func (i *Installer) Install(b *setup.Builder) error {
 	return nil
 }
 
-func Client[T ~*azcosmos.Client](cfg Config) func(*Installer) {
+func Client[T ~*azcosmos.Client](cfg *Config) func(*Installer) {
 	return func(installer *Installer) {
 		if installer.clients == nil {
-			installer.clients = make(map[reflect.Type]Config, 1)
+			installer.clients = make(map[reflect.Type]*Config, 1)
 		}
 		installer.clients[reflect.TypeOf((*T)(nil)).Elem()] = cfg
 	}
@@ -55,10 +55,10 @@ func ClientAlias[T ~*azcosmos.Client](path string) func(*Installer) {
 	}
 }
 
-func SqlClient[T ~*sqlx.DB](cfg Config) func(*Installer) {
+func SqlClient[T ~*sqlx.DB](cfg *Config) func(*Installer) {
 	return func(installer *Installer) {
 		if installer.clients == nil {
-			installer.clients = make(map[reflect.Type]Config, 1)
+			installer.clients = make(map[reflect.Type]*Config, 1)
 		}
 		installer.clients[reflect.TypeOf((*T)(nil)).Elem()] = cfg
 	}

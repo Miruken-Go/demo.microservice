@@ -20,7 +20,7 @@ type (
 	// Options for azure cosmosdb resources.
 	Options struct {
 		Aliases   map[reflect.Type]string
-		Clients   map[reflect.Type]Config
+		Clients   map[reflect.Type]*Config
 		Provision []reflect.Type
 	}
 
@@ -93,7 +93,7 @@ func (f *Factory) config(
 ) (*Config, error) {
 	cfg, ok := f.opts.Clients[typ]
 	if ok {
-		return &cfg, nil
+		return cfg, nil
 	}
 	var key string
 	if key, ok = f.opts.Aliases[typ]; !ok {
@@ -104,11 +104,11 @@ func (f *Factory) config(
 		}
 	}
 	path := fmt.Sprintf("Databases.%s", key)
-	cfg, _, ok, err := provides.Type[Config](h, &config.Load{Path: path})
+	cfg, _, ok, err := provides.Type[*Config](h, &config.Load{Path: path})
 	if !ok || err != nil {
 		return nil, err
 	}
-	return &cfg, nil
+	return cfg, nil
 }
 
 func (f *Factory) provision(
@@ -124,8 +124,7 @@ func (f *Factory) provision(
 	if err != nil {
 		return err
 	}
-	err = ProvisionDatabase(ctx, client, cfg)
-	return nil
+	return ProvisionDatabase(ctx, client, cfg)
 }
 
 
