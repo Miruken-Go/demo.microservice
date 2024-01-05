@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
+	"github.com/go-logr/logr"
 	"net/http"
 	"reflect"
 
@@ -155,6 +156,7 @@ func ProvisionDatabase(
 	ctx      context.Context,
 	azClient *azcosmos.Client,
 	cfg      *Config,
+	logger   logr.Logger,
 ) error {
 	if azClient == nil {
 		panic("azClient cannot be nil")
@@ -179,8 +181,11 @@ func ProvisionDatabase(
 		if resError.StatusCode != http.StatusConflict {
 			return err
 		}
+		logger.Info("database exists", "name", cfg.Name)
 	} else if err != nil {
 		return err
+	} else {
+		logger.Info("database created", "name", cfg.Name)
 	}
 	dbClient, err := azClient.NewDatabase(cfg.Name)
 	if err != nil {
@@ -203,7 +208,7 @@ func ProvisionDatabase(
 
 	// Provision containers
 	for _, cnt := range cfg.Containers {
-		if err = ProvisionContainer(ctx, dbClient, &cnt); err != nil {
+		if err = ProvisionContainer(ctx, dbClient, &cnt, logger); err != nil {
 			return err
 		}
 	}
@@ -214,6 +219,7 @@ func ProvisionContainer(
 	ctx      context.Context,
 	database *azcosmos.DatabaseClient,
 	cfg      *ContainerConfig,
+	logger   logr.Logger,
 ) error {
 	if database == nil {
 		panic("database cannot be nil")
@@ -242,8 +248,12 @@ func ProvisionContainer(
 		if resError.StatusCode != http.StatusConflict {
 			return err
 		}
-	} else {
+		logger.Info("container exists", "database", database.ID(), "name", cfg.Name)
+	} else if err != nil {
 		return err
+	} else {
+		logger.Info("container created", "database", database.ID(), "name", cfg.Name)
+		return nil
 	}
 
 	// Update container

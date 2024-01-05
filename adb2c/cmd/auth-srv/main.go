@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
-	"github.com/knadh/koanf/parsers/json"
+	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/miruken-go/demo.microservice/adb2c/azure/db"
 	"net/http"
@@ -47,7 +47,7 @@ func main() {
 
 	// configuration
 	var k = koanf.New(".")
-	err := k.Load(file.Provider("./appconfig.json"), json.Parser(),
+	err := k.Load(file.Provider("./app.yml"), yaml.Parser(),
 		koanf.WithMergeFunc(koanfp.Merge))
 	if err != nil {
 		logger.Error(err, "error loading appconfig.json")

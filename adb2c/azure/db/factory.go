@@ -3,6 +3,7 @@ package db
 import (
 	"errors"
 	"fmt"
+	"github.com/go-logr/logr"
 	"github.com/miruken-go/miruken/promise"
 	"golang.org/x/net/context"
 	"reflect"
@@ -26,7 +27,8 @@ type (
 
 	// Factory of azure cosmosdb resources.
 	Factory struct {
-		opts Options
+		opts   Options
+		logger logr.Logger
 	}
 )
 
@@ -36,8 +38,14 @@ func (f *Factory) Constructor(
 		args.Optional
 		args.FromOptions
 	  }, options Options,
+	_ *struct{ args.Optional }, logger logr.Logger,
 ) {
 	f.opts = options
+	if logger == f.logger {
+		f.logger = logr.Discard()
+	} else {
+		f.logger = logger
+	}
 }
 
 func (f *Factory) NewAzClient(
@@ -124,7 +132,7 @@ func (f *Factory) provision(
 	if err != nil {
 		return err
 	}
-	return ProvisionDatabase(ctx, client, cfg)
+	return ProvisionDatabase(ctx, client, cfg, f.logger)
 }
 
 

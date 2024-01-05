@@ -1,0 +1,17 @@
+Databases:
+  Azure:
+    Name: adb2c
+    Containers:
+      - Name: subjects
+        PartitionKey:
+          Paths:
+            - /id
+      - Name: principals
+        PartitionKey:
+          Paths:
+            - /scope
+        UniqueKeys:
+          UniqueKeys:
+            - Paths:
+              - /type
+              - /name
