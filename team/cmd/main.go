@@ -39,7 +39,7 @@ func main() {
 
 	// configuration
 	var k = koanf.New(".")
-	err := k.Load(file.Provider("cmd/app.yml"), yaml.Parser())
+	err := k.Load(file.Provider("./app.yml"), yaml.Parser())
 	if err != nil {
 		logger.Error(err, "error loading configuration")
 		os.Exit(1)

@@ -1,0 +1,28 @@
+{
+  "Databases": {
+    "Azure": {
+      "Name": "adb2cX",
+      "Containers": [
+        {
+          "Name": "subject",
+          "PartitionKey": {
+            "Paths": ["/id"]
+          }
+        },
+        {
+          "Name": "principal",
+          "PartitionKey": {
+            "Paths": ["/scope"]
+          },
+          "UniqueKeys": {
+              "UniqueKeys": [
+                {
+                  "Paths": ["/type", "/name"]
+                }
+              ]
+            }
+        }
+      ]
+    }
+  }
+}
