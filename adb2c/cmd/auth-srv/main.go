@@ -125,7 +125,7 @@ func main() {
 
 	// Polymorphic api endpoints
 	poly := httpsrv.Api(ctx,
-		auth.WithFlowAlias("Login.OAuth").Bearer()/*.Required()*/,
+		auth.WithFlowAlias("Login.OAuth").Bearer().Required(),
 	)
 
 	// configure routes

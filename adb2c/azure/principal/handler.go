@@ -270,9 +270,9 @@ func (h *Handler) Expand(
 						return
 					}
 					path := queue[principal.Id]
-					if expand.Trim {
+					if expand.Squash {
 						// Remove parent with same type so only the
-						// deepest principal in a group is returned
+						// deepest members of a group is returned
 						if cnt := len(path); cnt > 1 {
 							last := path[cnt-2]
 							if parent, ok := principals[last]; ok {

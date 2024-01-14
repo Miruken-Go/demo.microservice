@@ -46,10 +46,13 @@ type (
 	}
 
 	// ExpandPrincipals flattens a Principal hierarchy in a scope.
+	// Set Squash true to squash related Principal hierarchies.
+	// e.g. Role.A (Role.B, Role.C) => Role.B, Role.C
+	//      otherwise Role.A, Role.B, Role.C
 	ExpandPrincipals struct {
 		Scope        string
 		PrincipalIds []string
-		Trim         bool
+		Squash       bool
 	}
 
 	// ImpliedPrincipals returns all Principal ids that directly
