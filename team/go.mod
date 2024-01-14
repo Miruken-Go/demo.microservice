@@ -6,12 +6,12 @@ require (
 	github.com/getkin/kin-openapi v0.122.0
 	github.com/go-logr/zerologr v1.2.3
 	github.com/go-playground/universal-translator v0.18.1
-	github.com/go-playground/validator/v10 v10.16.0
+	github.com/go-playground/validator/v10 v10.17.0
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/demo.microservice/team-api v0.7.0
-	github.com/miruken-go/miruken v0.30.98
+	github.com/miruken-go/demo.microservice/team-api v0.8.0-alpha.9
+	github.com/miruken-go/miruken v0.30.99
 	github.com/rs/zerolog v1.31.0
-	golang.org/x/net v0.19.0
+	golang.org/x/net v0.20.0
 )
 
 require (
@@ -39,7 +39,7 @@ require (
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
 	github.com/perimeterx/marshmallow v1.1.5 // indirect
 	github.com/timewasted/go-accept-headers v0.0.0-20130320203746-c78f304b1b09 // indirect
-	golang.org/x/crypto v0.17.0 // indirect
+	golang.org/x/crypto v0.18.0 // indirect
 	golang.org/x/sys v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
