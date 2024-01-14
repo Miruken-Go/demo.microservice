@@ -1,19 +1,19 @@
 package db
 
 import (
+	"context"
 	"errors"
 	"fmt"
-	"github.com/go-logr/logr"
-	"github.com/miruken-go/miruken/promise"
-	"golang.org/x/net/context"
 	"reflect"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	_ "github.com/btnguyen2k/gocosmos"
+	"github.com/go-logr/logr"
 	"github.com/jmoiron/sqlx"
 	"github.com/miruken-go/miruken"
 	"github.com/miruken-go/miruken/args"
 	"github.com/miruken-go/miruken/config"
+	"github.com/miruken-go/miruken/promise"
 	"github.com/miruken-go/miruken/provides"
 )
 

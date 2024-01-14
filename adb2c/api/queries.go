@@ -49,6 +49,7 @@ type (
 	ExpandPrincipals struct {
 		Scope        string
 		PrincipalIds []string
+		Trim         bool
 	}
 
 	// ImpliedPrincipals returns all Principal ids that directly

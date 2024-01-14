@@ -2,18 +2,18 @@ package main
 
 import (
 	"errors"
-	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
-	"github.com/knadh/koanf/parsers/yaml"
-	"github.com/knadh/koanf/providers/file"
-	"github.com/miruken-go/demo.microservice/adb2c/azure/db"
 	"net/http"
 	"os"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/go-logr/zerologr"
 	"github.com/knadh/koanf"
+	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/env"
+	"github.com/knadh/koanf/providers/file"
 	"github.com/miruken-go/demo.microservice/adb2c/azure"
+	"github.com/miruken-go/demo.microservice/adb2c/azure/db"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
 	"github.com/miruken-go/miruken/api/http/httpsrv/auth"
@@ -125,7 +125,7 @@ func main() {
 
 	// Polymorphic api endpoints
 	poly := httpsrv.Api(ctx,
-		auth.WithFlowAlias("Login.OAuth").Bearer().Required(),
+		auth.WithFlowAlias("Login.OAuth").Bearer()/*.Required()*/,
 	)
 
 	// configure routes

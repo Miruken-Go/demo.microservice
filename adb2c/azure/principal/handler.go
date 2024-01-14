@@ -270,6 +270,18 @@ func (h *Handler) Expand(
 						return
 					}
 					path := queue[principal.Id]
+					if expand.Trim {
+						// Remove parent with same type so only the
+						// deepest principal in a group is returned
+						if cnt := len(path); cnt > 1 {
+							last := path[cnt-2]
+							if parent, ok := principals[last]; ok {
+								if parent.Type == principal.Type {
+									delete(principals, last)
+								}
+							}
+						}
+					}
 					for _, childId := range principal.IncludedIds {
 						for _, ancestorId := range path {
 							if childId == ancestorId {
