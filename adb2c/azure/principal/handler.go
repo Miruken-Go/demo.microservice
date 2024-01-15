@@ -270,18 +270,6 @@ func (h *Handler) Expand(
 						return
 					}
 					path := queue[principal.Id]
-					if expand.Squash {
-						// Remove parent with same type so only the
-						// deepest members of a group is returned
-						if cnt := len(path); cnt > 1 {
-							last := path[cnt-2]
-							if parent, ok := principals[last]; ok {
-								if parent.Type == principal.Type {
-									delete(principals, last)
-								}
-							}
-						}
-					}
 					for _, childId := range principal.IncludedIds {
 						for _, ancestorId := range path {
 							if childId == ancestorId {
@@ -292,6 +280,33 @@ func (h *Handler) Expand(
 						next[childId] = append(path, childId)
 					}
 					principals[principal.Id] = principal.ToApi()
+				}
+			}
+
+			if expand.Squash {
+				// Squash removes principals having all children with
+				// the same type.  This represents a pure grouping and
+				// is not necessarily useful for authorization.
+				for _, path := range queue {
+					if cnt := len(path); cnt > 1 {
+						pid := path[cnt-2]
+						if parent, ok := principals[pid]; ok {
+							matches := 0
+							pt := parent.Type
+							for _, child := range parent.Includes {
+								if child, ok = principals[child.Id]; ok {
+									if child.Type != pt {
+										break
+									}
+									matches++
+								}
+							}
+							// All children are same type so remove parent
+							if matches == len(parent.Includes) {
+								delete(principals, pid)
+							}
+						}
+					}
 				}
 			}
 

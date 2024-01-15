@@ -2,11 +2,11 @@ Databases:
   Azure:
     Name: adb2c
     Containers:
-      - Name: subjects
+      - Name: subject
         PartitionKey:
           Paths:
             - /id
-      - Name: principals
+      - Name: principal
         PartitionKey:
           Paths:
             - /scope
