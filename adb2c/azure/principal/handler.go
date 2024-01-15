@@ -285,8 +285,8 @@ func (h *Handler) Expand(
 
 			if expand.Squash {
 				// Squash removes principals having all children with
-				// the same type.  This represents a pure grouping and
-				// is not necessarily useful for authorization.
+				// the same type.  This represents a pure grouping
+				// which may not be useful for authorization.
 				for _, path := range queue {
 					if cnt := len(path); cnt > 1 {
 						pid := path[cnt-2]

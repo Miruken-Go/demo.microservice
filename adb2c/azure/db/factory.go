@@ -80,12 +80,15 @@ func (f *Factory) Startup(
 	ctx context.Context,
 	h   miruken.Handler,
 ) *promise.Promise[struct{}] {
-	for _, typ := range f.opts.Provision {
-		if err := f.provision(ctx, typ, h); err != nil {
-			return promise.RejectEmpty(err)
-		}
+	provisions := f.opts.Provision
+	if len(provisions) == 0 {
+		return promise.Empty()
 	}
-	return promise.Empty()
+	promises := make([]*promise.Promise[struct{}], len(provisions))
+	for i, provision := range provisions {
+		promises[i] = f.provision(ctx, provision, h)
+	}
+	return promise.Erase(promise.All(ctx, promises...))
 }
 
 
@@ -123,14 +126,14 @@ func (f *Factory) provision(
 	ctx context.Context,
 	typ reflect.Type,
 	h   miruken.Handler,
-) error {
+) *promise.Promise[struct{}] {
 	cfg, err := f.config(typ, clientType, h)
 	if err != nil {
-		return err
+		return promise.RejectEmpty(err)
 	}
 	client, err := newAzClient(cfg, true)
 	if err != nil {
-		return err
+		return promise.RejectEmpty(err)
 	}
 	return ProvisionDatabase(ctx, client, cfg, f.logger)
 }

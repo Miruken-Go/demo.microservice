@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/go-logr/logr"
+	"github.com/miruken-go/miruken/promise"
 	"net/http"
 	"reflect"
 
@@ -157,62 +158,77 @@ func ProvisionDatabase(
 	azClient *azcosmos.Client,
 	cfg      *Config,
 	logger   logr.Logger,
-) error {
+) *promise.Promise[struct{}] {
 	if azClient == nil {
 		panic("azClient cannot be nil")
 	}
 	if cfg == nil {
 		panic("cfg cannot be nil")
 	}
-	var options *azcosmos.CreateDatabaseOptions
-	th := cfg.ThroughputChoice()
-	if th != nil {
-		options = &azcosmos.CreateDatabaseOptions{
-			ThroughputProperties: th,
-		}
-	}
 
-	// Create database
-	var resError *azcore.ResponseError
-	_, err := azClient.CreateDatabase(ctx, azcosmos.DatabaseProperties{
-		ID: cfg.Name,
-	}, options)
-	if errors.As(err, &resError) {
-		if resError.StatusCode != http.StatusConflict {
-			return err
-		}
-		logger.Info("database exists", "database", cfg.Name)
-	} else if err != nil {
-		return err
-	} else {
-		logger.Info("database created", "database", cfg.Name)
-	}
-	dbClient, err := azClient.NewDatabase(cfg.Name)
-	if err != nil {
-		return nil
-	}
+	return promise.New(nil, func(
+		resolve func(struct{}), reject func(error), onCancel func(func())) {
 
-	// Update database
-	if th != nil {
-		res, err := dbClient.ReadThroughput(ctx, nil)
-		if err == nil {
-			tp := res.ThroughputProperties
-			if !reflect.DeepEqual(th, tp) {
-				_, err = dbClient.ReplaceThroughput(ctx, *th, nil)
+		var options *azcosmos.CreateDatabaseOptions
+		th := cfg.ThroughputChoice()
+		if th != nil {
+			options = &azcosmos.CreateDatabaseOptions{
+				ThroughputProperties: th,
 			}
 		}
+		// Create database
+		var resError *azcore.ResponseError
+		_, err := azClient.CreateDatabase(ctx, azcosmos.DatabaseProperties{
+			ID: cfg.Name,
+		}, options)
+		if errors.As(err, &resError) {
+			if resError.StatusCode != http.StatusConflict {
+				reject(err)
+				return
+			}
+			logger.Info("database exists", "database", cfg.Name)
+		} else if err != nil {
+			reject(err)
+			return
+		} else {
+			logger.Info("database created", "database", cfg.Name)
+		}
+		dbClient, err := azClient.NewDatabase(cfg.Name)
 		if err != nil {
-			return err
+			reject(err)
+			return
 		}
-	}
 
-	// Provision containers
-	for _, cnt := range cfg.Containers {
-		if err = ProvisionContainer(ctx, dbClient, &cnt, logger); err != nil {
-			return err
+		// Update database
+		if th != nil {
+			res, err := dbClient.ReadThroughput(ctx, nil)
+			if err == nil {
+				tp := res.ThroughputProperties
+				if !reflect.DeepEqual(th, tp) {
+					_, err = dbClient.ReplaceThroughput(ctx, *th, nil)
+				}
+			}
+			if err != nil {
+				reject(err)
+				return
+			}
 		}
-	}
-	return nil
+
+		// Provision containers
+		containers := cfg.Containers
+		if len(containers) == 0 {
+			resolve(struct{}{})
+		}
+		promises := make([]*promise.Promise[struct{}], len(containers))
+		for i := range containers {
+			promises[i] = ProvisionContainer(ctx, dbClient, &containers[i], logger)
+		}
+		if _, err := promise.All(ctx, promises...).Await(); err != nil {
+			reject(err)
+			return
+		}
+		resolve(struct{}{})
+	})
 }
 
 func ProvisionContainer(
@@ -220,81 +236,93 @@ func ProvisionContainer(
 	database *azcosmos.DatabaseClient,
 	cfg      *ContainerConfig,
 	logger   logr.Logger,
-) error {
+) *promise.Promise[struct{}] {
 	if database == nil {
 		panic("database cannot be nil")
 	}
 	if cfg == nil {
 		panic("cfg cannot be nil")
 	}
-	var options *azcosmos.CreateContainerOptions
-	th := cfg.ThroughputChoice()
-	if th != nil {
-		options = &azcosmos.CreateContainerOptions{
-			ThroughputProperties: th,
-		}
-	}
 
-	// Create container
-	var resError *azcore.ResponseError
-	uk := cfg.UniqueKeys
-	_, err := database.CreateContainer(ctx, azcosmos.ContainerProperties{
-		ID:                     cfg.Name,
-		PartitionKeyDefinition: cfg.PartitionKey,
-		IndexingPolicy:         cfg.Indexes,
-		UniqueKeyPolicy:        uk,
-	}, options)
-	if errors.As(err, &resError) {
-		if resError.StatusCode != http.StatusConflict {
-			return err
-		}
-		logger.Info("container exists",
-			"database", database.ID(), "container", cfg.Name)
-	} else if err != nil {
-		return err
-	} else {
-		logger.Info("container created",
-			"database", database.ID(), "container", cfg.Name)
-		return nil
-	}
-
-	// Update container
-	if uk == nil && th == nil {
-		return nil
-	}
-	container, err := database.NewContainer(cfg.Name)
-	if err != nil {
-		return err
-	}
-	res, err := container.Read(ctx, nil)
-	if err != nil {
-		return err
-	}
-	if uk != nil {
-		cp := res.ContainerProperties
-		if !reflect.DeepEqual(uk, cp.UniqueKeyPolicy) {
-			cp.UniqueKeyPolicy = uk
-			_, err = container.Replace(ctx, *cp, nil)
-			if err != nil {
-				return err
+	return promise.New(nil, func(
+		resolve func(struct{}), reject func(error), onCancel func(func())) {
+		var options *azcosmos.CreateContainerOptions
+		th := cfg.ThroughputChoice()
+		if th != nil {
+			options = &azcosmos.CreateContainerOptions{
+				ThroughputProperties: th,
 			}
-			logger.Info("container indexes updated",
+		}
+
+		// Create container
+		var resError *azcore.ResponseError
+		uk := cfg.UniqueKeys
+		_, err := database.CreateContainer(ctx, azcosmos.ContainerProperties{
+			ID:                     cfg.Name,
+			PartitionKeyDefinition: cfg.PartitionKey,
+			IndexingPolicy:         cfg.Indexes,
+			UniqueKeyPolicy:        uk,
+		}, options)
+		if errors.As(err, &resError) {
+			if resError.StatusCode != http.StatusConflict {
+				reject(err)
+				return
+			}
+			logger.Info("container exists",
+				"database", database.ID(), "container", cfg.Name)
+		} else if err != nil {
+			reject(err)
+			return
+		} else {
+			logger.Info("container created",
+				"database", database.ID(), "container", cfg.Name)
+			resolve(struct{}{})
+			return
+		}
+
+		// Update container
+		if uk == nil && th == nil {
+			resolve(struct{}{})
+			return
+		}
+		container, err := database.NewContainer(cfg.Name)
+		if err != nil {
+			reject(err)
+			return
+		}
+		res, err := container.Read(ctx, nil)
+		if err != nil {
+			reject(err)
+			return
+		}
+		if uk != nil {
+			cp := res.ContainerProperties
+			if !reflect.DeepEqual(uk, cp.UniqueKeyPolicy) {
+				cp.UniqueKeyPolicy = uk
+				_, err = container.Replace(ctx, *cp, nil)
+				if err != nil {
+					reject(err)
+					return
+				}
+				logger.Info("container indexes updated",
+					"database", database.ID(), "container", cfg.Name)
+			}
+		}
+		if th != nil {
+			res, err := container.ReadThroughput(ctx, nil)
+			if err == nil {
+				tp := res.ThroughputProperties
+				if !reflect.DeepEqual(th, tp) {
+					_, err = container.ReplaceThroughput(ctx, *th, nil)
+				}
+			}
+			if err != nil {
+				reject(err)
+				return
+			}
+			logger.Info("container throughput updated",
 				"database", database.ID(), "container", cfg.Name)
 		}
-	}
-	if th != nil {
-		res, err := container.ReadThroughput(ctx, nil)
-		if err == nil {
-			tp := res.ThroughputProperties
-			if !reflect.DeepEqual(th, tp) {
-				_, err = container.ReplaceThroughput(ctx, *th, nil)
-			}
-		}
-		if err != nil {
-			return err
-		}
-		logger.Info("container throughput updated",
-			"database", database.ID(), "container", cfg.Name)
-	}
-	return nil
+		resolve(struct{}{})
+	})
 }

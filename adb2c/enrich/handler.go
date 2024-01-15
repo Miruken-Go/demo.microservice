@@ -129,6 +129,7 @@ func (e *Handler) getClaims(
 	ep, epp, err := api.Send[[]api2.Principal](h, api2.ExpandPrincipals{
 		Scope:        domain,
 		PrincipalIds: principalIds,
+		Squash:       true,
 	})
 	if epp != nil {
 		ep, err = epp.Await()
