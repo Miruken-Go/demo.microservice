@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
-	"github.com/go-logr/logr"
-	"github.com/miruken-go/miruken/promise"
 	"net/http"
 	"reflect"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
+	"github.com/go-logr/logr"
+	"github.com/miruken-go/miruken/promise"
 	"golang.org/x/net/context"
 )
 

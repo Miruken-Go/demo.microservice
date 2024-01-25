@@ -108,7 +108,7 @@ func main() {
 
 	docs := openapiGen.Docs()
 
-	// Polymorphic api endpoints
+	// polymorphic api endpoints
 	h := httpsrv.Api(ctx,
 		auth.WithFlowAlias("login.oauth").Bearer(),
 	)
@@ -124,34 +124,43 @@ func main() {
 		ClientId: "35aacb63-777d-4320-9905-92a106af4558",
 	}))
 
-	// Register pprof handlers
+	// register pprof handlers
 	mux.HandleFunc("/debug/pprof/", pprof.Index)
 	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
 	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
 	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
 	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
-	// start http server
-	server := httpsrv.New(&mux, nil)
+	// handle SIGINT (CTRL+C) gracefully.
+	notify, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
 
+	// start HTTP server
+	srv := httpsrv.New(&mux, nil)
+
+	srvErr := make(chan error, 1)
 	go func() {
-		if err := server.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
-			logger.Error(err, "HTTP server error")
-			os.Exit(1)
-		}
-		logger.Info("Stopped serving new connections")
+		srvErr <- srv.ListenAndServe()
 	}()
 
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
-	<-sigChan
+	select {
+	case err = <-srvErr:
+		if !errors.Is(err, http.ErrServerClosed) {
+			logger.Error(err, "Unable to start HTTP server")
+			os.Exit(1)
+		}
+		logger.Info("Stopped serving new HTTP connections")
+		return
+	case <-notify.Done():
+		stop()
+	}
 
 	shutdownCtx, shutdownRelease := context.WithTimeout(context.Background(), 10*time.Second)
 	defer shutdownRelease()
 
-	if err := server.Shutdown(shutdownCtx); err != nil {
-		logger.Error(err, "HTTP shutdown error")
-		_ = server.Close()
+	if err := srv.Shutdown(shutdownCtx); err != nil {
+		logger.Error(err, "Unable to stop HTTP server")
+		_ = srv.Close()
 	}
 	logger.Info("Graceful shutdown complete")
 }
