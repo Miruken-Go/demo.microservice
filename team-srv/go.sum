@@ -212,6 +212,8 @@ github.com/miruken-go/demo.microservice/team v0.8.0-alpha.164 h1:IvGNxnNcWY0o9+0
 github.com/miruken-go/demo.microservice/team v0.8.0-alpha.164/go.mod h1:lxlncLKqZ31PH8BfNMqI3o/cDssIsgobQekPX32EQDc=
 github.com/miruken-go/demo.microservice/team v0.8.0-alpha.198 h1:o7D9LHTgRGX7HrigqKCetYTs3pOLDzxwYquV06bPsA4=
 github.com/miruken-go/demo.microservice/team v0.8.0-alpha.198/go.mod h1:ibA86fQQHh/6ldLmbk2Nnch0tyfx86tGiRZLhxfUwMY=
+github.com/miruken-go/demo.microservice/team v0.8.0-alpha.234 h1:smyLfMSOe0RrLck8isovCirxim1F4G2M95OA5PHu7/k=
+github.com/miruken-go/demo.microservice/team v0.8.0-alpha.234/go.mod h1:wz8G4rxKOjKGvB5q2BsdBdnai2scw6c3HGanA/98uPo=
 github.com/miruken-go/demo.microservice/team-api v0.8.0-alpha.126 h1:JVCjzYtPDwGuzkT0+Wr1Y3CsDiuknCae+peeo79XzzE=
 github.com/miruken-go/demo.microservice/team-api v0.8.0-alpha.126/go.mod h1:pPVOjstAJX8f7YSnDLfa0fi3G4WduzuPwWs+ZOnlvdA=
 github.com/miruken-go/miruken v0.30.104 h1:GfmTL9uJOb1kiDRh0OJ7o2FTbTF9qfTCY2rLVyen5g8=
