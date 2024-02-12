@@ -10,7 +10,7 @@ require (
 	github.com/knadh/koanf v1.5.0
 	github.com/miruken-go/demo.microservice/team-api v0.8.0-alpha.126
 	github.com/miruken-go/miruken v0.30.104
-	github.com/rs/zerolog v1.31.0
+	github.com/rs/zerolog v1.32.0
 	golang.org/x/net v0.21.0
 )
 
