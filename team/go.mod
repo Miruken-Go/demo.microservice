@@ -6,12 +6,12 @@ require (
 	github.com/getkin/kin-openapi v0.123.0
 	github.com/go-logr/zerologr v1.2.3
 	github.com/go-playground/universal-translator v0.18.1
-	github.com/go-playground/validator/v10 v10.17.0
+	github.com/go-playground/validator/v10 v10.18.0
 	github.com/knadh/koanf v1.5.0
-	github.com/miruken-go/demo.microservice/team-api v0.8.0-alpha.95
-	github.com/miruken-go/miruken v0.30.103
+	github.com/miruken-go/demo.microservice/team-api v0.8.0-alpha.126
+	github.com/miruken-go/miruken v0.30.104
 	github.com/rs/zerolog v1.31.0
-	golang.org/x/net v0.20.0
+	golang.org/x/net v0.21.0
 )
 
 require (
@@ -29,7 +29,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/invopop/yaml v0.2.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
-	github.com/leodido/go-urn v1.3.0 // indirect
+	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
@@ -39,8 +39,8 @@ require (
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
 	github.com/perimeterx/marshmallow v1.1.5 // indirect
 	github.com/timewasted/go-accept-headers v0.0.0-20130320203746-c78f304b1b09 // indirect
-	golang.org/x/crypto v0.18.0 // indirect
-	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/crypto v0.19.0 // indirect
+	golang.org/x/sys v0.17.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
