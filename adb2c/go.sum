@@ -277,6 +277,8 @@ github.com/miekg/dns v1.1.26/go.mod h1:bPDLeHnStXmXAq1m/Ch/hvfNHr14JKNPMBo3VZKju
 github.com/miekg/dns v1.1.41/go.mod h1:p6aan82bvRIyn+zDIv9xYNUpwa73JcSh9BKwknJysuI=
 github.com/miruken-go/miruken v0.30.104 h1:GfmTL9uJOb1kiDRh0OJ7o2FTbTF9qfTCY2rLVyen5g8=
 github.com/miruken-go/miruken v0.30.104/go.mod h1:LxeU7MWQCkSm9t6G6vqWW1QRtx6jg2tITItf07gGm2I=
+github.com/miruken-go/miruken v0.30.105 h1:aDztzBZkph4ebIVllfdmlNS/hBqJ7KOXy1iRHDQh3BA=
+github.com/miruken-go/miruken v0.30.105/go.mod h1:LxeU7MWQCkSm9t6G6vqWW1QRtx6jg2tITItf07gGm2I=
 github.com/mitchellh/cli v1.0.0/go.mod h1:hNIlj7HEI86fIcpObd7a0FcrxTWetlwJDGcceTlRvqc=
 github.com/mitchellh/cli v1.1.0/go.mod h1:xcISNoH86gajksDmfB23e/pu+B+GeFRMYmoHXxx3xhI=
 github.com/mitchellh/copystructure v1.0.0/go.mod h1:SNtv71yrdKgLRyLFxmLdkAbkKEFWgYaq1OVrnRcwhnw=
