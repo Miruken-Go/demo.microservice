@@ -24,6 +24,9 @@ permissions:
 jobs:
   containerized_job:
     runs-on: ubuntu-latest
+    permissions:
+      packages: read
+      contents: read
     container:
       image: ghcr.io/miruken-go/demo.microservice.build:1699298856
       env:
