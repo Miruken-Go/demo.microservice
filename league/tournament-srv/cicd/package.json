@@ -1,0 +1,25 @@
+{
+  "name": "",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "type": "module",
+  "imports": {
+    "#infrastructure/*": "./ci.cd/src/infrastructure/*"
+  },
+  "scripts": {
+    "build":  "echo 'building schedule-srv'",
+    "deploy": "echo 'deploying schedule-srv'",
+    "integration-tests": "echo 'executing integration tests'",
+    "unit-tests": "echo 'executing integration tests'"
+  },
+  "author": "provenstyle",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "c8": "^8.0.1",
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0"
+  }
+}

@@ -1,0 +1,68 @@
+name: deploy league to env
+run-name: deploy to ${{ inputs.env || github.event.client_payload.env }} ${{ inputs.instance || github.event.client_payload.instance }}
+
+on: 
+  workflow_call:
+    inputs:
+      env:
+        type:     string
+        required: true
+      instance:
+        type:     string
+        required: false
+      tag:
+        description: 'Docker image tag'
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      env:
+        type: choice
+        description: Environment
+        options: 
+        - dev 
+        - qa
+        - staging
+        - demo
+        - prod
+      instance:
+        description: 'Optional unique instance in an environment'
+        default: ''
+        required: false
+        type: string
+      tag:
+        description: 'Docker image tag'
+        required: false
+        type: string
+
+jobs:
+  provision:
+    name: provision ${{ inputs.env }} ${{ inputs.instance }}
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+      contents: read
+    container:
+      image: ghcr.io/miruken-go/demo.microservice.build:1699298856
+      env:
+        repository:                     ${{ github.repository }}
+        repositoryOwner:                ${{ github.repository_owner }}
+        ref:                            ${{ github.event.client_payload.ref || github.ref }}
+        tenantId:                       ${{ vars.TENANT_ID }}
+        subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
+        deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
+        deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
+        ghToken:                        ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN:                       ${{ secrets.GITHUB_TOKEN }}
+        env:                            ${{ inputs.env      || github.event.client_payload.env }}
+        instance:                       ${{ inputs.instance || github.event.client_payload.instance }}
+        tag:                            ${{ inputs.tag      || github.event.client_payload.tag }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        ref:        ${{ github.event.client_payload.ref || github.ref }}
+        submodules: 'recursive'
+    - name: |
+        npm ci
+        npm run provision
