@@ -63,8 +63,3 @@ jobs:
       with:
         ref:        ${{ github.event.client_payload.ref || github.ref }}
         submodules: 'recursive'
-    - name: npm run
-      working-directory: ./league/cicd
-      run: |
-        npm ci
-        npm run provision
