@@ -63,6 +63,7 @@ jobs:
       with:
         ref:        ${{ github.event.client_payload.ref || github.ref }}
         submodules: 'recursive'
-    - name: |
+    - name: npm run
+      run: |
         npm ci
         npm run provision
