@@ -78,7 +78,7 @@ jobs:
         npm ci
         npm run provision
 
-  deploy schedule-srv:
+  deploy-schedule-srv:
     name: schedule-srv ${{ inputs.env }} ${{ inputs.instance }}
     needs: provision
     runs-on: ubuntu-latest
@@ -112,7 +112,7 @@ jobs:
         npm ci
         npm run deploy
 
-  deploy tournament-srv:
+  deploy-tournament-srv:
     name: tournament-srv ${{ inputs.env }} ${{ inputs.instance }}
     needs: provision
     runs-on: ubuntu-latest
