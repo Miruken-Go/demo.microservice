@@ -10,9 +10,13 @@ on:
       instance:
         type:     string
         required: false
-      tag:
+      schedule-srv-tag:
         description: 'Docker image tag'
-        required: true
+        required: false
+        type: string
+      tournament-srv-tag:
+        description: 'Docker image tag'
+        required: false
         type: string
   workflow_dispatch:
     inputs:
@@ -30,7 +34,11 @@ on:
         default: ''
         required: false
         type: string
-      tag:
+      schedule-srv-tag:
+        description: 'Docker image tag'
+        required: false
+        type: string
+      tournament-srv-tag:
         description: 'Docker image tag'
         required: false
         type: string
@@ -57,7 +65,7 @@ jobs:
         GH_TOKEN:                       ${{ secrets.GITHUB_TOKEN }}
         env:                            ${{ inputs.env      || github.event.client_payload.env }}
         instance:                       ${{ inputs.instance || github.event.client_payload.instance }}
-        tag:                            ${{ inputs.tag      || github.event.client_payload.tag }}
+        tag:                            ''
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -89,9 +97,9 @@ jobs:
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
         ghToken:                        ${{ secrets.GITHUB_TOKEN }}
         GH_TOKEN:                       ${{ secrets.GITHUB_TOKEN }}
-        env:                            ${{ inputs.env      || github.event.client_payload.env }}
-        instance:                       ${{ inputs.instance || github.event.client_payload.instance }}
-        tag:                            ${{ inputs.tag      || github.event.client_payload.tag }}
+        env:                            ${{ inputs.env              || github.event.client_payload.env }}
+        instance:                       ${{ inputs.instance         || github.event.client_payload.instance }}
+        tag:                            ${{ inputs.schedule-srv-tag || github.event.client_payload.schedule-srv-tag }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -123,9 +131,9 @@ jobs:
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
         ghToken:                        ${{ secrets.GITHUB_TOKEN }}
         GH_TOKEN:                       ${{ secrets.GITHUB_TOKEN }}
-        env:                            ${{ inputs.env      || github.event.client_payload.env }}
-        instance:                       ${{ inputs.instance || github.event.client_payload.instance }}
-        tag:                            ${{ inputs.tag      || github.event.client_payload.tag }}
+        env:                            ${{ inputs.env                || github.event.client_payload.env }}
+        instance:                       ${{ inputs.instance           || github.event.client_payload.instance }}
+        tag:                            ${{ inputs.tournament-srv-tag || github.event.client_payload.tournament-srv-tag }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
