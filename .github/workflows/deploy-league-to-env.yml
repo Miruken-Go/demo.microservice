@@ -1,5 +1,5 @@
 name: deploy league to env
-run-name: deploy to ${{ inputs.env || github.event.client_payload.env }} ${{ inputs.instance || github.event.client_payload.instance }}
+run-name: deploy league domain to ${{ inputs.env || github.event.client_payload.env }} ${{ inputs.instance || github.event.client_payload.instance }}
 
 on: 
   workflow_call:
@@ -12,12 +12,12 @@ on:
         required: false
       schedule-srv-tag:
         description: 'schedule-srv Docker tag'
-        required: false
-        type: string
+        required:    false
+        type:        string
       tournament-srv-tag:
         description: 'tournament-srv Docker tag'
-        required: false
-        type: string
+        required:    false
+        type:        string
   workflow_dispatch:
     inputs:
       env:
@@ -78,7 +78,7 @@ jobs:
         npm ci
         npm run provision
 
-  schedule-srv:
+  deploy schedule-srv:
     name: schedule-srv ${{ inputs.env }} ${{ inputs.instance }}
     needs: provision
     runs-on: ubuntu-latest
@@ -112,7 +112,7 @@ jobs:
         npm ci
         npm run deploy
 
-  tournament-srv:
+  deploy tournament-srv:
     name: tournament-srv ${{ inputs.env }} ${{ inputs.instance }}
     needs: provision
     runs-on: ubuntu-latest
