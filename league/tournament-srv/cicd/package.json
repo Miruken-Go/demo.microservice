@@ -7,8 +7,8 @@
     "#infrastructure/*": "./ci.cd/src/infrastructure/*"
   },
   "scripts": {
-    "build":  "echo 'building schedule-srv'",
-    "deploy": "echo 'deploying schedule-srv'",
+    "build":  "echo 'building tournament-srv'",
+    "deploy": "echo 'deploying tournament-srv'",
     "integration-tests": "echo 'executing integration tests'",
     "unit-tests": "echo 'executing integration tests'"
   },
