@@ -11,11 +11,11 @@ on:
         type:     string
         required: false
       schedule-srv-tag:
-        description: 'Docker image tag'
+        description: 'schedule-srv Docker tag'
         required: false
         type: string
       tournament-srv-tag:
-        description: 'Docker image tag'
+        description: 'tournament-srv Docker tag'
         required: false
         type: string
   workflow_dispatch:
@@ -35,11 +35,11 @@ on:
         required: false
         type: string
       schedule-srv-tag:
-        description: 'Docker image tag'
+        description: 'schedule-srv Docker tag'
         required: false
         type: string
       tournament-srv-tag:
-        description: 'Docker image tag'
+        description: 'tournament-srv Docker tag'
         required: false
         type: string
 
