@@ -1,4 +1,4 @@
-name: deploy league to env
+name: deploy league domain to env
 run-name: deploy league domain to ${{ inputs.env || github.event.client_payload.env }} ${{ inputs.instance || github.event.client_payload.instance }}
 
 on: 
