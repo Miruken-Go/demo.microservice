@@ -7,7 +7,7 @@ import {
     bash
 } from 'ci.cd'
 
-import { organization } from './domains.js'
+import { organization } from './domains'
 
 import * as path from 'node:path'
 
@@ -18,7 +18,6 @@ handle(async () => {
             'subscriptionId',
             'deploymentPipelineClientId',
             'deploymentPipelineClientSecret',
-            'location',
         ])
         .variables
     logging.printVariables(variables)
@@ -30,7 +29,7 @@ handle(async () => {
         .secrets
     logging.printSecrets(secrets)
 
-    logging.printDomain(organization)
+    //logging.printDomain(organization)
 
     logging.header("Deploying Organization Global Resources")
 
@@ -49,17 +48,19 @@ handle(async () => {
     //Resources Groups
     await az.createResourceGroup(organization.resourceGroups.global, organization.location, {})
 
-    const bicepFile = path.join(__dirname, 'bicep/organizationGlobalResources.bicep')
+    const bicepFile = path.join(__dirname, 'bicep/global.bicep')
+
+    console.log('bicepfile', bicepFile)
 
     await bash.json(`
-        az deployment group create                                                     \
-            --name           organizationGlobalResources${Math.floor(Date.now()/1000)} \
-            --template-file  ${bicepFile}                                              \
-            --subscription   ${variables.subscriptionId}                               \
-            --resource-group ${organization.resourceGroups.global}                     \
-            --mode complete                                                            \
-            --parameters                                                               \
-                containerRepositoryName=${organization.containerRepository.name}       \
-                location=${organization.location}                                      \
+        az deployment group create                                                         \
+            --name           organizationGlobalResources${Math.floor(Date.now()/1000)}     \
+            --template-file  ${bicepFile}                                                  \
+            --subscription   ${variables.subscriptionId}                                   \
+            --resource-group ${organization.resourceGroups.global}                         \
+            --mode complete                                                                \
+            --parameters                                                                   \
+                containerRepositoryName=${organization.resources.containerRepository.name} \
+                location=${organization.location}                                          \
     `)
 })
