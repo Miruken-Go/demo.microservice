@@ -6,8 +6,10 @@ import {
     AZ,
     bash
 } from 'ci.cd'
-import { organization } from './config.js'
 
+import { organization } from './domains.js'
+
+import * as path from 'node:path'
 
 handle(async () => {
     const variables = new EnvVariables()
@@ -47,7 +49,7 @@ handle(async () => {
     //Resources Groups
     await az.createResourceGroup(organization.resourceGroups.global, organization.location, {})
 
-    const bicepFile = new URL('bicep/organizationGlobalResources.bicep', import.meta.url).pathname
+    const bicepFile = path.join(__dirname, 'bicep/organizationGlobalResources.bicep')
 
     await bash.json(`
         az deployment group create                                                     \

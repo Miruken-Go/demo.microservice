@@ -1,10 +1,14 @@
 {
   "description": "CICD for the major-league-miruken organization",
   "scripts": {
+    "build": "tsc",
     "provision": "ts-node ./src/provisionGlobalResources.ts"
   },
   "dependencies": {
-    "ci.cd": "github:miruken-go/ci.cd#v0.1.41",
+    "ci.cd": "github:miruken-go/ci.cd#v0.1.42"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.3"
   }
