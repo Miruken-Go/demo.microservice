@@ -6,11 +6,7 @@ on:
   push:
     branches: [ "main", "develop"]
     paths:
-    - 'defaultContainerImage/**'
-  pull_request:
-    branches: [ "main" ]
-    paths:
-    - 'defaultContainerImage/**'
+    - 'default-container-image/**'
 
 permissions:
   contents: write
@@ -28,18 +24,15 @@ jobs:
         subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
         deploymentPipelineClientId:     ${{ vars.DEPLOYMENT_PIPELINE_CLIENT_ID }}
         deploymentPipelineClientSecret: ${{ secrets.DEPLOYMENT_PIPELINE_CLIENT_SECRET }}
-        ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
         GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
         repository:                     ${{ github.repository }}
         repositoryOwner:                ${{ github.repository_owner }}
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
       with: 
         submodules: 'recursive'
-    - name: npm ci
-      working-directory: ./deployment/src
-      run: npm ci
-    - name: Run buildDefaultContainerImages.js 
-      run:  node ./deployment/src/buildDefaultContainerImages.js
+    - working-directory: ./default-container-image/cicd
+      run: |
+        npm ci
+        npm build
