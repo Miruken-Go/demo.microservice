@@ -50,7 +50,7 @@ handle(async() => {
     await new Git(secrets.GH_TOKEN)
         .tagAndPush(tag)
 
-    const mirukenVersion = await go.getModuleVersion('team-api', 'github.com/miruken-go/miruken')
+    const mirukenVersion = await go.getModuleVersion('../', 'github.com/miruken-go/miruken')
     console.log(`mirukenVersion: [${mirukenVersion}]`)
     
     await new GH({
