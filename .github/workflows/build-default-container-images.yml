@@ -34,5 +34,5 @@ jobs:
         submodules: 'recursive'
     - working-directory: ./default-container-image/cicd
       run: |
-        npm ci
-        npm build
+        npm run ci
+        npm run build
