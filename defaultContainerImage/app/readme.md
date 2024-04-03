@@ -28,7 +28,7 @@
 
 ### Build Docker Image
 
-    cd defaultContainerImage
+    cd defaultContainerImage/app
     docker build --build-arg ENV=local -t teamsrv:default .
     
 ### Run Docker container locally
