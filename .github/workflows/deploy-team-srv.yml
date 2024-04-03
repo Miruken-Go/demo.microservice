@@ -31,7 +31,7 @@ jobs:
       packages: read
       contents: read
     container:
-      image: ghcr.io/miruken-go/demo.microservice.build:1699298856
+      image: ghcr.io/miruken-go/demo.microservice.build:1712157679
       env:
         repository:                     ${{ github.repository }}
         repositoryOwner:                ${{ github.repository_owner }}
