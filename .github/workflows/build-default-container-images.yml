@@ -8,9 +8,6 @@ on:
     paths:
     - 'default-container-image/**'
 
-permissions:
-  contents: write
-
 jobs:
   containerized_job:
     runs-on: ubuntu-latest
