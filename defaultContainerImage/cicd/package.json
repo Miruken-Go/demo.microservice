@@ -1,7 +1,6 @@
 {
     "scripts": {
-      "build": "ts-node ./src/build.ts",
-      "verify": "jest"
+      "build": "ts-node ./src/build.ts"
     },
     "dependencies": {
       "ci.cd": "github:miruken-go/ci.cd#v0.1.42"
