@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: read
-      contents: read
+      contents: write
     container:
       image: ghcr.io/miruken-go/demo.microservice.build:1712157679
       env:
