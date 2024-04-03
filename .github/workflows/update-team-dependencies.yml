@@ -14,15 +14,12 @@ on:
   repository_dispatch:
     types: [built-team-api]
 
-permissions:
-  contents: write
-
 jobs:
   containerized_job:
     runs-on: ubuntu-latest
     permissions:
       packages: read
-      contents: read
+      contents: write
     container:
       image: ghcr.io/miruken-go/demo.microservice.build:1712157679
       env:
