@@ -30,6 +30,7 @@ handle(async() => {
     const secrets = new EnvSecrets()
         .require([
             'deploymentPipelineClientSecret',
+            'GH_TOKEN'
         ])
         .secrets
     logging.printSecrets(secrets)
@@ -51,17 +52,17 @@ handle(async() => {
     console.log(`appSourceUrl: [${appSourceUrl}]`)
 
     await bash.execute(`
-        cd ../
+        cd ../../
         docker build                                   \
             --progress plain                           \
             --build-arg app_source_url=${appSourceUrl} \
             --build-arg app_version=${version}         \
-            -f cmd/Dockerfile                          \
+            -f team-srv/cmd/Dockerfile                 \
             -t ${imageName}                            \
             .                                          \
     `)
 
-    new AZ({
+    await new AZ({
         tenantId:                       variables.tenantId,
         subscriptionId:                 variables.subscriptionId,
         deploymentPipelineClientId:     variables.deploymentPipelineClientId,
