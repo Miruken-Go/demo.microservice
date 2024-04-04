@@ -1,0 +1,17 @@
+{
+  "description": "CICD for the major-league-miruken organization",
+  "scripts": {
+    "publish": "ts-node ./src/build.ts"
+  },
+  "dependencies": {
+    "ci.cd": "github:miruken-go/ci.cd#v0.1.42"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^18.19.0",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.3"
+  }
+}
