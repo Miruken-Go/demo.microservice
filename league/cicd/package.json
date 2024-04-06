@@ -1,18 +1,17 @@
 {
-  "name": "",
-  "version": "1.0.0",
-  "main": "src/index.js",
-  "type": "module",
-  "imports": {
-    "#infrastructure/*": "./ci.cd/src/infrastructure/*"
-  },
   "scripts": {
-    "provision": "echo 'provisioning resources'",
-    "destroy": "echo 'destroying  resources'"
+    "provision": "ts-node ./src/provisionInstanceResources.ts",
+    "verify": "jest"
   },
-  "author": "provenstyle",
-  "license": "ISC",
   "dependencies": {
-    "axios": "^1.6.7"
+    "ci.cd": "github:miruken-go/ci.cd#v0.1.45"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^18.19.0",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.3"
   }
 }

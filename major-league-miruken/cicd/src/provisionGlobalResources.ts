@@ -29,8 +29,6 @@ handle(async () => {
         .secrets
     logging.printSecrets(secrets)
 
-    //logging.printDomain(organization)
-
     logging.header("Deploying Organization Global Resources")
 
     const az = new AZ({
