@@ -4,6 +4,8 @@ github.com/miruken-go/miruken v0.30.104 h1:GfmTL9uJOb1kiDRh0OJ7o2FTbTF9qfTCY2rLV
 github.com/miruken-go/miruken v0.30.104/go.mod h1:LxeU7MWQCkSm9t6G6vqWW1QRtx6jg2tITItf07gGm2I=
 github.com/miruken-go/miruken v0.30.105 h1:aDztzBZkph4ebIVllfdmlNS/hBqJ7KOXy1iRHDQh3BA=
 github.com/miruken-go/miruken v0.30.105/go.mod h1:LxeU7MWQCkSm9t6G6vqWW1QRtx6jg2tITItf07gGm2I=
+github.com/miruken-go/miruken v0.30.113 h1:B2p554D7uXELp5Te0B0WVr5WoKQm7oqQt9jI/E7F4Pk=
+github.com/miruken-go/miruken v0.30.113/go.mod h1:h4gU79GOFZV1jdF1/Ffj+bcRuTyj9UeOK659vWVMmDs=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
 gopkg.in/yaml.v3 v3.0.1/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
