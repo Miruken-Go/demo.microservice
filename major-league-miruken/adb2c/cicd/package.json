@@ -1,0 +1,17 @@
+{
+  "scripts": {
+    "build-adb2c-api-connector-srv": "ts-node ./src/buildAdb2cApiConnectorSrv.ts",
+    "verify": "jest"
+  },
+  "dependencies": {
+    "ci.cd": "github:miruken-go/ci.cd#v0.1.45"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^18.19.0",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.3"
+  }
+}
