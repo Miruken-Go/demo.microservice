@@ -14,7 +14,7 @@ Clone with the -recursive flag to pull down git submodules
             RUN wget https://go.dev/dl/go1.21.3.linux-amd64.tar.gz
             RUN tar -C /usr/local -xzf go1.21.3.linux-amd64.tar.gz
     * check in dockerfile and the new image is built automatically
-    * Search and replace the container version `ghcr.io/miruken-go/demo.microservice.build:1712157679` in the .github folder
+    * Search and replace the container version `ghcr.io/miruken-go/demo.microservice.build:1713989236` in the .github folder
 
 ### Docker image
 

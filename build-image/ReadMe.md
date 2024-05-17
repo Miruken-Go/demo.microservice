@@ -5,7 +5,7 @@ The container is published to github packages.
 
 ## Run the "build-and-push-deployment-image" pipeline to build a new image
 
-  Search and replace the container version `ghcr.io/miruken-go/demo.microservice.build:1712157679` in the `demo.microservice` folder.
+  Search and replace the container version `ghcr.io/miruken-go/demo.microservice.build:1713989236` in the `demo.microservice` folder.
 
 ## To Develop Locally
 

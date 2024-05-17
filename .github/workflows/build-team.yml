@@ -20,7 +20,7 @@ jobs:
       packages: read
       contents: write
     container:
-      image: ghcr.io/miruken-go/demo.microservice.build:1712157679
+      image: ghcr.io/miruken-go/demo.microservice.build:1713989236
       env:
         tenantId:                       ${{ vars.TENANT_ID }}
         subscriptionId:                 ${{ vars.SUBSCRIPTION_ID }}
