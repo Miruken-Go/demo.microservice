@@ -1,6 +1,7 @@
 {
   "scripts": {
     "build-adb2c-api-connector-srv": "ts-node ./src/buildAdb2cApiConnectorSrv.ts",
+    "build-adb2c-auth-srv":          "ts-node ./src/buildAdb2cAuthSrv.ts",
     "verify": "jest"
   },
   "dependencies": {

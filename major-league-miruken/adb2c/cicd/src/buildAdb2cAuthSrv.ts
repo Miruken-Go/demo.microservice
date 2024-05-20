@@ -33,8 +33,10 @@ handle(async () => {
         ])
         .secrets
     logging.printSecrets(secrets)
+    
+    const appName = 'adb2c-auth-srv'
 
-    const appName = 'adb2c-api-connector-srv'
+    logging.header(`Building ${appName}`)
 
     const app = organization.getApplicationByName(appName)
 
@@ -54,11 +56,11 @@ handle(async () => {
             --progress plain                           \
             --build-arg app_source_url=${appSourceUrl} \
             --build-arg app_version=${version}         \
-            -f adb2c/cmd/api-connector-srv/Dockerfile  \
+            -f adb2c/cmd/auth-srv/Dockerfile           \
             -t ${imageName}                            \
             .                                          \
     `)
-
+    
     await new AZ({
         tenantId:                       variables.tenantId,
         subscriptionId:                 variables.subscriptionId,
@@ -84,4 +86,5 @@ handle(async () => {
         instance: 'ci',
         tag:      version,
     }, variables.repository)
+
 })
