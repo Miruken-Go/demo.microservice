@@ -1,26 +1,36 @@
-import * as logging  from '#infrastructure/logging.js'
-import * as az       from '#infrastructure/az.js'
-import * as bash     from '#infrastructure/bash.js'
-import * as gh       from '#infrastructure/gh.js'
-import { handle }    from '#infrastructure/handler.js'
-import { variables } from '#infrastructure/envVariables.js'
+import { config } from 'dotenv'
+config({ path: `.env.${process.env.env}` })
 
 import { 
-    configDirectory,
-    organization 
-} from './config.js'
+    handle,
+    logging,
+    bash,
+    EnvSecrets,
+    EnvVariables,
+    AZ,
+} from 'ci.cd'
 
-variables.requireEnvVariables([
-    'tag'
-])
-
-variables.requireEnvFileVariables(configDirectory, [
-    'authorizationServiceUsername',
-])
+import { organization } from './domains'
 
 handle(async () => {
-    logging.printEnvironmentVariables(variables)
-    logging.printDomain(organization)
+    const variables = new EnvVariables()
+        .required([
+            'tag',
+            'tenantId',
+            'subscriptionId',
+            'deploymentPipelineClientId',
+            'authorizationServiceUsername'
+        ])
+        .variables
+
+    logging.printVariables(variables)
+
+    const secrets = new EnvSecrets()
+        .require([
+            'deploymentPipelineClientSecret',
+        ])
+        .secrets
+    logging.printSecrets(secrets)
 
     const application = organization.getApplicationByName("adb2c-api-connector-srv")
 
@@ -33,7 +43,12 @@ handle(async () => {
         `Login__Adb2c__0__Options__Credentials__0__Password='secretref:authorization-service-password'`,
     ]
 
-    await az.login()
+    await new AZ({
+        tenantId:                       variables.tenantId,
+        subscriptionId:                 variables.subscriptionId,
+        deploymentPipelineClientId:     variables.deploymentPipelineClientId,
+        deploymentPipelineClientSecret: secrets.deploymentPipelineClientSecret
+    }).login()
 
     //https://learn.microsoft.com/en-us/cli/azure/containerapp?view=azure-cli-latest#az-containerapp-update
     //Create the new revision
@@ -89,10 +104,4 @@ handle(async () => {
             `)
         }
     }
-
-    await gh.sendRepositoryDispatch(`deployed-${application.name}`, {
-        tag:      variables.tag,
-        env:      organization.env,
-        instance: organization.instance,
-    })
 })

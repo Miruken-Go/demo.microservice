@@ -1,11 +1,14 @@
 {
   "scripts": {
-    "build-adb2c-api-connector-srv": "ts-node ./src/buildAdb2cApiConnectorSrv.ts",
-    "build-adb2c-auth-srv":          "ts-node ./src/buildAdb2cAuthSrv.ts",
-    "verify": "jest"
+    "build-adb2c-api-connector-srv":  "ts-node ./src/buildAdb2cApiConnectorSrv.ts",
+    "build-adb2c-auth-srv":           "ts-node ./src/buildAdb2cAuthSrv.ts",
+    "deploy-adb2c-api-connector-srv": "ts-node ./src/deployAdb2cApiConnectorSrv.ts",
+    "deploy-adb2c-auth-srv":          "ts-node ./src/deployAdb2cAuthSrv.ts",
+    "verify":                         "jest"
   },
   "dependencies": {
-    "ci.cd": "github:miruken-go/ci.cd#v0.1.45"
+    "ci.cd": "github:miruken-go/ci.cd#v0.1.45",
+    "dotenv": "^16.4.5"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",

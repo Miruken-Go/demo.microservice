@@ -50,7 +50,8 @@ handle(async () => {
 
     await bash.execute(`
         cd ../../
-        docker build                                   \
+        docker buildx build                            \
+            --platform linux/amd64                     \
             --progress plain                           \
             --build-arg app_source_url=${appSourceUrl} \
             --build-arg app_version=${version}         \
