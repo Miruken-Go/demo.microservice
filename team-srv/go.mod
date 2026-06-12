@@ -6,8 +6,9 @@ require (
 	github.com/getkin/kin-openapi v0.140.0
 	github.com/go-logr/zerologr v1.2.3
 	github.com/knadh/koanf/providers/env/v2 v2.0.0
-	github.com/miruken-go/demo.microservice/team v0.8.3
-	github.com/miruken-go/miruken v0.31.1
+	github.com/miruken-go/demo.microservice/team v0.8.4
+	github.com/miruken-go/miruken v0.32.0
+	github.com/miruken-go/miruken/api/http/httpsrv/openapi v0.1.0
 	github.com/rs/zerolog v1.35.1
 )
 
@@ -37,7 +38,7 @@ require (
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.15 // indirect
 	github.com/mattn/go-isatty v0.0.22 // indirect
-	github.com/miruken-go/demo.microservice/team-api v0.8.7 // indirect
+	github.com/miruken-go/demo.microservice/team-api v0.8.8 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/timewasted/go-accept-headers v0.0.0-20130320203746-c78f304b1b09 // indirect
