@@ -135,8 +135,10 @@ github.com/microsoftgraph/msgraph-sdk-go v1.99.0 h1:FRR4RcbuhKBQP3klg4jCp05ntz/N
 github.com/microsoftgraph/msgraph-sdk-go v1.99.0/go.mod h1:qxzY5SaoPigY6/Dpyfg4uigQjNDvL+sZl6fzD6EpWeQ=
 github.com/microsoftgraph/msgraph-sdk-go-core v1.4.1 h1:k3YIaJm57ufoEX0KdsEY4l1X9BAMxEqrwr4a7WMRDzY=
 github.com/microsoftgraph/msgraph-sdk-go-core v1.4.1/go.mod h1:yNqPNhXee2w9cZzkJW5mL1utVMSInsQSo/TyEB5sup8=
-github.com/miruken-go/miruken v0.31.1 h1:b8TZLVs7PTquG4ksPburXKzOGI7+dbnre1ZKZ7AyoAE=
-github.com/miruken-go/miruken v0.31.1/go.mod h1:Pn6x2sTEp0flOmL/FiUYHm59eD+cpSBrj0O0ni5ItZA=
+github.com/miruken-go/miruken v0.32.0 h1:Bj3J099FOMr+RfbwfD1m05gH+pJLIatWsYzkeIHLHTs=
+github.com/miruken-go/miruken v0.32.0/go.mod h1:RPlartBZPWT3qjebUymAxwbw4mL83uK5mGh0DSC+W6U=
+github.com/miruken-go/miruken/api/http/httpsrv/openapi v0.1.0 h1:uq6ZE1Zf3O/y1LkOwQgTBtBtuqJqCGksYGsZyk79djE=
+github.com/miruken-go/miruken/api/http/httpsrv/openapi v0.1.0/go.mod h1:e/XH+kUP8ay4sXGYvqdKUPbm0ZC91uWw1irtf0a+eN4=
 github.com/mitchellh/copystructure v1.2.0 h1:vpKXTN4ewci03Vljg/q9QvCGUDttBOGBIa15WveJJGw=
 github.com/mitchellh/copystructure v1.2.0/go.mod h1:qLl+cE2AmVv+CoeAwDPye/v+N2HKCj9FbZEVFJRxO9s=
 github.com/mitchellh/reflectwalk v1.0.2 h1:G2LzWKi524PWgd3mLHV8Y5k7s6XUvT0Gef6zxSIeXaQ=
