@@ -3,48 +3,54 @@ module github.com/miruken-go/demo.microservice/adb2c
 go 1.26.4
 
 require (
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.9.2
-	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.5.1
-	github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos v0.3.6
-	github.com/btnguyen2k/gocosmos v1.0.0
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.22.0
+	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.13.1
+	github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos v1.4.2
+	github.com/btnguyen2k/gocosmos v1.1.0
 	github.com/getkin/kin-openapi v0.140.0
 	github.com/go-logr/logr v1.4.3
 	github.com/go-logr/zerologr v1.2.3
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/google/uuid v1.6.0
-	github.com/jmoiron/sqlx v1.3.5
-	github.com/microsoftgraph/msgraph-sdk-go v1.32.0
-	github.com/microsoftgraph/msgraph-sdk-go-core v1.0.2
-	github.com/miruken-go/miruken v0.31.0
-	github.com/rs/zerolog v1.32.0
+	github.com/jmoiron/sqlx v1.4.0
+	github.com/knadh/koanf/providers/env/v2 v2.0.0
+	github.com/microsoftgraph/msgraph-sdk-go v1.99.0
+	github.com/microsoftgraph/msgraph-sdk-go-core v1.4.1
+	github.com/miruken-go/miruken v0.31.1
+	github.com/rs/zerolog v1.35.1
 	github.com/stretchr/testify v1.11.1
-	golang.org/x/net v0.55.0
+	golang.org/x/net v0.56.0
 )
 
 require (
+	github.com/MicahParks/jwkset v0.11.0 // indirect
+	github.com/MicahParks/keyfunc/v3 v3.8.0 // indirect
+	github.com/btnguyen2k/consu/g18 v0.1.0 // indirect
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/go-openapi/swag/jsonname v0.26.1 // indirect
-	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
+	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/knadh/koanf/maps v0.1.2 // indirect
 	github.com/oasdiff/yaml v0.1.0 // indirect
 	github.com/oasdiff/yaml3 v0.0.13 // indirect
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.2 // indirect
-	go.yaml.in/yaml/v3 v3.0.3 // indirect
+	github.com/std-uritemplate/std-uritemplate/go/v2 v2.0.10 // indirect
+	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
+	go.yaml.in/yaml/v3 v3.0.4 // indirect
+	golang.org/x/time v0.15.0 // indirect
 )
 
 require (
 	dario.cat/mergo v1.0.2 // indirect
 	github.com/Azure/azure-sdk-for-go v68.0.0+incompatible // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/internal v1.5.2 // indirect
-	github.com/AzureAD/microsoft-authentication-library-for-go v1.2.1 // indirect
-	github.com/MicahParks/keyfunc/v2 v2.1.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/internal v1.12.0 // indirect
+	github.com/AzureAD/microsoft-authentication-library-for-go v1.7.2 // indirect
 	github.com/Rican7/conjson v0.1.0 // indirect
-	github.com/btnguyen2k/consu/checksum v1.1.0 // indirect
-	github.com/btnguyen2k/consu/gjrc v0.2.1 // indirect
+	github.com/btnguyen2k/consu/checksum v1.1.1 // indirect
+	github.com/btnguyen2k/consu/gjrc v0.2.2 // indirect
 	github.com/btnguyen2k/consu/olaf v0.1.3 // indirect
-	github.com/btnguyen2k/consu/reddo v0.1.8 // indirect
+	github.com/btnguyen2k/consu/reddo v0.1.9 // indirect
 	github.com/btnguyen2k/consu/semita v0.1.5 // indirect
-	github.com/cjlapao/common-go v0.0.39 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.10.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.13 // indirect
@@ -54,29 +60,27 @@ require (
 	github.com/go-playground/validator/v10 v10.30.3 // indirect
 	github.com/knadh/koanf/parsers/json v1.0.0
 	github.com/knadh/koanf/parsers/yaml v1.1.0
-	github.com/knadh/koanf/providers/env v1.1.0
 	github.com/knadh/koanf/providers/file v1.2.1
 	github.com/knadh/koanf/v2 v2.3.5
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/microsoft/kiota-abstractions-go v1.5.6 // indirect
-	github.com/microsoft/kiota-authentication-azure-go v1.0.2 // indirect
-	github.com/microsoft/kiota-http-go v1.3.1 // indirect
-	github.com/microsoft/kiota-serialization-form-go v1.0.0 // indirect
-	github.com/microsoft/kiota-serialization-json-go v1.0.6 // indirect
-	github.com/microsoft/kiota-serialization-multipart-go v1.0.0 // indirect
-	github.com/microsoft/kiota-serialization-text-go v1.0.0 // indirect
+	github.com/mattn/go-colorable v0.1.15 // indirect
+	github.com/mattn/go-isatty v0.0.22 // indirect
+	github.com/microsoft/kiota-abstractions-go v1.9.4 // indirect
+	github.com/microsoft/kiota-authentication-azure-go v1.3.1 // indirect
+	github.com/microsoft/kiota-http-go v1.5.6 // indirect
+	github.com/microsoft/kiota-serialization-form-go v1.1.3 // indirect
+	github.com/microsoft/kiota-serialization-json-go v1.1.2 // indirect
+	github.com/microsoft/kiota-serialization-multipart-go v1.1.2 // indirect
+	github.com/microsoft/kiota-serialization-text-go v1.1.3 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/std-uritemplate/std-uritemplate/go v0.0.52 // indirect
 	github.com/timewasted/go-accept-headers v0.0.0-20130320203746-c78f304b1b09 // indirect
-	go.opentelemetry.io/otel v1.23.1 // indirect
-	go.opentelemetry.io/otel/metric v1.23.1 // indirect
-	go.opentelemetry.io/otel/trace v1.23.1 // indirect
+	go.opentelemetry.io/otel v1.44.0 // indirect
+	go.opentelemetry.io/otel/metric v1.44.0 // indirect
+	go.opentelemetry.io/otel/trace v1.44.0 // indirect
 	golang.org/x/crypto v0.53.0 // indirect
 	golang.org/x/sys v0.46.0 // indirect
 	golang.org/x/text v0.38.0 // indirect

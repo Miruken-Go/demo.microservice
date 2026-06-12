@@ -13,7 +13,7 @@ import (
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/go-logr/zerologr"
 	"github.com/knadh/koanf/parsers/yaml"
-	"github.com/knadh/koanf/providers/env"
+	"github.com/knadh/koanf/providers/env/v2"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
 	"github.com/miruken-go/demo.microservice/adb2c/azure"
@@ -57,7 +57,7 @@ func main() {
 		logger.Error(err, "error loading app.yml configuration")
 		os.Exit(1)
 	}
-	err = k.Load(env.Provider("", "__", nil), nil,
+	err = k.Load(env.Provider("__", env.Opt{}), nil,
 		koanf.WithMergeFunc(koanfp.Merge))
 	if err != nil {
 		logger.Error(err, "error loading env configuration")
