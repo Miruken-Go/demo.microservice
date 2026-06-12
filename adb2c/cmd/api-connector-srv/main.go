@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/go-logr/zerologr"
-	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/providers/env"
+	"github.com/knadh/koanf/v2"
 	"github.com/miruken-go/demo.microservice/adb2c/enrich"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
 	"github.com/miruken-go/miruken/api/http/httpsrv/auth"

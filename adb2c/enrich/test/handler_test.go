@@ -11,9 +11,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/parsers/json"
 	"github.com/knadh/koanf/providers/file"
+	"github.com/knadh/koanf/v2"
 	"github.com/miruken-go/demo.microservice/adb2c/enrich"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/api/http"
@@ -114,7 +114,7 @@ func (suite *EnrichTestSuite) Get(
 	_ *struct {
 		handles.It
 		authorizes.Required
-	  }, get api2.GetSubject,
+	}, get api2.GetSubject,
 ) api2.Subject {
 	return api2.Subject{Id: get.SubjectId}
 }

@@ -12,8 +12,8 @@ import (
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/go-logr/zerologr"
-	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/providers/env"
+	"github.com/knadh/koanf/v2"
 	"github.com/miruken-go/demo.microservice/team"
 	"github.com/miruken-go/miruken/api"
 	"github.com/miruken-go/miruken/api/http/httpsrv"
