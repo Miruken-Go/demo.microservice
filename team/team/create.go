@@ -87,6 +87,21 @@ func (h *Handler) Create(
 	})
 }
 
+// AuthorizeCreate is a placeholder authorization policy for the
+// authorizes.Required marker above. Miruken's authorizes.Required now
+// fails closed (denies) when no policy answers the check, rather than
+// allowing by default; before this change Create had no policy at all
+// (only the jwt.Scope "Team.Create" constraint) and was implicitly
+// allowed for everyone once that scope check passed. This placeholder
+// preserves that prior de facto behavior explicitly - replace with
+// real authorization logic (e.g. role or entitlement checks like
+// team/person's AuthorizeCreate) as needed.
+func (h *Handler) AuthorizeCreate(
+	_ *authorizes.It, _ *commands.CreateTeam,
+) bool {
+	return true
+}
+
 func notfuture(fl validator.FieldLevel) bool {
 	if t, ok := fl.Field().Interface().(time.Time); ok {
 		return t.Before(time.Now())
