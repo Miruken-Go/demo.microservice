@@ -5,11 +5,11 @@ import (
 	"github.com/miruken-go/miruken/security/authorizes"
 )
 
-// TeamAccessPolicy holds the authorization policies for actions in this
+// AccessPolicy holds the authorization policies for actions in this
 // package, kept separate from the handlers that process those actions -
 // the same cross-cutting-concern separation used for validation
 // (CreateIntegrity/UpdateIntegrity).
-type TeamAccessPolicy struct{}
+type AccessPolicy struct{}
 
 // AuthorizeCreate is a placeholder authorization policy for the
 // authorizes.Required marker on Handler.Create. Miruken's
@@ -20,7 +20,7 @@ type TeamAccessPolicy struct{}
 // placeholder preserves that prior de facto behavior explicitly -
 // replace with real authorization logic (e.g. role or entitlement
 // checks like team/person's AuthorizeCreate) as needed.
-func (p *TeamAccessPolicy) AuthorizeCreate(
+func (p *AccessPolicy) AuthorizeCreate(
 	_ *authorizes.It, _ *commands.CreateTeam,
 ) bool {
 	return true
