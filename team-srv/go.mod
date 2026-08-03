@@ -6,7 +6,7 @@ require (
 	github.com/getkin/kin-openapi v0.146.0
 	github.com/go-logr/zerologr v1.2.3
 	github.com/knadh/koanf/providers/env/v2 v2.0.0
-	github.com/miruken-go/demo.microservice/team v0.8.5
+	github.com/miruken-go/demo.microservice/team v0.8.6
 	github.com/miruken-go/miruken v0.32.3
 	github.com/miruken-go/miruken/api/http/httpsrv/openapi v0.1.1
 	github.com/miruken-go/miruken/config/koanf v0.1.0
