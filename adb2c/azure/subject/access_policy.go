@@ -5,10 +5,10 @@ import (
 	"github.com/miruken-go/miruken/security/authorizes"
 )
 
-// SubjectAccessPolicy holds the authorization policies for actions in
+// AccessPolicy holds the authorization policies for actions in
 // this package, kept separate from Handler - the same cross-cutting-
 // concern separation used for validation (Handler.setValidationRules).
-type SubjectAccessPolicy struct{}
+type AccessPolicy struct{}
 
 // The methods below are placeholder authorization policies for the
 // authorizes.Required markers on Handler's methods. Miruken's
@@ -20,37 +20,37 @@ type SubjectAccessPolicy struct{}
 // (e.g. role or entitlement checks like team/person's AuthorizeCreate)
 // as needed.
 
-func (p *SubjectAccessPolicy) AuthorizeCreate(
+func (p *AccessPolicy) AuthorizeCreate(
 	_ *authorizes.It, _ api.CreateSubject,
 ) bool {
 	return true
 }
 
-func (p *SubjectAccessPolicy) AuthorizeAssign(
+func (p *AccessPolicy) AuthorizeAssign(
 	_ *authorizes.It, _ api.AssignPrincipals,
 ) bool {
 	return true
 }
 
-func (p *SubjectAccessPolicy) AuthorizeRevoke(
+func (p *AccessPolicy) AuthorizeRevoke(
 	_ *authorizes.It, _ api.RevokePrincipals,
 ) bool {
 	return true
 }
 
-func (p *SubjectAccessPolicy) AuthorizeRemove(
+func (p *AccessPolicy) AuthorizeRemove(
 	_ *authorizes.It, _ api.RemoveSubject,
 ) bool {
 	return true
 }
 
-func (p *SubjectAccessPolicy) AuthorizeGet(
+func (p *AccessPolicy) AuthorizeGet(
 	_ *authorizes.It, _ api.GetSubject,
 ) bool {
 	return true
 }
 
-func (p *SubjectAccessPolicy) AuthorizeFind(
+func (p *AccessPolicy) AuthorizeFind(
 	_ *authorizes.It, _ api.FindSubjects,
 ) bool {
 	return true

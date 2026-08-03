@@ -8,7 +8,9 @@ import (
 // EnrichAccessPolicy holds the authorization policy for the test's
 // local GetSubject stub, kept separate from EnrichTestSuite.Get - the
 // same cross-cutting-concern separation used in production (e.g.
-// subject.SubjectAccessPolicy).
+// subject.AccessPolicy). Keeps the Enrich prefix here since this type
+// lives in package "test", not "enrich" - the prefix isn't redundant
+// the way it would be inside the subject/user/principal/team packages.
 type EnrichAccessPolicy struct{}
 
 // AuthorizeGet is a placeholder authorization policy for the

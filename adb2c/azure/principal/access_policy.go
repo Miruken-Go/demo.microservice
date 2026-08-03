@@ -5,10 +5,10 @@ import (
 	"github.com/miruken-go/miruken/security/authorizes"
 )
 
-// PrincipalAccessPolicy holds the authorization policies for actions in
+// AccessPolicy holds the authorization policies for actions in
 // this package, kept separate from Handler - the same cross-cutting-
 // concern separation used for validation (Handler.setValidationRules).
-type PrincipalAccessPolicy struct{}
+type AccessPolicy struct{}
 
 // The methods below are placeholder authorization policies for the
 // authorizes.Required markers on Handler's methods. Miruken's
@@ -19,25 +19,25 @@ type PrincipalAccessPolicy struct{}
 // than leaving it accidental - replace with real authorization logic
 // as needed.
 
-func (p *PrincipalAccessPolicy) AuthorizeCreate(
+func (p *AccessPolicy) AuthorizeCreate(
 	_ *authorizes.It, _ api.CreatePrincipal,
 ) bool {
 	return true
 }
 
-func (p *PrincipalAccessPolicy) AuthorizeInclude(
+func (p *AccessPolicy) AuthorizeInclude(
 	_ *authorizes.It, _ api.IncludePrincipals,
 ) bool {
 	return true
 }
 
-func (p *PrincipalAccessPolicy) AuthorizeExclude(
+func (p *AccessPolicy) AuthorizeExclude(
 	_ *authorizes.It, _ api.ExcludePrincipals,
 ) bool {
 	return true
 }
 
-func (p *PrincipalAccessPolicy) AuthorizeRemove(
+func (p *AccessPolicy) AuthorizeRemove(
 	_ *authorizes.It, _ api.RemovePrincipal,
 ) bool {
 	return true

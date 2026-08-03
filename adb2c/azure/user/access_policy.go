@@ -5,9 +5,9 @@ import (
 	"github.com/miruken-go/miruken/security/authorizes"
 )
 
-// UserAccessPolicy holds the authorization policies for actions in this
+// AccessPolicy holds the authorization policies for actions in this
 // package, kept separate from Handler.
-type UserAccessPolicy struct{}
+type AccessPolicy struct{}
 
 // AuthorizeList is a placeholder authorization policy for the
 // authorizes.Required marker on Handler.List. Miruken's
@@ -16,7 +16,7 @@ type UserAccessPolicy struct{}
 // policy at all and was implicitly allowed for everyone. This
 // placeholder preserves that prior de facto behavior explicitly -
 // replace with real authorization logic as needed.
-func (p *UserAccessPolicy) AuthorizeList(
+func (p *AccessPolicy) AuthorizeList(
 	_ *authorizes.It, _ api.ListUsers,
 ) bool {
 	return true
