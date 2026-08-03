@@ -384,38 +384,6 @@ func (h *Handler) Implied(
 	})
 }
 
-// The methods below are placeholder authorization policies for the
-// authorizes.Required markers above. Miruken's authorizes.Required now
-// fails closed (denies) when no policy answers the check, rather than
-// allowing by default; before this change these methods had no policy
-// at all and were implicitly allowed for everyone. These placeholders
-// preserve that prior de facto behavior explicitly rather than leaving
-// it accidental - replace with real authorization logic as needed.
-
-func (h *Handler) AuthorizeCreate(
-	_ *authorizes.It, _ api.CreatePrincipal,
-) bool {
-	return true
-}
-
-func (h *Handler) AuthorizeInclude(
-	_ *authorizes.It, _ api.IncludePrincipals,
-) bool {
-	return true
-}
-
-func (h *Handler) AuthorizeExclude(
-	_ *authorizes.It, _ api.ExcludePrincipals,
-) bool {
-	return true
-}
-
-func (h *Handler) AuthorizeRemove(
-	_ *authorizes.It, _ api.RemovePrincipal,
-) bool {
-	return true
-}
-
 func (h *Handler) setValidationRules(
 	translator ut.Translator,
 ) {

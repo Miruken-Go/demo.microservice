@@ -50,7 +50,7 @@ func (suite *EnrichTestSuite) SetupTest() {
 		httpsrv.Feature(), stdjson.Feature(),
 		enrich.Feature(), password.Feature(),
 		config.Feature(koanfp.P(k))).
-		Specs(&api.GoPolymorphism{}, &EnrichTestSuite{}).
+		Specs(&api.GoPolymorphism{}, &EnrichTestSuite{}, &EnrichAccessPolicy{}).
 		Handlers(suite).
 		Context()
 
@@ -117,18 +117,6 @@ func (suite *EnrichTestSuite) Get(
 	}, get api2.GetSubject,
 ) api2.Subject {
 	return api2.Subject{Id: get.SubjectId}
-}
-
-// AuthorizeGet is a placeholder authorization policy for the
-// authorizes.Required marker above, needed now that authorizes.Required
-// fails closed instead of allowing by default when no policy answers
-// the check. Mirrors the same placeholder added to the real
-// azure/subject Handler.Get - this test stub needs its own since it's
-// a separate handler registration.
-func (suite *EnrichTestSuite) AuthorizeGet(
-	_ *authorizes.It, _ api2.GetSubject,
-) bool {
-	return true
 }
 
 func TestEnrichTestSuite(t *testing.T) {

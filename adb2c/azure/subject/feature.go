@@ -7,6 +7,7 @@ import "github.com/miruken-go/miruken/setup"
 var Feature setup.Feature = setup.FeatureFunc(func(setup *setup.Builder) error {
 	setup.Specs(
 		&Handler{},
+		&SubjectAccessPolicy{},
 	)
 	return nil
 })
