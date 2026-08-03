@@ -8,6 +8,7 @@ var Feature setup.Feature = setup.FeatureFunc(func(setup *setup.Builder) error {
 	setup.Specs(
 		&CreateIntegrity{},
 		&Handler{},
+		&TeamAccessPolicy{},
 		&UpdateIntegrity{},
 	)
 	return nil
