@@ -7,6 +7,18 @@ on:
         description: 'version of miruken'
         required: true
         type: string
+      securityJwtVersion:
+        description: 'version of miruken/security/jwt'
+        required: true
+        type: string
+      validatesPlayVersion:
+        description: 'version of miruken/validates/play'
+        required: true
+        type: string
+      configKoanfVersion:
+        description: 'version of miruken/config/koanf'
+        required: true
+        type: string
   repository_dispatch:
     types: [miruken-version-created]
 
@@ -29,6 +41,9 @@ jobs:
         ghToken:                        ${{ secrets.WORKFLOW_GH_TOKEN }}
         GH_TOKEN:                       ${{ secrets.WORKFLOW_GH_TOKEN }}
         mirukenVersion:                 ${{ inputs.mirukenVersion || github.event.client_payload.version }}
+        securityJwtVersion:             ${{ inputs.securityJwtVersion || github.event.client_payload.securityJwtVersion }}
+        validatesPlayVersion:           ${{ inputs.validatesPlayVersion || github.event.client_payload.validatesPlayVersion }}
+        configKoanfVersion:             ${{ inputs.configKoanfVersion || github.event.client_payload.configKoanfVersion }}
         repository:                     ${{ github.repository }}
         repositoryOwner:                ${{ github.repository_owner }}
         ref:                            ${{ github.event.client_payload.ref || github.ref }}
@@ -42,5 +57,5 @@ jobs:
     - name: npm ci
       working-directory: ./deployment/src
       run: npm ci
-    - name: Run updateTeamApiDependencies.js
-      run:  node ./deployment/src/updateTeamApiDependencies.js 
+    - name: Run updateMiruken.js
+      run:  node ./deployment/src/updateMiruken.js

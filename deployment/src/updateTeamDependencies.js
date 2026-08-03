@@ -7,7 +7,10 @@ import { variables } from '#infrastructure/envVariables.js'
 
 variables.requireEnvVariables([
     'mirukenVersion',
-    'teamapiVersion'
+    'teamapiVersion',
+    'securityJwtVersion',
+    'validatesPlayVersion',
+    'configKoanfVersion'
 ])
 
 handle(async () => {
@@ -15,11 +18,16 @@ handle(async () => {
 
     logging.header("Updating team dependencies")
 
+    // team imports security/jwt, validates/play, and config/koanf directly
+    // (split out of the miruken root module).
     await bash.execute(`
         cd team
-        go get                                                                           \
-            github.com/miruken-go/miruken@${variables.mirukenVersion}                    \
-            github.com/miruken-go/demo.microservice/team-api@${variables.teamapiVersion} \
+        go get                                                                                \
+            github.com/miruken-go/miruken@${variables.mirukenVersion}                          \
+            github.com/miruken-go/miruken/security/jwt@${variables.securityJwtVersion}         \
+            github.com/miruken-go/miruken/validates/play@${variables.validatesPlayVersion}     \
+            github.com/miruken-go/miruken/config/koanf@${variables.configKoanfVersion}         \
+            github.com/miruken-go/demo.microservice/team-api@${variables.teamapiVersion}       \
     `)
 
     if (await git.anyChanges()) {

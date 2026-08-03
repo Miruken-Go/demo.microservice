@@ -6,7 +6,10 @@ import { handle }    from '#infrastructure/handler.js'
 import { variables } from '#infrastructure/envVariables.js'
 
 variables.requireEnvVariables([
-    'mirukenVersion'
+    'mirukenVersion',
+    'securityJwtVersion',
+    'validatesPlayVersion',
+    'configKoanfVersion'
 ])
 
 handle(async () => {
@@ -14,9 +17,15 @@ handle(async () => {
 
     logging.header("Updating miruken dependencies")
 
+    // adb2c imports security/jwt, validates/play, and config/koanf directly
+    // (split out of the miruken root module) - team-api does not.
     await bash.execute(`
         cd adb2c
-        go get github.com/miruken-go/miruken@${variables.mirukenVersion}
+        go get                                                                        \
+            github.com/miruken-go/miruken@${variables.mirukenVersion}                 \
+            github.com/miruken-go/miruken/security/jwt@${variables.securityJwtVersion}       \
+            github.com/miruken-go/miruken/validates/play@${variables.validatesPlayVersion}   \
+            github.com/miruken-go/miruken/config/koanf@${variables.configKoanfVersion}       \
     `)
 
     await bash.execute(`
