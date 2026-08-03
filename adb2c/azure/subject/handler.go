@@ -260,6 +260,51 @@ func (h *Handler) Find(
 	})
 }
 
+// The methods below are placeholder authorization policies for the
+// authorizes.Required markers above. Miruken's authorizes.Required now
+// fails closed (denies) when no policy answers the check, rather than
+// allowing by default; before this change these methods had no policy
+// at all and were implicitly allowed for everyone. These placeholders
+// preserve that prior de facto behavior explicitly rather than leaving
+// it accidental - replace with real authorization logic (e.g. role or
+// entitlement checks like team/person's AuthorizeCreate) as needed.
+
+func (h *Handler) AuthorizeCreate(
+	_ *authorizes.It, _ api.CreateSubject,
+) bool {
+	return true
+}
+
+func (h *Handler) AuthorizeAssign(
+	_ *authorizes.It, _ api.AssignPrincipals,
+) bool {
+	return true
+}
+
+func (h *Handler) AuthorizeRevoke(
+	_ *authorizes.It, _ api.RevokePrincipals,
+) bool {
+	return true
+}
+
+func (h *Handler) AuthorizeRemove(
+	_ *authorizes.It, _ api.RemoveSubject,
+) bool {
+	return true
+}
+
+func (h *Handler) AuthorizeGet(
+	_ *authorizes.It, _ api.GetSubject,
+) bool {
+	return true
+}
+
+func (h *Handler) AuthorizeFind(
+	_ *authorizes.It, _ api.FindSubjects,
+) bool {
+	return true
+}
+
 func (h *Handler) setValidationRules(
 	translator ut.Translator,
 ) {

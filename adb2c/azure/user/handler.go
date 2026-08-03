@@ -57,6 +57,19 @@ func (h *Handler) List(
 }
 
 
+// AuthorizeList is a placeholder authorization policy for the
+// authorizes.Required marker above. Miruken's authorizes.Required now
+// fails closed (denies) when no policy answers the check, rather than
+// allowing by default; before this change List had no policy at all
+// and was implicitly allowed for everyone. This placeholder preserves
+// that prior de facto behavior explicitly - replace with real
+// authorization logic as needed.
+func (h *Handler) AuthorizeList(
+	_ *authorizes.It, _ api.ListUsers,
+) bool {
+	return true
+}
+
 var (
 	userFields = []string {"id","givenName","surname","displayName","mail"}
 )
